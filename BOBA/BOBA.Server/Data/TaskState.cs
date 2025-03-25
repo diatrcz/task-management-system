@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BOBA.Server.Data
 {
-    public class TaskStatus
+    public class TaskState
     {
         [Key]
         public string Id { get; set; }
@@ -17,10 +17,12 @@ namespace BOBA.Server.Data
 
         public bool IsFinal { get; set; }
 
+        //Task
         [InverseProperty("CurrentState")]
-        public virtual ICollection<Workflow> CurrentStateWorkflows { get; set; } = new List<Workflow>();
+        public virtual ICollection<Task> CurrentStateTasks { get; set; } = new List<Task>();
 
-        [InverseProperty("NextState")]
-        public virtual ICollection<Workflow> NextStateWorkflows { get; set; } = new List<Workflow>();
+        //Taskflow
+        [InverseProperty("CurrentState")]
+        public virtual ICollection<Taskflow> CurrentStateTaskflows { get; set; } = new List<Taskflow>();
     }
 }

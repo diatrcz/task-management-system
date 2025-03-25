@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
 
 namespace BOBA.Server.Data
 {
@@ -20,9 +21,9 @@ namespace BOBA.Server.Data
         public User Creator { get; set; }
 
         [Required]
-        [ForeignKey("Workflow")]
-        public string WorkflowId { get; set; }
-        public Workflow Workflow { get; set; }
+        [ForeignKey("CurrentState")]
+        public string CurrentStateId { get; set; }
+        public TaskState CurrentState { get; set; }
 
         [ForeignKey("Assignee")]
         public string AssigneeId { get; set; }

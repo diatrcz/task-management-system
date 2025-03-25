@@ -15,8 +15,8 @@ namespace BOBA.Server.Data
         public ICollection<User> Users { get; set; } = new List<User>();
 
         [InverseProperty("EditRole")]
-        public virtual ICollection<Workflow> EditRoleWorkflows { get; set; } = new List<Workflow>();
+        public virtual ICollection<Taskflow> EditRoleWorkflows { get; set; } = new List<Taskflow>();
 
-        public virtual ICollection<Workflow> ReadOnlyRoleWorkflows { get; set; } = new List<Workflow>();
+        public virtual ICollection<Taskflow> ReadOnlyRoleWorkflows { get; set; } = new List<Taskflow>();
     }
 }

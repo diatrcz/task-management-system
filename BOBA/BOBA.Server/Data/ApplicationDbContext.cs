@@ -1,5 +1,4 @@
-﻿
-using BOBA.Server.Data.EntityTypeConfigurations;
+﻿using BOBA.Server.Data.EntityTypeConfigurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,49 +12,50 @@ public class ApplicationDbContext : IdentityDbContext<User>
     }
 
     public DbSet<Task> Tasks => Set<Task>();
-    public DbSet<TaskStatus> TaskStatuses => Set<TaskStatus>();
+    public DbSet<TaskState> TaskStates => Set<TaskState>();
     public DbSet<TaskType> TaskTypes => Set<TaskType>();
     public DbSet<Team> Teams => Set<Team>();
-    public DbSet<Workflow> Workflows => Set<Workflow>();
+    public DbSet<Taskflow> TaskFlows => Set<Taskflow>();
+    public DbSet<Choice> Choices => Set<Choice>();
+
+    public DbSet<TaskField> TaskFields => Set<TaskField>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Task -> Assignee relationship: Prevent cascade delete
+        // Task -> Assignee relationship
         modelBuilder.Entity<Task>()
             .HasOne(t => t.Assignee)
             .WithMany(u => u.AssignedTasks)
             .HasForeignKey(t => t.AssigneeId)
-            .OnDelete(DeleteBehavior.Restrict);  // Prevent cascading delete
+            .OnDelete(DeleteBehavior.Restrict);  
 
-        // Task -> Creator relationship: Prevent cascade delete
+        // Task -> Creator relationship
         modelBuilder.Entity<Task>()
             .HasOne(t => t.Creator)
             .WithMany(u => u.CreatedTasks)
             .HasForeignKey(t => t.CreatorId)
-            .OnDelete(DeleteBehavior.Restrict);  // Prevent cascading delete
+            .OnDelete(DeleteBehavior.Restrict);
 
-        // Task -> Workflow relationship: Prevent cascade delete
+        // Task -> CurrentState relationship
         modelBuilder.Entity<Task>()
-            .HasOne(t => t.Workflow)
-            .WithMany()
-            .HasForeignKey(t => t.WorkflowId)
-            .OnDelete(DeleteBehavior.Restrict);  // Prevent cascading delete
+            .HasOne(t => t.CurrentState)
+            .WithMany(ts => ts.CurrentStateTasks)
+            .HasForeignKey(t => t.CurrentStateId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Workflow -> CurrentState relationship
-        modelBuilder.Entity<Workflow>()
+        modelBuilder.Entity<Taskflow>()
             .HasOne(w => w.CurrentState)
-            .WithMany(ts => ts.CurrentStateWorkflows)
+            .WithMany(ts => ts.CurrentStateTaskflows)
             .HasForeignKey(w => w.CurrentStateId)
-            .OnDelete(DeleteBehavior.Restrict);  // Prevent cascading delete
+            .OnDelete(DeleteBehavior.Restrict);
 
-        // Workflow -> NextState relationship
-        modelBuilder.Entity<Workflow>()
-            .HasOne(w => w.NextState)
-            .WithMany(ts => ts.NextStateWorkflows)
-            .HasForeignKey(w => w.NextStateId)
-            .OnDelete(DeleteBehavior.Restrict);  // Prevent cascading delete
+        // Store NextStateJson as nvarchar(max)
+        modelBuilder.Entity<Taskflow>()
+           .Property(w => w.NextStateJson)
+           .HasColumnType("nvarchar(max)");
 
 
         modelBuilder.ApplyConfiguration(new TaskStatusSeedConfig());

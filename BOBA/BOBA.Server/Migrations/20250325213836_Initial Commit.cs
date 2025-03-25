@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BOBA.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCommit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,7 +56,34 @@ namespace BOBA.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TaskStatuses",
+                name: "Choices",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Choices", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TaskFields",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Validation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaskFields", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TaskStates",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -66,7 +93,7 @@ namespace BOBA.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TaskStatuses", x => x.Id);
+                    table.PrimaryKey("PK_TaskStates", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -201,6 +228,79 @@ namespace BOBA.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tasks",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TaskTypeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CurrentStateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AssigneeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tasks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tasks_AspNetUsers_AssigneeId",
+                        column: x => x.AssigneeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tasks_AspNetUsers_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tasks_TaskStates_CurrentStateId",
+                        column: x => x.CurrentStateId,
+                        principalTable: "TaskStates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tasks_TaskTypes_TaskTypeId",
+                        column: x => x.TaskTypeId,
+                        principalTable: "TaskTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TaskFlows",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TaskTypeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CurrentStateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NextStateJson = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EditRoleId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaskFlows", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TaskFlows_TaskStates_CurrentStateId",
+                        column: x => x.CurrentStateId,
+                        principalTable: "TaskStates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TaskFlows_TaskTypes_TaskTypeId",
+                        column: x => x.TaskTypeId,
+                        principalTable: "TaskTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TaskFlows_Teams_EditRoleId",
+                        column: x => x.EditRoleId,
+                        principalTable: "Teams",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TeamUser",
                 columns: table => new
                 {
@@ -225,87 +325,7 @@ namespace BOBA.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Workflows",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TaskTypeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CurrentStateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    NextStateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EditRoleId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Approved = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Workflows", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Workflows_TaskStatuses_CurrentStateId",
-                        column: x => x.CurrentStateId,
-                        principalTable: "TaskStatuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Workflows_TaskStatuses_NextStateId",
-                        column: x => x.NextStateId,
-                        principalTable: "TaskStatuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Workflows_TaskTypes_TaskTypeId",
-                        column: x => x.TaskTypeId,
-                        principalTable: "TaskTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Workflows_Teams_EditRoleId",
-                        column: x => x.EditRoleId,
-                        principalTable: "Teams",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tasks",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TaskTypeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    WorkflowId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AssigneeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tasks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tasks_AspNetUsers_AssigneeId",
-                        column: x => x.AssigneeId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Tasks_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Tasks_TaskTypes_TaskTypeId",
-                        column: x => x.TaskTypeId,
-                        principalTable: "TaskTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Tasks_Workflows_WorkflowId",
-                        column: x => x.WorkflowId,
-                        principalTable: "Workflows",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TeamWorkflow",
+                name: "TaskflowTeam",
                 columns: table => new
                 {
                     ReadOnlyRoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -313,23 +333,23 @@ namespace BOBA.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TeamWorkflow", x => new { x.ReadOnlyRoleId, x.ReadOnlyRoleWorkflowsId });
+                    table.PrimaryKey("PK_TaskflowTeam", x => new { x.ReadOnlyRoleId, x.ReadOnlyRoleWorkflowsId });
                     table.ForeignKey(
-                        name: "FK_TeamWorkflow_Teams_ReadOnlyRoleId",
-                        column: x => x.ReadOnlyRoleId,
-                        principalTable: "Teams",
+                        name: "FK_TaskflowTeam_TaskFlows_ReadOnlyRoleWorkflowsId",
+                        column: x => x.ReadOnlyRoleWorkflowsId,
+                        principalTable: "TaskFlows",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TeamWorkflow_Workflows_ReadOnlyRoleWorkflowsId",
-                        column: x => x.ReadOnlyRoleWorkflowsId,
-                        principalTable: "Workflows",
+                        name: "FK_TaskflowTeam_Teams_ReadOnlyRoleId",
+                        column: x => x.ReadOnlyRoleId,
+                        principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
-                table: "TaskStatuses",
+                table: "TaskStates",
                 columns: new[] { "Id", "Description", "IsFinal", "Name" },
                 values: new object[,]
                 {
@@ -369,24 +389,16 @@ namespace BOBA.Server.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Workflows",
-                columns: new[] { "Id", "Approved", "CurrentStateId", "EditRoleId", "NextStateId", "TaskTypeId" },
+                table: "TaskFlows",
+                columns: new[] { "Id", "CurrentStateId", "EditRoleId", "NextStateJson", "TaskTypeId" },
                 values: new object[,]
                 {
-                    { "1", true, "1", null, "2", "2" },
-                    { "10", true, "1", null, "9", "2" },
-                    { "11", true, "2", null, "9", "2" },
-                    { "12", true, "3", null, "9", "2" },
-                    { "13", true, "4", null, "9", "2" },
-                    { "14", true, "6", null, "9", "2" },
-                    { "2", false, "2", null, "1", "2" },
-                    { "3", true, "2", null, "3", "2" },
-                    { "4", false, "3", null, "2", "2" },
-                    { "5", true, "3", null, "4", "2" },
-                    { "6", false, "4", null, "3", "2" },
-                    { "7", true, "4", null, "6", "2" },
-                    { "8", false, "6", null, "4", "2" },
-                    { "9", true, "6", null, "8", "2" }
+                    { "1", "1", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"2\"}, {\"choiceId\": \"2\", \"nextStateId\": \"3\"}, {\"choiceId\": \"3\", \"nextStateId\": \"4\"}]", "2" },
+                    { "2", "2", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"3\"}, {\"choiceId\": \"2\", \"nextStateId\": \"4\"}, {\"choiceId\": \"3\", \"nextStateId\": \"5\"}]", "2" },
+                    { "3", "3", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"5\"}, {\"choiceId\": \"2\", \"nextStateId\": \"6\"}]", "2" },
+                    { "4", "4", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"6\"}, {\"choiceId\": \"2\", \"nextStateId\": \"7\"}]", "2" },
+                    { "5", "5", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"7\"}, {\"choiceId\": \"2\", \"nextStateId\": \"8\"}]", "2" },
+                    { "6", "6", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"8\"}, {\"choiceId\": \"2\", \"nextStateId\": \"9\"}]", "2" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -429,6 +441,26 @@ namespace BOBA.Server.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TaskFlows_CurrentStateId",
+                table: "TaskFlows",
+                column: "CurrentStateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskFlows_EditRoleId",
+                table: "TaskFlows",
+                column: "EditRoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskFlows_TaskTypeId",
+                table: "TaskFlows",
+                column: "TaskTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskflowTeam_ReadOnlyRoleWorkflowsId",
+                table: "TaskflowTeam",
+                column: "ReadOnlyRoleWorkflowsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tasks_AssigneeId",
                 table: "Tasks",
                 column: "AssigneeId");
@@ -439,44 +471,19 @@ namespace BOBA.Server.Migrations
                 column: "CreatorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tasks_CurrentStateId",
+                table: "Tasks",
+                column: "CurrentStateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tasks_TaskTypeId",
                 table: "Tasks",
                 column: "TaskTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_WorkflowId",
-                table: "Tasks",
-                column: "WorkflowId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TeamUser_UsersId",
                 table: "TeamUser",
                 column: "UsersId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TeamWorkflow_ReadOnlyRoleWorkflowsId",
-                table: "TeamWorkflow",
-                column: "ReadOnlyRoleWorkflowsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Workflows_CurrentStateId",
-                table: "Workflows",
-                column: "CurrentStateId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Workflows_EditRoleId",
-                table: "Workflows",
-                column: "EditRoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Workflows_NextStateId",
-                table: "Workflows",
-                column: "NextStateId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Workflows_TaskTypeId",
-                table: "Workflows",
-                column: "TaskTypeId");
         }
 
         /// <inheritdoc />
@@ -498,25 +505,31 @@ namespace BOBA.Server.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Choices");
+
+            migrationBuilder.DropTable(
+                name: "TaskFields");
+
+            migrationBuilder.DropTable(
+                name: "TaskflowTeam");
+
+            migrationBuilder.DropTable(
                 name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "TeamUser");
 
             migrationBuilder.DropTable(
-                name: "TeamWorkflow");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "TaskFlows");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Workflows");
-
-            migrationBuilder.DropTable(
-                name: "TaskStatuses");
+                name: "TaskStates");
 
             migrationBuilder.DropTable(
                 name: "TaskTypes");

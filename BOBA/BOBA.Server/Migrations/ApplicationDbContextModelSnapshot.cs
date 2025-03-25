@@ -22,6 +22,26 @@ namespace BOBA.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("BOBA.Server.Data.Choice", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Choices");
+                });
+
             modelBuilder.Entity("BOBA.Server.Data.Task", b =>
                 {
                     b.Property<string>("Id")
@@ -38,6 +58,10 @@ namespace BOBA.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CurrentStateId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("TaskTypeId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -45,24 +69,45 @@ namespace BOBA.Server.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("WorkflowId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AssigneeId");
 
                     b.HasIndex("CreatorId");
 
-                    b.HasIndex("TaskTypeId");
+                    b.HasIndex("CurrentStateId");
 
-                    b.HasIndex("WorkflowId");
+                    b.HasIndex("TaskTypeId");
 
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.TaskStatus", b =>
+            modelBuilder.Entity("BOBA.Server.Data.TaskField", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Validation")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TaskFields");
+                });
+
+            modelBuilder.Entity("BOBA.Server.Data.TaskState", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -81,7 +126,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TaskStatuses");
+                    b.ToTable("TaskStates");
 
                     b.HasData(
                         new
@@ -201,6 +246,81 @@ namespace BOBA.Server.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BOBA.Server.Data.Taskflow", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CurrentStateId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EditRoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("NextStateJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TaskTypeId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrentStateId");
+
+                    b.HasIndex("EditRoleId");
+
+                    b.HasIndex("TaskTypeId");
+
+                    b.ToTable("TaskFlows");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            CurrentStateId = "1",
+                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"2\"}, {\"choiceId\": \"2\", \"nextStateId\": \"3\"}, {\"choiceId\": \"3\", \"nextStateId\": \"4\"}]",
+                            TaskTypeId = "2"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            CurrentStateId = "2",
+                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"3\"}, {\"choiceId\": \"2\", \"nextStateId\": \"4\"}, {\"choiceId\": \"3\", \"nextStateId\": \"5\"}]",
+                            TaskTypeId = "2"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            CurrentStateId = "3",
+                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"5\"}, {\"choiceId\": \"2\", \"nextStateId\": \"6\"}]",
+                            TaskTypeId = "2"
+                        },
+                        new
+                        {
+                            Id = "4",
+                            CurrentStateId = "4",
+                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"6\"}, {\"choiceId\": \"2\", \"nextStateId\": \"7\"}]",
+                            TaskTypeId = "2"
+                        },
+                        new
+                        {
+                            Id = "5",
+                            CurrentStateId = "5",
+                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"7\"}, {\"choiceId\": \"2\", \"nextStateId\": \"8\"}]",
+                            TaskTypeId = "2"
+                        },
+                        new
+                        {
+                            Id = "6",
+                            CurrentStateId = "6",
+                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"8\"}, {\"choiceId\": \"2\", \"nextStateId\": \"9\"}]",
+                            TaskTypeId = "2"
+                        });
+                });
+
             modelBuilder.Entity("BOBA.Server.Data.Team", b =>
                 {
                     b.Property<string>("Id")
@@ -317,156 +437,6 @@ namespace BOBA.Server.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("BOBA.Server.Data.Workflow", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("Approved")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("CurrentStateId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EditRoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("NextStateId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TaskTypeId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurrentStateId");
-
-                    b.HasIndex("EditRoleId");
-
-                    b.HasIndex("NextStateId");
-
-                    b.HasIndex("TaskTypeId");
-
-                    b.ToTable("Workflows");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            Approved = true,
-                            CurrentStateId = "1",
-                            NextStateId = "2",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            Approved = false,
-                            CurrentStateId = "2",
-                            NextStateId = "1",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "3",
-                            Approved = true,
-                            CurrentStateId = "2",
-                            NextStateId = "3",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "4",
-                            Approved = false,
-                            CurrentStateId = "3",
-                            NextStateId = "2",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "5",
-                            Approved = true,
-                            CurrentStateId = "3",
-                            NextStateId = "4",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "6",
-                            Approved = false,
-                            CurrentStateId = "4",
-                            NextStateId = "3",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "7",
-                            Approved = true,
-                            CurrentStateId = "4",
-                            NextStateId = "6",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "8",
-                            Approved = false,
-                            CurrentStateId = "6",
-                            NextStateId = "4",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "9",
-                            Approved = true,
-                            CurrentStateId = "6",
-                            NextStateId = "8",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "10",
-                            Approved = true,
-                            CurrentStateId = "1",
-                            NextStateId = "9",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "11",
-                            Approved = true,
-                            CurrentStateId = "2",
-                            NextStateId = "9",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "12",
-                            Approved = true,
-                            CurrentStateId = "3",
-                            NextStateId = "9",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "13",
-                            Approved = true,
-                            CurrentStateId = "4",
-                            NextStateId = "9",
-                            TaskTypeId = "2"
-                        },
-                        new
-                        {
-                            Id = "14",
-                            Approved = true,
-                            CurrentStateId = "6",
-                            NextStateId = "9",
-                            TaskTypeId = "2"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -602,6 +572,21 @@ namespace BOBA.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TaskflowTeam", b =>
+                {
+                    b.Property<string>("ReadOnlyRoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ReadOnlyRoleWorkflowsId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ReadOnlyRoleId", "ReadOnlyRoleWorkflowsId");
+
+                    b.HasIndex("ReadOnlyRoleWorkflowsId");
+
+                    b.ToTable("TaskflowTeam");
+                });
+
             modelBuilder.Entity("TeamUser", b =>
                 {
                     b.Property<string>("TeamsId")
@@ -615,21 +600,6 @@ namespace BOBA.Server.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("TeamUser");
-                });
-
-            modelBuilder.Entity("TeamWorkflow", b =>
-                {
-                    b.Property<string>("ReadOnlyRoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ReadOnlyRoleWorkflowsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ReadOnlyRoleId", "ReadOnlyRoleWorkflowsId");
-
-                    b.HasIndex("ReadOnlyRoleWorkflowsId");
-
-                    b.ToTable("TeamWorkflow");
                 });
 
             modelBuilder.Entity("BOBA.Server.Data.Task", b =>
@@ -646,31 +616,31 @@ namespace BOBA.Server.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("BOBA.Server.Data.TaskState", "CurrentState")
+                        .WithMany("CurrentStateTasks")
+                        .HasForeignKey("CurrentStateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("BOBA.Server.Data.TaskType", "TaskType")
                         .WithMany()
                         .HasForeignKey("TaskTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BOBA.Server.Data.Workflow", "Workflow")
-                        .WithMany()
-                        .HasForeignKey("WorkflowId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Assignee");
 
                     b.Navigation("Creator");
 
-                    b.Navigation("TaskType");
+                    b.Navigation("CurrentState");
 
-                    b.Navigation("Workflow");
+                    b.Navigation("TaskType");
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.Workflow", b =>
+            modelBuilder.Entity("BOBA.Server.Data.Taskflow", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.TaskStatus", "CurrentState")
-                        .WithMany("CurrentStateWorkflows")
+                    b.HasOne("BOBA.Server.Data.TaskState", "CurrentState")
+                        .WithMany("CurrentStateTaskflows")
                         .HasForeignKey("CurrentStateId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -678,12 +648,6 @@ namespace BOBA.Server.Migrations
                     b.HasOne("BOBA.Server.Data.Team", "EditRole")
                         .WithMany("EditRoleWorkflows")
                         .HasForeignKey("EditRoleId");
-
-                    b.HasOne("BOBA.Server.Data.TaskStatus", "NextState")
-                        .WithMany("NextStateWorkflows")
-                        .HasForeignKey("NextStateId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
 
                     b.HasOne("BOBA.Server.Data.TaskType", "TaskType")
                         .WithMany()
@@ -694,8 +658,6 @@ namespace BOBA.Server.Migrations
                     b.Navigation("CurrentState");
 
                     b.Navigation("EditRole");
-
-                    b.Navigation("NextState");
 
                     b.Navigation("TaskType");
                 });
@@ -751,6 +713,21 @@ namespace BOBA.Server.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TaskflowTeam", b =>
+                {
+                    b.HasOne("BOBA.Server.Data.Team", null)
+                        .WithMany()
+                        .HasForeignKey("ReadOnlyRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BOBA.Server.Data.Taskflow", null)
+                        .WithMany()
+                        .HasForeignKey("ReadOnlyRoleWorkflowsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TeamUser", b =>
                 {
                     b.HasOne("BOBA.Server.Data.Team", null)
@@ -766,26 +743,11 @@ namespace BOBA.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TeamWorkflow", b =>
+            modelBuilder.Entity("BOBA.Server.Data.TaskState", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.Team", null)
-                        .WithMany()
-                        .HasForeignKey("ReadOnlyRoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("CurrentStateTaskflows");
 
-                    b.HasOne("BOBA.Server.Data.Workflow", null)
-                        .WithMany()
-                        .HasForeignKey("ReadOnlyRoleWorkflowsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BOBA.Server.Data.TaskStatus", b =>
-                {
-                    b.Navigation("CurrentStateWorkflows");
-
-                    b.Navigation("NextStateWorkflows");
+                    b.Navigation("CurrentStateTasks");
                 });
 
             modelBuilder.Entity("BOBA.Server.Data.Team", b =>

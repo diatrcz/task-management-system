@@ -3,146 +3,52 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BOBA.Server.Data.EntityTypeConfigurations;
 
-public class WorkflowSeedConfig : IEntityTypeConfiguration<Workflow>
+public class WorkflowSeedConfig : IEntityTypeConfiguration<Taskflow>
 {
-    public void Configure(EntityTypeBuilder<Workflow> builder)
+    public void Configure(EntityTypeBuilder<Taskflow> builder)
     {
         builder.HasData(
-            // Planning → Content Creation (Approved)
-            new Workflow
+            new Taskflow
             {
                 Id = "1",
-                TaskTypeId = "2",
-                CurrentStateId = "1", 
-                NextStateId = "2", 
-                Approved = true
+                TaskTypeId = "2", 
+                CurrentStateId = "1",  // Initial State
+                NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"2\"}, {\"choiceId\": \"2\", \"nextStateId\": \"3\"}, {\"choiceId\": \"3\", \"nextStateId\": \"4\"}]"
             },
-
-            // Content Creation → Planning (Declined)
-            new Workflow
+            new Taskflow
             {
                 Id = "2",
-                TaskTypeId = "2",
-                CurrentStateId = "2",
-                NextStateId = "1",
-                Approved = false
+                TaskTypeId = "2",  
+                CurrentStateId = "2",  // Content Creation
+                NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"3\"}, {\"choiceId\": \"2\", \"nextStateId\": \"4\"}, {\"choiceId\": \"3\", \"nextStateId\": \"5\"}]"
             },
-
-            // Content Creation → Internal Review (Approved)
-            new Workflow
+            new Taskflow
             {
                 Id = "3",
-                TaskTypeId = "2",
-                CurrentStateId = "2", 
-                NextStateId = "3", 
-                Approved = true
+                TaskTypeId = "2",  
+                CurrentStateId = "3",  // Internal Review
+                NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"5\"}, {\"choiceId\": \"2\", \"nextStateId\": \"6\"}]"
             },
-
-            // Internal Review → Content Creation (Declined)
-            new Workflow
+            new Taskflow
             {
                 Id = "4",
-                TaskTypeId = "2",
-                CurrentStateId = "3",
-                NextStateId = "2",
-                Approved = false
+                TaskTypeId = "2",  
+                CurrentStateId = "4",  // Client Review
+                NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"6\"}, {\"choiceId\": \"2\", \"nextStateId\": \"7\"}]"
             },
-
-            // Internal Review → Client Review (Approved)
-            new Workflow
+            new Taskflow
             {
                 Id = "5",
-                TaskTypeId = "2",
-                CurrentStateId = "3", 
-                NextStateId = "4", 
-                Approved = true
+                TaskTypeId = "2",  
+                CurrentStateId = "5",  // Revisions
+                NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"7\"}, {\"choiceId\": \"2\", \"nextStateId\": \"8\"}]"
             },
-
-            // Client Review → Internal Review (Declined)
-            new Workflow
+            new Taskflow
             {
                 Id = "6",
-                TaskTypeId = "2",
-                CurrentStateId = "4",
-                NextStateId = "3",
-                Approved = false
-            },
-
-
-            // Client Review → Approved (Approved)
-            new Workflow
-            {
-                Id = "7",
-                TaskTypeId = "2",
-                CurrentStateId = "4", 
-                NextStateId = "6", 
-                Approved = true
-            },
-
-            // Approved → Client Review (Declined)
-            new Workflow
-            {
-                Id = "8",
-                TaskTypeId = "2",
-                CurrentStateId = "6",
-                NextStateId = "4",
-                Approved = false
-            },
-
-            // Approved → Published (Approved)
-            new Workflow
-            {
-                Id = "9",
-                TaskTypeId = "2",
-                CurrentStateId = "6", 
-                NextStateId = "8", 
-                Approved = true
-            },
-
-            // Cancellation path: Any active state → Cancelled
-            new Workflow
-            {
-                Id = "10",
-                TaskTypeId = "2",
-                CurrentStateId = "1", //Planning
-                NextStateId = "9", 
-                Approved = true
-            },
-
-            new Workflow
-            {
-                Id = "11",
-                TaskTypeId = "2",
-                CurrentStateId = "2", //Content Creation
-                NextStateId = "9",
-                Approved = true
-            },
-
-            new Workflow
-            {
-                Id = "12",
-                TaskTypeId = "2",
-                CurrentStateId = "3", //Internal review
-                NextStateId = "9",
-                Approved = true
-            },
-
-            new Workflow
-            {
-                Id = "13",
-                TaskTypeId = "2",
-                CurrentStateId = "4", //Client review
-                NextStateId = "9",
-                Approved = true
-            },
-
-            new Workflow
-            {
-                Id = "14",
-                TaskTypeId = "2",
-                CurrentStateId = "6", //Approved
-                NextStateId = "9",
-                Approved = true
+                TaskTypeId = "2",  
+                CurrentStateId = "6",  // Approved
+                NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"8\"}, {\"choiceId\": \"2\", \"nextStateId\": \"9\"}]"
             }
         );
     }

@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Policy;
+using System.Text.Json;
 
 namespace BOBA.Server.Data
 {
-    public class Workflow
+    public class Taskflow
     {
         [Key]
         public string Id { get; set; }
@@ -17,18 +18,22 @@ namespace BOBA.Server.Data
         [Required]
         [ForeignKey("CurrentState")]
         public string CurrentStateId { get; set; }
-        public TaskStatus CurrentState { get; set; }
+        public TaskState CurrentState { get; set; }
 
-        [Required]
-        [ForeignKey("NextState")]
-        public string NextStateId { get; set; }
-        public TaskStatus NextState { get; set; }
+        
+        public string NextStateJson { get; set; } = "[]";
+
+        [NotMapped] 
+        public List<string> NextState
+        {
+            get => JsonSerializer.Deserialize<List<string>>(NextStateJson) ?? new();
+            set => NextStateJson = JsonSerializer.Serialize(value);
+        }
 
         [ForeignKey("EditRole")]
         public string? EditRoleId { get; set; }
         public virtual Team? EditRole { get; set; }
 
         public ICollection<Team> ReadOnlyRole { get; set; } = new List<Team>();
-        public bool Approved { get; set; }
     }
 }

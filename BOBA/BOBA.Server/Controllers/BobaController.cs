@@ -40,7 +40,7 @@ namespace BOBA.Server.Controllers
                 return BadRequest("TaskType not found.");
             }
 
-            var workflow = await _context.Workflows
+            var workflow = await _context.TaskFlows
                                         .Include(w => w.CurrentState)
                                         .FirstOrDefaultAsync(w => w.TaskTypeId == taskTypeId && w.CurrentState.Name == "Planning");
 
@@ -60,8 +60,6 @@ namespace BOBA.Server.Controllers
                 TaskType = taskType,
                 CreatorId = creatorId,
                 Creator = creator,
-                WorkflowId = workflow.Id,
-                Workflow = workflow,
                 AssigneeId = creatorId,
                 Assignee = creator,
                 CreatedAt = DateTime.UtcNow,
