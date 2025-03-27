@@ -1,0 +1,12 @@
+<div class="task-types-list">
+    <h2>Available Task Types</h2>
+    <ul>
+      <li *ngFor="let taskType of taskTypes">
+        <span>{{ taskType.name }}</span>
+        <button (click)="startTask(taskType.id)" class="start-btn">
+          <i class="fa fa-play"></i> Start
+        </button>
+      </li>
+    </ul>
+  </div>
+  

@@ -23,10 +23,10 @@ namespace BOBA.Server.Data
         
         public string NextStateJson { get; set; } = "[]";
 
-        [NotMapped] 
-        public List<string> NextState
+        [NotMapped]
+        public List<NextStateItem> NextState
         {
-            get => JsonSerializer.Deserialize<List<string>>(NextStateJson) ?? new();
+            get => JsonSerializer.Deserialize<List<NextStateItem>>(NextStateJson) ?? new List<NextStateItem>();
             set => NextStateJson = JsonSerializer.Serialize(value);
         }
 
@@ -35,5 +35,11 @@ namespace BOBA.Server.Data
         public virtual Team? EditRole { get; set; }
 
         public ICollection<Team> ReadOnlyRole { get; set; } = new List<Team>();
+    }
+
+    public class NextStateItem
+    {
+        public string ChoiceId { get; set; }
+        public string NextStateId { get; set; }
     }
 }

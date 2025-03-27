@@ -21,11 +21,14 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.14.3",
+    "@tailwindcss/postcss": "^4.0.17",
     "jest-editor-support": "*",
-    "run-script-os": "*"
+    "postcss": "^8.5.3",
+    "run-script-os": "*",
+    "rxjs": "~7.8.0",
+    "tailwindcss": "^4.0.17",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.0",
