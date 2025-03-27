@@ -62,5 +62,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
         modelBuilder.ApplyConfiguration(new TaskTypeSeedConfig());
         modelBuilder.ApplyConfiguration(new TeamSeedConfig());
         modelBuilder.ApplyConfiguration(new WorkflowSeedConfig());
+        modelBuilder.ApplyConfiguration(new ChoiceSeedConfig());
     }
 }

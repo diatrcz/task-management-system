@@ -18,4 +18,10 @@ export class TaskService {
     const body = { taskTypeId: taskTypeId };  // Ensure this matches your backend's expected format
   return this.http.post<any>('/api/create-task', body);
   }
+
+  getChoicesByIds(choiceIds: string[]): Observable<any[]> {
+    const params = choiceIds.map(id => `ids=${encodeURIComponent(id)}`).join('&');
+    return this.http.get<any[]>(`/api/choices?${params}`);
+  }
+  
 }

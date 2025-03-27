@@ -47,6 +47,34 @@ namespace BOBA.Server.Controllers
             return Ok(taskflow);
         }
 
+        [HttpGet("choices")]
+        public async Task<IActionResult> GetChoices([FromQuery] List<string> ids)
+        {
+            if (ids == null || !ids.Any())
+            {
+                return BadRequest("At least one ID must be provided.");
+            }
+
+            List<Choice> choices = new List<Choice>();
+
+            foreach (var id in ids)
+            {
+                var choice = await _context.Choices.FindAsync(id);
+                if (choice != null)
+                {
+                    choices.Add(choice);
+                }
+            }
+
+            if (choices.Count == 0)
+            {
+                return NotFound("No choices found for the provided IDs.");
+            }
+
+            return Ok(choices);
+        }
+
+
 
         [HttpPost("create-task")]
         public async Task<IActionResult> CreateTask([FromBody] CreateTaskRequest request)

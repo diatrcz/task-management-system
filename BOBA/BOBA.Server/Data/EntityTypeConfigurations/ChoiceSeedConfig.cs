@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BOBA.Server.Data.EntityTypeConfigurations;
 
-public class ChoiceSeedConfig
+public class ChoiceSeedConfig : IEntityTypeConfiguration<Choice>
 {
     public void Configure(EntityTypeBuilder<Choice> builder)
     {
