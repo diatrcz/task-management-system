@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BOBA.Server.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Policy;
 using System.Text.Json;
@@ -12,8 +13,8 @@ namespace BOBA.Server.Data
 
         [Required]
         [ForeignKey("TaskType")]
-        public string TaskTypeId { get; set; }
-        public TaskType TaskType { get; set; }
+        public string? TaskTypeId { get; set; }
+        public TaskType? TaskType { get; set; }
 
         [Required]
         [ForeignKey("CurrentState")]
@@ -21,14 +22,19 @@ namespace BOBA.Server.Data
         public TaskState CurrentState { get; set; }
 
         
-        public string NextStateJson { get; set; } = "[]";
+        public string NextStateJson
+        {
+            get { return JsonSerializer.Serialize(NextState); }
+            set {
+                if (string.IsNullOrEmpty(value))
+                    NextState = new List<NextStateItem>();
+                else
+                    NextState = JsonSerializer.Deserialize<List<NextStateItem>>(value); 
+            }
+        }
 
         [NotMapped]
-        public List<NextStateItem> NextState
-        {
-            get => JsonSerializer.Deserialize<List<NextStateItem>>(NextStateJson) ?? new List<NextStateItem>();
-            set => NextStateJson = JsonSerializer.Serialize(value);
-        }
+        public List<NextStateItem> NextState { get; set; }
 
         [ForeignKey("EditRole")]
         public string? EditRoleId { get; set; }
@@ -37,9 +43,5 @@ namespace BOBA.Server.Data
         public ICollection<Team> ReadOnlyRole { get; set; } = new List<Team>();
     }
 
-    public class NextStateItem
-    {
-        public string ChoiceId { get; set; }
-        public string NextStateId { get; set; }
-    }
+    
 }

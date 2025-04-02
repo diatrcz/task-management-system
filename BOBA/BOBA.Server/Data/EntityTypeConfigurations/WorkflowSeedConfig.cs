@@ -13,7 +13,8 @@ public class WorkflowSeedConfig : IEntityTypeConfiguration<Taskflow>
                 Id = "1",
                 TaskTypeId = "2", 
                 CurrentStateId = "1",  // Initial State
-                NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"2\"}, {\"choiceId\": \"2\", \"nextStateId\": \"3\"}, {\"choiceId\": \"3\", \"nextStateId\": \"4\"}]"
+                NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"2\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"3\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"4\"}]",
+                //NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"2\"}, {\"choiceId\": \"2\", \"nextStateId\": \"3\"}, {\"choiceId\": \"3\", \"nextStateId\": \"4\"}]"
             },
             new Taskflow
             {

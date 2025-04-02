@@ -131,36 +131,23 @@ namespace BOBA.Server.Controllers
         {
             var task = await _context.Tasks
                                      .Include(t => t.CurrentState)
-                                     .FirstOrDefaultAsync(t => t.Id == request.TaskId);
-
-            if (task == null)
-            {
-                return NotFound("Task not found.");
-            }
+                                     .SingleAsync(t => t.Id == request.TaskId);
 
             var taskflow = await _context.TaskFlows
-                                 .FirstOrDefaultAsync(tf => tf.CurrentStateId == task.CurrentStateId &&
+                                 .SingleAsync(tf => tf.CurrentStateId == task.CurrentStateId &&
                                                             tf.TaskTypeId == task.TaskTypeId);
 
-            var nextStateChoices = JsonSerializer.Deserialize<List<NextStateItem>>(taskflow.NextStateJson) ?? new List<NextStateItem>();
+            //var nextStateChoices = JsonSerializer.Deserialize<List<NextStateItem>>(taskflow.NextStateJson) ?? new List<NextStateItem>();
+            
 
-            var nextStateItem = nextStateChoices?.FirstOrDefault(ns => ns.ChoiceId == request.ChoiceId);
+            var nextStateItem = taskflow.NextState.Single(ns => ns.ChoiceId == request.ChoiceId);
 
-            if (nextStateItem == null)
-            {
-                return BadRequest("Invalid choice ID.");
-            }
 
-            var nextState = await _context.TaskStates
-                                          .FirstOrDefaultAsync(ts => ts.Id == nextStateItem.NextStateId);
+            //var nextState = await _context.TaskStates
+            //                              .SingleAsync(ts => ts.Id == nextStateItem.NextStateId);
 
-            if (nextState == null)
-            {
-                return BadRequest("Next state not found.");
-            }
-
-            task.CurrentStateId = nextState.Id;
-            task.CurrentState = nextState;
+            task.CurrentStateId = nextStateItem.NextStateId;
+            //task.CurrentState = nextState;
 
             _context.Tasks.Update(task);
             await _context.SaveChangesAsync();

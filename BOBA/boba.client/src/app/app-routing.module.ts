@@ -8,8 +8,8 @@ import { TaskDetailsComponent } from './components/page/task-details/task-detail
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'userlogin', component: LoginComponent },
+  { path: 'userregister', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'task-details/:id', component: TaskDetailsComponent, canActivate: [AuthGuard] }
 ];
