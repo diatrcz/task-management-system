@@ -110,11 +110,8 @@ namespace BOBA.Server.Controllers
                 TaskTypeId = request.TaskTypeId,
                 TaskType = taskType,
                 CreatorId = creatorId,
-                Creator = creator,
                 CurrentStateId = starterId,
-                CurrentState = starterState,
                 AssigneeId = creatorId,
-                Assignee = creator,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -147,6 +144,8 @@ namespace BOBA.Server.Controllers
             //                              .SingleAsync(ts => ts.Id == nextStateItem.NextStateId);
 
             task.CurrentStateId = nextStateItem.NextStateId;
+            task.UpdatedAt = DateTime.UtcNow;
+            task.AssigneeId = null;
             //task.CurrentState = nextState;
 
             _context.Tasks.Update(task);
@@ -155,8 +154,8 @@ namespace BOBA.Server.Controllers
             return Ok(task);
         }
 
-        [HttpPost("move-task-fr")]
-        public async Task<IActionResult> MoveTaskFr([FromBody] MoveTaskRequest2 request) {
+        /*[HttpPost("move-task-fr")]
+        public async Task<IActionResult> MoveTaskFr([FromBody] MoveTaskRequest request) {
             var task = await _context.Tasks
                                      .Include(t => t.CurrentState)
                                      .FirstOrDefaultAsync(t => t.Id == request.TaskId);
@@ -181,19 +180,12 @@ namespace BOBA.Server.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(task);
-        }
+        }*/
 
         public class MoveTaskRequest
         {
             public string ChoiceId { get; set; }
             public string TaskId { get; set; }
-        }
-
-        public class MoveTaskRequest2
-        {
-            public string ChoiceId { get; set; }
-            public string TaskId { get; set; }
-            public string NextStateId { get; set; }
         }
 
 

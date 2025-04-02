@@ -26,7 +26,7 @@ namespace BOBA.Server.Data
         public TaskState CurrentState { get; set; }
 
         [ForeignKey("Assignee")]
-        public string AssigneeId { get; set; }
+        public string? AssigneeId { get; set; }
         public User Assignee { get; set; }
 
         [Required]

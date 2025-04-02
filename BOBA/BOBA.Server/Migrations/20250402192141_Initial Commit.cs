@@ -349,6 +349,17 @@ namespace BOBA.Server.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Choices",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { "1", "Approve the task and move it forward to the next phase of the workflow.", "Approve, Proceed to Next Phase" },
+                    { "2", "The task requires additional review before proceeding further.", "Needs Further Review" },
+                    { "3", "The task does not meet the requirements and needs to be completely reworked.", "Reject, Task Requires Redoing" },
+                    { "4", "Approve the task but with some minor revisions or improvements.", "Approve with Minor Adjustments" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "TaskStates",
                 columns: new[] { "Id", "Description", "IsFinal", "Name" },
                 values: new object[,]
@@ -393,12 +404,12 @@ namespace BOBA.Server.Migrations
                 columns: new[] { "Id", "CurrentStateId", "EditRoleId", "NextStateJson", "TaskTypeId" },
                 values: new object[,]
                 {
-                    { "1", "1", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"2\"}, {\"choiceId\": \"2\", \"nextStateId\": \"3\"}, {\"choiceId\": \"3\", \"nextStateId\": \"4\"}]", "2" },
-                    { "2", "2", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"3\"}, {\"choiceId\": \"2\", \"nextStateId\": \"4\"}, {\"choiceId\": \"3\", \"nextStateId\": \"5\"}]", "2" },
-                    { "3", "3", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"5\"}, {\"choiceId\": \"2\", \"nextStateId\": \"6\"}]", "2" },
-                    { "4", "4", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"6\"}, {\"choiceId\": \"2\", \"nextStateId\": \"7\"}]", "2" },
-                    { "5", "5", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"7\"}, {\"choiceId\": \"2\", \"nextStateId\": \"8\"}]", "2" },
-                    { "6", "6", null, "[{\"choiceId\": \"1\", \"nextStateId\": \"8\"}, {\"choiceId\": \"2\", \"nextStateId\": \"9\"}]", "2" }
+                    { "1", "1", null, "[{\"ChoiceId\":\"1\",\"NextStateId\":\"2\"}]", "2" },
+                    { "2", "2", null, "[{\"ChoiceId\":\"1\",\"NextStateId\":\"3\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"1\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"9\"}]", "2" },
+                    { "3", "3", null, "[{\"ChoiceId\":\"1\",\"NextStateId\":\"4\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"2\"}]", "2" },
+                    { "4", "4", null, "[{\"ChoiceId\":\"1\",\"NextStateId\":\"5\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"3\"}]", "2" },
+                    { "5", "5", null, "[{\"ChoiceId\":\"1\",\"NextStateId\":\"6\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"4\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"9\"}]", "2" },
+                    { "6", "6", null, "[{\"ChoiceId\":\"1\",\"NextStateId\":\"8\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"5\"}]", "2" }
                 });
 
             migrationBuilder.CreateIndex(

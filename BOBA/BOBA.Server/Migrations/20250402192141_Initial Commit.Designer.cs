@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BOBA.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250325213836_Initial Commit")]
+    [Migration("20250402192141_Initial Commit")]
     partial class InitialCommit
     {
         /// <inheritdoc />
@@ -43,6 +43,32 @@ namespace BOBA.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Choices");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Description = "Approve the task and move it forward to the next phase of the workflow.",
+                            Name = "Approve, Proceed to Next Phase"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Description = "The task requires additional review before proceeding further.",
+                            Name = "Needs Further Review"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            Description = "The task does not meet the requirements and needs to be completely reworked.",
+                            Name = "Reject, Task Requires Redoing"
+                        },
+                        new
+                        {
+                            Id = "4",
+                            Description = "Approve the task but with some minor revisions or improvements.",
+                            Name = "Approve with Minor Adjustments"
+                        });
                 });
 
             modelBuilder.Entity("BOBA.Server.Data.Task", b =>
@@ -284,42 +310,42 @@ namespace BOBA.Server.Migrations
                         {
                             Id = "1",
                             CurrentStateId = "1",
-                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"2\"}, {\"choiceId\": \"2\", \"nextStateId\": \"3\"}, {\"choiceId\": \"3\", \"nextStateId\": \"4\"}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"2\"}]",
                             TaskTypeId = "2"
                         },
                         new
                         {
                             Id = "2",
                             CurrentStateId = "2",
-                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"3\"}, {\"choiceId\": \"2\", \"nextStateId\": \"4\"}, {\"choiceId\": \"3\", \"nextStateId\": \"5\"}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"3\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"1\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"9\"}]",
                             TaskTypeId = "2"
                         },
                         new
                         {
                             Id = "3",
                             CurrentStateId = "3",
-                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"5\"}, {\"choiceId\": \"2\", \"nextStateId\": \"6\"}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"4\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"2\"}]",
                             TaskTypeId = "2"
                         },
                         new
                         {
                             Id = "4",
                             CurrentStateId = "4",
-                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"6\"}, {\"choiceId\": \"2\", \"nextStateId\": \"7\"}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"5\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"3\"}]",
                             TaskTypeId = "2"
                         },
                         new
                         {
                             Id = "5",
                             CurrentStateId = "5",
-                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"7\"}, {\"choiceId\": \"2\", \"nextStateId\": \"8\"}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"6\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"4\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"9\"}]",
                             TaskTypeId = "2"
                         },
                         new
                         {
                             Id = "6",
                             CurrentStateId = "6",
-                            NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"8\"}, {\"choiceId\": \"2\", \"nextStateId\": \"9\"}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"8\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"5\"}]",
                             TaskTypeId = "2"
                         });
                 });
