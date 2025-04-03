@@ -12,7 +12,7 @@ export class AuthGuard {
     if (this.authService.isLoggedIn()) {
       return true;
     } else {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/userlogin']);
       return false;
     }
   }

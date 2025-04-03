@@ -11,6 +11,7 @@ import { RegisterComponent } from './components/user/register/register.component
 import { DashboardComponent } from './components/page/dashboard/dashboard.component';
 import { AuthGuard } from './guards/auth.guard';
 import { TaskDetailsComponent } from './components/page/task-details/task-details.component';
+import { HeaderComponent } from './components/frame/header/header.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { TaskDetailsComponent } from './components/page/task-details/task-detail
     LoginComponent,
     RegisterComponent,
     DashboardComponent,
-    TaskDetailsComponent
+    TaskDetailsComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule, 

@@ -7,7 +7,7 @@ import { RegisterComponent } from './components/user/register/register.component
 import { TaskDetailsComponent } from './components/page/task-details/task-details.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'userlogin', pathMatch: 'full' },
   { path: 'userlogin', component: LoginComponent },
   { path: 'userregister', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
