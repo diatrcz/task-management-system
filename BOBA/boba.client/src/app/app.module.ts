@@ -12,6 +12,7 @@ import { DashboardComponent } from './components/page/dashboard/dashboard.compon
 import { AuthGuard } from './guards/auth.guard';
 import { TaskDetailsComponent } from './components/page/task-details/task-details.component';
 import { HeaderComponent } from './components/frame/header/header.component';
+import { TasklistComponent } from './components/page/tasklist/tasklist.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { HeaderComponent } from './components/frame/header/header.component';
     RegisterComponent,
     DashboardComponent,
     TaskDetailsComponent,
-    HeaderComponent
+    HeaderComponent,
+    TasklistComponent
   ],
   imports: [
     BrowserModule, 

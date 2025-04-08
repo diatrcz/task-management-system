@@ -1,34 +1,13 @@
-.task-types-list {
-    padding: 20px;
-  }
-  
-  .task-types-list ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .task-types-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 10px 0;
-  }
-  
-  .start-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-  }
-  
-  .start-btn i {
-    margin-right: 5px;
-  }
-  
-  .start-btn:hover {
-    background-color: #45a049;
-  }
-  
+.team-select:hover {
+  background-color: #f9c3d4;
+  color: white;
+  border-color: #f9c3d4;
+  box-shadow: 0 4px 6px rgba(249, 195, 212, 0.3);
+}
+
+.team-select:active {
+  background-color: #f48bad;
+  border-color: #f48bad;
+  color: white;
+  box-shadow: 0 2px 4px rgba(244, 139, 173, 0.2);
+}
