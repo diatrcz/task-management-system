@@ -1,8 +1,4 @@
 BACKEND
-    - kellene még department a csapatok fölé, de az már egy kicsit MVP-n kívül esik + nem feltétlen szükséges
-    - ha a formot jsonbe akarom eltárolni a WF-ban, akkor csak így dobjam be egy mezőbe?
-    - van amikor nem éri meg a navigation propertyt beletenni?
-    - az nem jó megoldás, hogyha a workflowId-t váltogatjuk folyamatosan a feladat rekordjában, ahányszor státuszt vált
-    - vagy kéne benne lennie egy startState-nek, hogy tudjuk melyik feladat melyik státuszban kezdődik VAGY van egy kezdő státusz, ami minden feladatnak ugyanaz. ez így még mindig nem jó. 
 
 FRONTEND
+- tasklist-ben a servicet megéri teljesen átpakolni, mert igaziból semmi adatátalakítás nincs

@@ -1,11 +1,10 @@
+using Azure.Core;
 using BOBA.Server.Data;
 using BOBA.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace BOBA.Server.Controllers
 {
@@ -20,6 +19,10 @@ namespace BOBA.Server.Controllers
 
         private const string starterId = "1";
 
+
+        //-------------Get----------------------
+
+
         [HttpGet("tasktypes")]
         public async Task<IActionResult> GetTaskTypes()
         {
@@ -33,17 +36,29 @@ namespace BOBA.Server.Controllers
             return Ok(taskTypes);
         }
 
-        [HttpGet("taskflow")]
-        public async Task<IActionResult> GetTaskFlow([FromQuery] string currentStateId, [FromQuery] string taskTypeId)
+        [HttpGet("task")]
+        public async Task<IActionResult> GetTask([FromQuery] string taskId)
         {
-            var taskflow = await _context.TaskFlows
-                     .FirstOrDefaultAsync(tf => tf.CurrentStateId == currentStateId &&
-                                          tf.TaskTypeId == taskTypeId);
-            if (taskflow == null)
-            {
-                return BadRequest("TaskFlow not found.");
-            }
+            var task = await _context.Tasks
+                                     .Include(t => t.CurrentState)
+                                     .Include(t => t.TaskType)
+                                     .Include(t => t.Creator)
+                                     .Include(t => t.Assignee)
+                                     .SingleAsync(t => t.Id == taskId);
 
+            return Ok(task);
+        }
+
+        [HttpGet("taskflow")]
+        public async Task<IActionResult> GetTaskFLow([FromQuery] string taskId)
+        {
+            var task = await _context.Tasks
+                                     .Include(t => t.CurrentState)
+                                     .SingleAsync(t => t.Id == taskId);
+
+            var taskflow = await _context.TaskFlows
+                                 .SingleAsync(tf => tf.CurrentStateId == task.CurrentStateId &&
+                                                            tf.TaskTypeId == task.TaskTypeId);
             return Ok(taskflow);
         }
 
@@ -74,7 +89,18 @@ namespace BOBA.Server.Controllers
             return Ok(choices);
         }
 
+        [HttpGet("state-name")]
+        public async Task<IActionResult> GetTaskStateName([FromQuery] string stateId)
+        {
+            var stateName = await _context.TaskStates
+                .Where(s => s.Id == stateId)
+                .Select(s => s.Name)
+                .FirstAsync();
 
+            return Ok(new { stateName } );
+        }
+
+        //-------------Post----------------------
 
         [HttpPost("create-task")]
         public async Task<IActionResult> CreateTask([FromBody] CreateTaskRequest request)
@@ -85,30 +111,20 @@ namespace BOBA.Server.Controllers
             }
 
             var taskType = await _context.TaskTypes
-                                         .FirstOrDefaultAsync(tt => tt.Id == request.TaskTypeId);
-            if (taskType == null)
-            {
-                return BadRequest("TaskType not found.");
-            }
+                                         .SingleAsync(tt => tt.Id == request.TaskTypeId);
 
             var creatorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var creator = _context.Users.Where(u => u.Id == creatorId).FirstOrDefault();
+            var creator = _context.Users.Where(u => u.Id == creatorId).Single();
 
             var starterState = await _context.TaskStates
                                              .Where(s => s.Id == starterId)
-                                             .FirstOrDefaultAsync(); // Get a single TaskState
-
-            if (starterState == null)
-            {
-                return BadRequest("Starter state not found.");
-            }
+                                             .SingleAsync(); 
 
             var task = new BOBA.Server.Data.Task
             {
                 Id = Guid.NewGuid().ToString(),
                 TaskTypeId = request.TaskTypeId,
-                TaskType = taskType,
                 CreatorId = creatorId,
                 CurrentStateId = starterId,
                 AssigneeId = creatorId,
@@ -133,61 +149,20 @@ namespace BOBA.Server.Controllers
             var taskflow = await _context.TaskFlows
                                  .SingleAsync(tf => tf.CurrentStateId == task.CurrentStateId &&
                                                             tf.TaskTypeId == task.TaskTypeId);
-
-            //var nextStateChoices = JsonSerializer.Deserialize<List<NextStateItem>>(taskflow.NextStateJson) ?? new List<NextStateItem>();
             
 
             var nextStateItem = taskflow.NextState.Single(ns => ns.ChoiceId == request.ChoiceId);
 
 
-            //var nextState = await _context.TaskStates
-            //                              .SingleAsync(ts => ts.Id == nextStateItem.NextStateId);
-
             task.CurrentStateId = nextStateItem.NextStateId;
             task.UpdatedAt = DateTime.UtcNow;
             task.AssigneeId = null;
-            //task.CurrentState = nextState;
 
             _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
 
             return Ok(task);
         }
-
-        /*[HttpPost("move-task-fr")]
-        public async Task<IActionResult> MoveTaskFr([FromBody] MoveTaskRequest request) {
-            var task = await _context.Tasks
-                                     .Include(t => t.CurrentState)
-                                     .FirstOrDefaultAsync(t => t.Id == request.TaskId);
-
-            if (task == null)
-            {
-                return NotFound("Task not found.");
-            }
-
-            var nextState = await _context.TaskStates
-                                          .FirstOrDefaultAsync(ts => ts.Id == request.NextStateId);
-
-            if (nextState == null)
-            {
-                return BadRequest("Next state not found.");
-            }
-
-            task.CurrentStateId = nextState.Id;
-            task.CurrentState = nextState;
-
-            _context.Tasks.Update(task);
-            await _context.SaveChangesAsync();
-
-            return Ok(task);
-        }*/
-
-        public class MoveTaskRequest
-        {
-            public string ChoiceId { get; set; }
-            public string TaskId { get; set; }
-        }
-
 
     }
 
