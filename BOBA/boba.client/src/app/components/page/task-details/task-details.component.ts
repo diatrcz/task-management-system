@@ -37,8 +37,11 @@ export class TaskDetailsComponent implements OnInit{
   async loadData(): Promise<void> {
     await this.loadRoute();
     await this.loadTask();
-    await this.loadTaskFlow();
-    await this.loadChoices();
+    
+    if(!this.task.currentStateIsFinal) {
+      await this.loadTaskFlow();
+      await this.loadChoices();
+      }
   }
 
   loadRoute(): Promise<void> {

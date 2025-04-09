@@ -13,6 +13,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { TaskDetailsComponent } from './components/page/task-details/task-details.component';
 import { HeaderComponent } from './components/frame/header/header.component';
 import { TasklistComponent } from './components/page/tasklist/tasklist.component';
+import { UserTaskListComponent } from './components/page/user-task-list/user-task-list.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { TasklistComponent } from './components/page/tasklist/tasklist.component
     DashboardComponent,
     TaskDetailsComponent,
     HeaderComponent,
-    TasklistComponent
+    TasklistComponent,
+    UserTaskListComponent
   ],
   imports: [
     BrowserModule, 

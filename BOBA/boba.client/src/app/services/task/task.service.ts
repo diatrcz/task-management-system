@@ -71,6 +71,25 @@ export class TaskService {
     );
   }
 
+  getClosedTasks(): Observable<TaskSummary[]> {
+    return this.http.get<any[]>(`/api/closed-tasks`).pipe(
+      map((tasks: any[]) => {
+        return tasks.map(task => ({
+          id: task.id,
+          taskTypeId: task.taskTypeId,
+          taskTypeName: task.taskType?.name,
+          creatorId: task.creatorId,
+          currentStateId: task.currentStateId,
+          currentStateName: task.currentState?.name || '',
+          currentStateIsFinal: task.currentState?.isFinal,
+          assigneeId: task.assigneeId,
+          updatedAt: task.updatedAt,
+          createdAt: task.createdAt
+        }));
+      })
+    );
+  }
+
    // -------------POST---------------
 
   startTask(taskTypeId: string): Observable<any> {

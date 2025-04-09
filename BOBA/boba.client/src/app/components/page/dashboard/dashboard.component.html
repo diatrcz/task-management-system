@@ -38,7 +38,7 @@
   <!-- Dashboard Cards Container - First Row -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
       <!-- My Tasks Card -->
-      <a [routerLink]="['/my-tasks']" class="block h-full">
+      <a [routerLink]="['/tasklist/my-tasks']" class="block h-full">
           <div class="dashboard-card bg-white p-8 flex flex-col h-64 border-4 border-pink-100 rounded-lg">
               <div class="rounded-full bg-pink-100 w-16 h-16 flex items-center justify-center mb-6">
                   <svg class="w-8 h-8 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -54,7 +54,7 @@
       </a>
       
       <!-- Unassigned Tasks Card -->
-      <a [routerLink]="['/unassigned-tasks']" class="block h-full">
+      <a [routerLink]="['/tasklist/unassigned-tasks']" class="block h-full">
           <div class="dashboard-card bg-white p-8 flex flex-col h-64 border-4 border-blue-100 rounded-lg">
               <div class="rounded-full bg-blue-100 w-16 h-16 flex items-center justify-center mb-6">
                   <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -73,7 +73,7 @@
   <!-- Dashboard Cards Container - Second Row -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <!-- External Tasks Card -->
-      <a [routerLink]="['/external-tasks']" class="block h-full">
+      <a [routerLink]="['/tasklist/external-tasks']" class="block h-full">
           <div class="dashboard-card bg-white p-8 flex flex-col h-64 border-4 border-purple-100 rounded-lg">
               <div class="rounded-full bg-purple-100 w-16 h-16 flex items-center justify-center mb-6">
                   <svg class="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -89,7 +89,7 @@
       </a>
       
       <!-- Closed Tasks Card -->
-      <a [routerLink]="['/closed-tasks']" class="block h-full">
+      <a [routerLink]="['/tasklist/closed-tasks']" class="block h-full">
           <div class="dashboard-card bg-white p-8 flex flex-col h-64 border-4 border-green-100 rounded-lg">
               <div class="rounded-full bg-green-100 w-16 h-16 flex items-center justify-center mb-6">
                   <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

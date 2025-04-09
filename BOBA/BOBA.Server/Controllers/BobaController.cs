@@ -1,5 +1,6 @@
 using Azure.Core;
 using BOBA.Server.Data;
+using BOBA.Server.Migrations;
 using BOBA.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -98,6 +99,34 @@ namespace BOBA.Server.Controllers
                 .FirstAsync();
 
             return Ok(new { stateName } );
+        }
+
+        [HttpGet("own-tasks")]
+        public async Task<IActionResult> GetUserTasks()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var user = await _context.Users.Where(u => u.Id == userId).SingleAsync();
+
+            var tasks = await _context.Tasks
+                .Where(t => t.AssigneeId == userId)
+                .Include(t => t.CurrentState)     
+                .Include(t => t.TaskType)         
+                .ToListAsync();
+
+            return Ok(tasks);
+        }
+
+        [HttpGet("closed-tasks")]
+        public async Task<IActionResult> GetClosedTask()
+        {
+            var tasks = await _context.Tasks
+                .Where(t => t.CurrentState.IsFinal == true)
+                .Include(t => t.CurrentState)
+                .Include(t => t.TaskType)
+                .ToListAsync();
+
+            return Ok(tasks);
         }
 
         //-------------Post----------------------
