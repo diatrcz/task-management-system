@@ -4,9 +4,10 @@ import { TaskService } from '../../../services/task/task.service';
 import { TaskSummary } from '../../../models/TaskSummary';
 
 @Component({
-  selector: 'app-user-task-list',
-  templateUrl: './user-task-list.component.html',
-  styleUrl: './user-task-list.component.css'
+    selector: 'app-user-task-list',
+    templateUrl: './user-task-list.component.html',
+    styleUrl: './user-task-list.component.css',
+    standalone: false
 })
 export class UserTaskListComponent implements OnInit{
   listType!: string;

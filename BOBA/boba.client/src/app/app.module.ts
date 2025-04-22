@@ -1,9 +1,6 @@
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { LoginComponent } from './components/user/login/login.component';
@@ -14,6 +11,9 @@ import { TaskDetailsComponent } from './components/page/task-details/task-detail
 import { HeaderComponent } from './components/frame/header/header.component';
 import { TasklistComponent } from './components/page/tasklist/tasklist.component';
 import { UserTaskListComponent } from './components/page/user-task-list/user-task-list.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -25,9 +25,14 @@ import { UserTaskListComponent } from './components/page/user-task-list/user-tas
         TasklistComponent,
         UserTaskListComponent
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [AppComponent], 
+    imports: 
+    [
+        BrowserModule,
         AppRoutingModule,
-        FormsModule], providers: [
+        FormsModule
+    ], 
+    providers: [
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         AuthGuard,
         provideHttpClient(withInterceptorsFromDi()),

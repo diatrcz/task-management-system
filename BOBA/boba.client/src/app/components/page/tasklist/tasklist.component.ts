@@ -3,9 +3,10 @@ import { TaskService } from '../../../services/task/task.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-tasklist',
-  templateUrl: './tasklist.component.html',
-  styleUrl: './tasklist.component.css'
+    selector: 'app-tasklist',
+    templateUrl: './tasklist.component.html',
+    styleUrl: './tasklist.component.css',
+    standalone: false
 })
 export class TasklistComponent implements OnInit {
   taskTypes: any[] = [];

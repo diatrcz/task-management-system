@@ -8,9 +8,10 @@ import { response } from 'express';
 import { MoveTaskRequest } from '../../../models/MoveTaskRequest';
 
 @Component({
-  selector: 'app-task-details',
-  templateUrl: './task-details.component.html',
-  styleUrl: './task-details.component.css'
+    selector: 'app-task-details',
+    templateUrl: './task-details.component.html',
+    styleUrl: './task-details.component.css',
+    standalone: false
 })
 export class TaskDetailsComponent implements OnInit{
   taskId!: string;
