@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -15,27 +15,21 @@ import { HeaderComponent } from './components/frame/header/header.component';
 import { TasklistComponent } from './components/page/tasklist/tasklist.component';
 import { UserTaskListComponent } from './components/page/user-task-list/user-task-list.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    RegisterComponent,
-    DashboardComponent,
-    TaskDetailsComponent,
-    HeaderComponent,
-    TasklistComponent,
-    UserTaskListComponent
-  ],
-  imports: [
-    BrowserModule, 
-    HttpClientModule,
-    AppRoutingModule,
-    FormsModule
-  ],
-  providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
-    AuthGuard,
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        LoginComponent,
+        RegisterComponent,
+        DashboardComponent,
+        TaskDetailsComponent,
+        HeaderComponent,
+        TasklistComponent,
+        UserTaskListComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        FormsModule], providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        AuthGuard,
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule { }
