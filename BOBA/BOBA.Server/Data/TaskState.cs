@@ -23,6 +23,6 @@ namespace BOBA.Server.Data
 
         //Taskflow
         [InverseProperty("CurrentState")]
-        public virtual ICollection<Taskflow> CurrentStateTaskflows { get; set; } = new List<Taskflow>();
+        public virtual ICollection<TaskFlow> CurrentStateTaskflows { get; set; } = new List<TaskFlow>();
     }
 }

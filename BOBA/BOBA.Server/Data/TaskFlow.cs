@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace BOBA.Server.Data
 {
-    public class Taskflow
+    public class TaskFlow
     {
         [Key]
         public string Id { get; set; }

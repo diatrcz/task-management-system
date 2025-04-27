@@ -15,7 +15,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<TaskState> TaskStates => Set<TaskState>();
     public DbSet<TaskType> TaskTypes => Set<TaskType>();
     public DbSet<Team> Teams => Set<Team>();
-    public DbSet<Taskflow> TaskFlows => Set<Taskflow>();
+    public DbSet<TaskFlow> TaskFlows => Set<TaskFlow>();
     public DbSet<Choice> Choices => Set<Choice>();
 
     public DbSet<TaskField> TaskFields => Set<TaskField>();
@@ -46,14 +46,14 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .OnDelete(DeleteBehavior.Restrict);
 
         // Workflow -> CurrentState relationship
-        modelBuilder.Entity<Taskflow>()
+        modelBuilder.Entity<TaskFlow>()
             .HasOne(w => w.CurrentState)
             .WithMany(ts => ts.CurrentStateTaskflows)
             .HasForeignKey(w => w.CurrentStateId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // Store NextStateJson as nvarchar(max)
-        modelBuilder.Entity<Taskflow>()
+        modelBuilder.Entity<TaskFlow>()
            .Property(w => w.NextStateJson)
            .HasColumnType("nvarchar(max)");
 

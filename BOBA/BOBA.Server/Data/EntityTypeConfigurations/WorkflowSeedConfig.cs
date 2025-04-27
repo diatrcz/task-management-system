@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BOBA.Server.Data.EntityTypeConfigurations;
 
-public class WorkflowSeedConfig : IEntityTypeConfiguration<Taskflow>
+public class WorkflowSeedConfig : IEntityTypeConfiguration<TaskFlow>
 {
-    public void Configure(EntityTypeBuilder<Taskflow> builder)
+    public void Configure(EntityTypeBuilder<TaskFlow> builder)
     {
         builder.HasData(
-            new Taskflow
+            new TaskFlow
             {
                 Id = "1",
                 TaskTypeId = "2", 
@@ -16,7 +16,7 @@ public class WorkflowSeedConfig : IEntityTypeConfiguration<Taskflow>
                 NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"2\"}]"
                 //NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"2\"}, {\"choiceId\": \"2\", \"nextStateId\": \"3\"}, {\"choiceId\": \"3\", \"nextStateId\": \"4\"}]"
             },
-            new Taskflow
+            new TaskFlow
             {
                 Id = "2",
                 TaskTypeId = "2",  
@@ -24,7 +24,7 @@ public class WorkflowSeedConfig : IEntityTypeConfiguration<Taskflow>
                 NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"3\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"1\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"9\"}]"
                 //NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"3\"}, {\"choiceId\": \"2\", \"nextStateId\": \"4\"}, {\"choiceId\": \"3\", \"nextStateId\": \"5\"}]"
             },
-            new Taskflow
+            new TaskFlow
             {
                 Id = "3",
                 TaskTypeId = "2",  
@@ -32,7 +32,7 @@ public class WorkflowSeedConfig : IEntityTypeConfiguration<Taskflow>
                 NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"4\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"2\"}]"
                 //NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"4\"}, {\"choiceId\": \"2\", \"nextStateId\": \"6\"}]"
             },
-            new Taskflow
+            new TaskFlow
             {
                 Id = "4",
                 TaskTypeId = "2",  
@@ -40,7 +40,7 @@ public class WorkflowSeedConfig : IEntityTypeConfiguration<Taskflow>
                 NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"5\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"3\"}]"
                 //NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"5\"}, {\"choiceId\": \"2\", \"nextStateId\": \"7\"}]"
             },
-            new Taskflow
+            new TaskFlow
             {
                 Id = "5",
                 TaskTypeId = "2",  
@@ -48,7 +48,7 @@ public class WorkflowSeedConfig : IEntityTypeConfiguration<Taskflow>
                 NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"6\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"4\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"9\"}]"
                 //NextStateJson = "[{\"choiceId\": \"1\", \"nextStateId\": \"7\"}, {\"choiceId\": \"2\", \"nextStateId\": \"8\"}]"
             },
-            new Taskflow
+            new TaskFlow
             {
                 Id = "6",
                 TaskTypeId = "2",  
