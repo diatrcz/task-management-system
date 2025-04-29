@@ -33,7 +33,7 @@ export class TasklistComponent implements OnInit {
     this.taskService.startTask(taskTypeId).subscribe(
       (response) => {
         console.log('Task started successfully', response);
-        this.router.navigate(['/task-details', response.id]); // Navigate to the task details page
+        this.router.navigate(['/task-details', response]);
       },
       (error) => {
         console.error('Error starting task', error);

@@ -20,8 +20,8 @@ export class TaskService {
 
   getChoicesByIds(choiceIds: string[]): Observable<ChoiceSummary[]> {
     const params = choiceIds.map(id => `ids=${encodeURIComponent(id)}`).join('&');
-    return this.http.get<any[]>(`/api/choices?${params}`).pipe(
-      map((choices: any[]) => {
+    return this.http.get<ChoiceSummary[]>(`/api/choices?${params}`).pipe(
+      map((choices: ChoiceSummary[]) => {
         return choices.map(choice => ({
           id: choice.id,
           name: choice.name
@@ -32,16 +32,16 @@ export class TaskService {
   
   getTaskSummaryById(taskId: string): Observable<TaskSummary> {
     const query = { params: { taskId } };
-    return this.http.get<any>('/api/task', query).pipe(
-      map((task: any) => {
+    return this.http.get<TaskSummary>('/api/task', query).pipe(
+      map((task: TaskSummary) => {
         return {
           id: task.id,
           taskTypeId: task.taskTypeId,
-          taskTypeName: task.taskType?.name,
+          taskTypeName: task.taskTypeName,
           creatorId: task.creatorId,
           currentStateId: task.currentStateId,
-          currentStateName: task.currentState?.name || '',
-          currentStateIsFinal: task.currentState?.isFinal,
+          currentStateName: task.currentStateName || '',
+          currentStateIsFinal: task.currentStateIsFinal,
           assigneeId: task.assigneeId,
           updatedAt: task.updatedAt,
           createdAt: task.createdAt
@@ -52,8 +52,8 @@ export class TaskService {
 
   getTaskFlowSummaryById(taskId: string): Observable<TaskFlowSummary> {
     const query = { params: { taskId } };
-    return this.http.get<any>('api/taskflow', query).pipe(
-      map((taskflow: any) => {
+    return this.http.get<TaskFlowSummary>('api/taskflow', query).pipe(
+      map((taskflow: TaskFlowSummary) => {
         return{
           id: taskflow.id,
           nextState: taskflow.nextState || [],
@@ -64,24 +64,24 @@ export class TaskService {
     );
   }
 
-  getStateNameById(stateId: string): Observable<any> {
-    const query = { params: {stateId} };
-    return this.http.get<any>('api/state-name', query).pipe(
-      map((state: any) => { return state.stateName; })
+  getStateNameById(stateId: string): Observable<string> {
+    const query = { params: { stateId } };
+    return this.http.get<{ stateName: string }>('api/state-name', query).pipe(
+      map(response => response.stateName)
     );
-  }
+}
 
   getClosedTasks(): Observable<TaskSummary[]> {
-    return this.http.get<any[]>(`/api/closed-tasks`).pipe(
-      map((tasks: any[]) => {
+    return this.http.get<TaskSummary[]>(`/api/closed-tasks`).pipe(
+      map((tasks: TaskSummary[]) => {
         return tasks.map(task => ({
           id: task.id,
           taskTypeId: task.taskTypeId,
-          taskTypeName: task.taskType?.name,
+          taskTypeName: task.taskTypeName,
           creatorId: task.creatorId,
           currentStateId: task.currentStateId,
-          currentStateName: task.currentState?.name || '',
-          currentStateIsFinal: task.currentState?.isFinal,
+          currentStateName: task.currentStateName || '',
+          currentStateIsFinal: task.currentStateIsFinal,
           assigneeId: task.assigneeId,
           updatedAt: task.updatedAt,
           createdAt: task.createdAt
@@ -92,14 +92,17 @@ export class TaskService {
 
    // -------------POST---------------
 
-  startTask(taskTypeId: string): Observable<any> {
-    console.log(taskTypeId);
-    const body = { taskTypeId: taskTypeId }; 
-    return this.http.post<any>('/api/create-task', body);
+   startTask(taskTypeId: string): Observable<string> {
+    const body = { taskTypeId };
+    return this.http.post<{ taskId: string }>('/api/create-task', body).pipe(
+      map(response => response.taskId)
+    );
   }
-
-  moveTask(request: MoveTaskRequest): Observable<any> {
-    return this.http.post<any>('/api/move-task', request);
-  }
+  
+  moveTask(request: MoveTaskRequest): Observable<string> {
+    return this.http.post<{ taskId: string }>('/api/move-task', request).pipe(
+      map(response => response.taskId)
+    );
+  } 
   
 }

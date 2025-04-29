@@ -26,6 +26,8 @@
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.6.0" />
     <PackageReference Include="Microsoft.IdentityModel.Logging" Version="8.6.0" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="8.6.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="14.4.0" />
+    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="14.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.0" />
   </ItemGroup>
@@ -38,7 +40,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Dto\" />
   </ItemGroup>
 
 </Project>

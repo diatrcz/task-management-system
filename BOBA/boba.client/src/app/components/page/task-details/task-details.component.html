@@ -8,27 +8,29 @@
     <div class="bg-white p-6 border-4 border-blue-100 rounded-lg shadow-sm">
       <div class="flex flex-col md:flex-row justify-between">
         <div class="flex-grow">
-          <h2 class="text-2xl font-bold text-gray-900">{{ task.taskTypeName || 'Task Details' }}</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 mt-3">
-            <div>
-              <span class="text-sm text-gray-500">Task ID:</span>
-              <span class="ml-2 text-gray-700">{{ task.id }}</span>
-            </div>
-            <div>
-              <span class="text-sm text-gray-500">Current State:</span>
-              <span class="ml-2 text-gray-700">{{ task.currentStateName }}</span>
-            </div>
-            <div>
-              <span class="text-sm text-gray-500">Created:</span>
-              <span class="ml-2 text-gray-700">{{ task.createdAt | date:'MMM d, y, h:mm a' }}</span>
-            </div>
-            <div>
-              <span class="text-sm text-gray-500">Creator:</span>
-              <span class="ml-2 text-gray-700">John Doe</span> <!-- Static for now -->
-            </div>
-            <div>
-              <span class="text-sm text-gray-500">Assignee:</span>
-              <span class="ml-2 text-gray-700">{{ task.assigneeId ? 'Jane Smith' : 'Unassigned' }}</span> <!-- Static for now -->
+          <div *ngIf="task">
+            <h2 class="text-2xl font-bold text-gray-900">{{ task.taskTypeName || 'Task Details' }}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 mt-3">
+              <div>
+                <span class="text-sm text-gray-500">Task ID:</span>
+                <span class="ml-2 text-gray-700">{{ task.id }}</span>
+              </div>
+              <div>
+                <span class="text-sm text-gray-500">Current State:</span>
+                <span class="ml-2 text-gray-700">{{ task.currentStateName }}</span>
+              </div>
+              <div>
+                <span class="text-sm text-gray-500">Created:</span>
+                <span class="ml-2 text-gray-700">{{ task.createdAt | date:'MMM d, y, h:mm a' }}</span>
+              </div>
+              <div>
+                <span class="text-sm text-gray-500">Creator:</span>
+                <span class="ml-2 text-gray-700">John Doe</span> <!-- Static for now -->
+              </div>
+              <div>
+                <span class="text-sm text-gray-500">Assignee:</span>
+                <span class="ml-2 text-gray-700">{{ task.assigneeId ? 'Jane Smith' : 'Unassigned' }}</span> <!-- Static for now -->
+              </div>
             </div>
           </div>
         </div>
@@ -177,7 +179,7 @@
         </div>
         
         <div class="border-t border-b border-gray-200 py-4">
-          <div class="grid grid-cols-1 gap-y-3">
+          <div *ngIf="task" class="grid grid-cols-1 gap-y-3">
             <div>
               <span class="text-sm text-gray-500">Task:</span>
               <span class="ml-2 text-gray-700">{{ task.taskTypeName }}</span>

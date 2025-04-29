@@ -1,5 +1,6 @@
 ﻿using BOBA.Server.Data;
 using BOBA.Server.Models;
+using BOBA.Server.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace BOBA.Server.Services
@@ -14,33 +15,75 @@ namespace BOBA.Server.Services
             _context = context;
         }
 
-        public async Task<List<TaskType>> GetTaskTypesAsync()
+        public async Task<List<TaskTypeDto>> GetTaskTypes()
         {
-            return await _context.TaskTypes.ToListAsync();
+            var tasktypes = await _context.TaskTypes.ToListAsync();
+
+            var tasktypeDtos = tasktypes.Select(tasktype => new TaskTypeDto 
+            {
+                Id = tasktype.Id,
+                Name = tasktype.Name
+            }).ToList();
+
+            return tasktypeDtos;
         }
 
-        public async Task<BOBA.Server.Data.Task> GetTaskAsync(string taskId)
+        public async Task<TaskSummaryDto> GetTask(string taskId)
         {
-            return await _context.Tasks
+            var task = await _context.Tasks
+                .Where(t => t.Id == taskId)
                 .Include(t => t.CurrentState)
                 .Include(t => t.TaskType)
                 .Include(t => t.Creator)
                 .Include(t => t.Assignee)
-                .SingleAsync(t => t.Id == taskId);
+                .SingleAsync();
+
+            var taskdto = new TaskSummaryDto
+            {
+                Id = task.Id,
+                TaskTypeId = task.TaskTypeId,
+                TaskTypeName = task.TaskType.Name,
+                CreatorId = task.CreatorId,
+                CurrentStateId = task.CurrentStateId,
+                CurrentStateName = task.CurrentState.Name,
+                CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
+                AssigneeId = task.AssigneeId,
+                CreatedAt = task.CreatedAt.ToString("o"),
+                UpdatedAt = task.UpdatedAt.ToString("o")
+            };
+
+            return taskdto;
+
+
         }
 
-        public async Task<TaskFlow> GetTaskFlowAsync(string taskId)
+        public async Task<TaskFlowSummaryDto> GetTaskFlow(string taskId)
         {
             var task = await _context.Tasks
+                                     .Where(t => t.Id == taskId)
                                      .Include(t => t.CurrentState)
-                                     .SingleAsync(t => t.Id == taskId);
+                                     .SingleAsync();
 
-            return await _context.TaskFlows
+            var taskflow = await _context.TaskFlows
                 .SingleAsync(tf => tf.CurrentStateId == task.CurrentStateId &&
                                    tf.TaskTypeId == task.TaskTypeId);
+
+            var taskFlowDto = new TaskFlowSummaryDto
+            {
+                Id = taskflow.Id,
+                NextState = taskflow.NextState.Select(ns => new NextStateDto
+                {
+                    ChoiceId = ns.ChoiceId,
+                    NextStateId = ns.NextStateId
+                }).ToList(),
+                EditRoleId = taskflow.EditRoleId,
+                ReadOnlyRole = taskflow.ReadOnlyRole.Select(team => team.Id).ToList()
+            };
+
+            return taskFlowDto;
         }
 
-        public async Task<List<Choice>> GetChoicesAsync(List<string> ids)
+        public async Task<List<ChoiceSummaryDto>> GetChoices(List<string> ids)
         {
             var choices = new List<Choice>();
             foreach (var id in ids)
@@ -51,10 +94,17 @@ namespace BOBA.Server.Services
                     choices.Add(choice);
                 }
             }
-            return choices;
+
+            var choiceDtos = choices.Select(choice => new ChoiceSummaryDto
+            {
+                Id = choice.Id,
+                Name = choice.Name
+            }).ToList();
+
+            return choiceDtos;
         }
 
-        public async Task<string> GetTaskStateNameAsync(string stateId)
+        public async Task<string> GetTaskStateName(string stateId)
         {
             return await _context.TaskStates
                 .Where(s => s.Id == stateId)
@@ -62,25 +112,57 @@ namespace BOBA.Server.Services
                 .FirstAsync();
         }
 
-        public async Task<List<BOBA.Server.Data.Task>> GetUserTasksAsync(string userId)
+        public async Task<List<TaskSummaryDto>> GetUserTasks(string userId)
         {
-            return await _context.Tasks
+            var tasks = await _context.Tasks
                 .Where(t => t.AssigneeId == userId)
                 .Include(t => t.CurrentState)
                 .Include(t => t.TaskType)
                 .ToListAsync();
+
+            var taskDtos = tasks.Select(task => new TaskSummaryDto 
+            {
+                Id = task.Id,
+                TaskTypeId = task.TaskTypeId,
+                TaskTypeName = task.TaskType.Name,
+                CreatorId = task.CreatorId,
+                CurrentStateId = task.CurrentStateId,
+                CurrentStateName = task.CurrentState.Name,
+                CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
+                AssigneeId = task.AssigneeId,
+                CreatedAt = task.CreatedAt.ToString("o"),
+                UpdatedAt = task.UpdatedAt.ToString("o")
+            }).ToList();
+
+            return taskDtos;
         }
 
-        public async Task<List<BOBA.Server.Data.Task>> GetClosedTasksAsync()
+        public async Task<List<TaskSummaryDto>> GetClosedTasks()
         {
-            return await _context.Tasks
+            var tasks =  await _context.Tasks
                 .Where(t => t.CurrentState.IsFinal)
                 .Include(t => t.CurrentState)
                 .Include(t => t.TaskType)
                 .ToListAsync();
+
+            var taskDtos = tasks.Select(task => new TaskSummaryDto
+            {
+                Id = task.Id,
+                TaskTypeId = task.TaskTypeId,
+                TaskTypeName = task.TaskType.Name,
+                CreatorId = task.CreatorId,
+                CurrentStateId = task.CurrentStateId,
+                CurrentStateName = task.CurrentState.Name,
+                CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
+                AssigneeId = task.AssigneeId,
+                CreatedAt = task.CreatedAt.ToString("o"),
+                UpdatedAt = task.UpdatedAt.ToString("o")
+            }).ToList();
+
+            return taskDtos;
         }
 
-        public async Task<BOBA.Server.Data.Task> CreateTaskAsync(CreateTaskRequest request, string creatorId)
+        public async Task<string> CreateTask(CreateTaskRequest request, string creatorId)
         {
             var taskType = await _context.TaskTypes.SingleAsync(tt => tt.Id == request.TaskTypeId);
             var starterState = await _context.TaskStates.SingleAsync(s => s.Id == starterId);
@@ -98,10 +180,10 @@ namespace BOBA.Server.Services
 
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
-            return task;
+            return task.Id;
         }
 
-        public async Task<BOBA.Server.Data.Task> MoveTaskAsync(MoveTaskRequest request)
+        public async Task<string> MoveTask(MoveTaskRequest request)
         {
             var task = await _context.Tasks
                 .Include(t => t.CurrentState)
@@ -119,7 +201,7 @@ namespace BOBA.Server.Services
 
             _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
-            return task;
+            return task.Id;
         }
     }
 }

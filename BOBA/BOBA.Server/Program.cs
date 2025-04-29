@@ -22,6 +22,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 }); ;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddOpenApiDocument();
 builder.Services.AddSwaggerGen(opt =>
 {
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
@@ -79,7 +80,8 @@ app.MapIdentityApi<User>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
+    app.UseOpenApi();
+    //app.UseSwagger();
     app.UseSwaggerUI();
 }
 
