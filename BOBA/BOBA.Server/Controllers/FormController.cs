@@ -1,6 +1,12 @@
-﻿namespace BOBA.Server.Controllers
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BOBA.Server.Controllers
 {
-    public class FormController
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
+    public class FormController : ControllerBase
     {
     }
 }
