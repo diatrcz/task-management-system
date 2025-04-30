@@ -1,9 +1,8 @@
-﻿namespace BOBA.Server.Data
+﻿namespace BOBA.Server.Data;
+
+public enum Role
 {
-    public enum Role
-    {
-        Basic,
-        Manager,
-        Admin
-    }
+    Basic,
+    Manager,
+    Admin
 }

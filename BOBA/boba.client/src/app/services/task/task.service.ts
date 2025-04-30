@@ -90,6 +90,25 @@ export class TaskService {
     );
   }
 
+  getOwnTasks(): Observable<TaskSummary[]> {
+    return this.http.get<TaskSummary[]>('api/own-tasks').pipe(
+      map((tasks: TaskSummary[]) => {
+        return tasks.map(task => ({
+          id: task.id,
+          taskTypeId: task.taskTypeId,
+          taskTypeName: task.taskTypeName,
+          creatorId: task.creatorId,
+          currentStateId: task.currentStateId,
+          currentStateName: task.currentStateName || '',
+          currentStateIsFinal: task.currentStateIsFinal,
+          assigneeId: task.assigneeId,
+          updatedAt: task.updatedAt,
+          createdAt: task.createdAt
+        }));
+      })
+    );
+  }
+
    // -------------POST---------------
 
    startTask(taskTypeId: string): Observable<string> {

@@ -13,11 +13,11 @@ namespace BOBA.Server.Controllers
     [ApiController]
     [Route("api")]
     [Authorize]
-    public class BobaController : ControllerBase
+    public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
 
-        public BobaController(ITaskService taskService)
+        public TaskController(ITaskService taskService)
         {
             _taskService = taskService;
         }

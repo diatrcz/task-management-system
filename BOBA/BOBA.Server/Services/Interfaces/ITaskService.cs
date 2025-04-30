@@ -2,7 +2,7 @@
 using BOBA.Server.Models;
 using BOBA.Server.Models.Dto;
 
-namespace BOBA.Server.Services;
+namespace BOBA.Server.Services.Interfaces;
 
 public interface ITaskService
 {

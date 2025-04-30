@@ -23,4 +23,10 @@ export class UserService {
     this.authService.clearLoggedInUser();
   }
 
+  getUserNameById(userId: string) {
+    return this.http.get<string>('api/User/name-by-id', {
+      params: { userId }
+    });
+  }
+
 }

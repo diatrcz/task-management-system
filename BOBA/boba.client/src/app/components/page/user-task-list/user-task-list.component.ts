@@ -57,6 +57,17 @@ export class UserTaskListComponent implements OnInit{
         });
       }
       else if(this.listType == 'my-tasks') {
+        this.taskService.getOwnTasks().subscribe({
+          next: (tasks) => {
+            this.tasks = tasks;
+            console.log(this.tasks);
+            resolve();
+          },
+          error: (err) => {
+            console.error('Error loading tasks:', err);
+            reject(err);
+          }
+        });
 
       }
     });
