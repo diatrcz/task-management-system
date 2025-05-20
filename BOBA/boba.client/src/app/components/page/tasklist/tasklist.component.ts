@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../../../services/task/task.service';
 import { Router } from '@angular/router';
+import { ApiService, TaskTypeDto } from '../../../services/api-service.service';
 
 @Component({
     selector: 'app-tasklist',
@@ -11,22 +12,23 @@ import { Router } from '@angular/router';
 export class TasklistComponent implements OnInit {
   taskTypes: any[] = [];
 
-  constructor(private taskService: TaskService, private router: Router) {}
+  constructor(private taskService: TaskService, private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadTaskTypes();
   }
 
   loadTaskTypes(): void {
-    this.taskService.getTaskTypes().subscribe(
-      (data) => {
-        this.taskTypes = data;
-      },
-      (error) => {
-        console.error('Error loading task types', error);
-      }
-    );
-  }
+  this.apiService.task_GetTaskTypes().subscribe(
+    (data) => {
+      this.taskTypes = data.map(item => TaskTypeDto.fromJS(item));
+    },
+    (error) => {
+      console.error('Error loading task types', error);
+    }
+  );
+}
+
 
   startTask(taskTypeId: string): void {
     console.log(taskTypeId);

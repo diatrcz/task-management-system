@@ -1,5 +1,6 @@
 ﻿using BOBA.Server.Data;
 using BOBA.Server.Models.Dto;
+using BOBA.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,13 @@ public class UserController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
-    public UserController(ApplicationDbContext context, SignInManager<User> signInManager, UserManager<User> userManager)
+    private readonly IUserService _userService;
+    public UserController(ApplicationDbContext context, SignInManager<User> signInManager, UserManager<User> userManager, IUserService userService)
     {
         _context = context;
         _signInManager = signInManager;
         _userManager = userManager;
+        _userService = userService;
     }
 
     /*[HttpPost("register")]
@@ -62,14 +65,11 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("name")]
-    public async Task<IActionResult> GetUserName()
+    public async Task<ActionResult<string>> GetUserName()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var userName = await _context.Users
-            .Where(u => u.Id == userId)
-            .Select(u => u.FirstName)
-            .FirstAsync();
+        var userName = _userService.GetUserName(userId);
 
         if (userName == null)
         {
@@ -80,42 +80,29 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("name-by-id")]
-    public async Task<IActionResult> GetUserNameByID([FromQuery] string userId)
+    public async Task<ActionResult<string>> GetUserNameByID([FromQuery] string userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var userName = _userService.GetUserNameById(userId);
 
-        return Ok(user?.UserName);
+        return Ok(new { userName });
     }
 
     [HttpGet("type")]
-    public async Task<IActionResult> GetUserType()
+    public async Task<ActionResult<string>> GetUserType()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var userType = await _context.Users
-            .Where(u => u.Id == userId)
-            .Select(u => u.Type)
-            .FirstAsync();
+        var userType = _userService.GetUserType(userId);
 
         return Ok(new { userType });
     }
 
     [HttpGet("user")]
-    public async Task<IActionResult> GetUserInfo()
+    public async Task<ActionResult<UserDto>> GetUserInfo()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var user = await _context.Users.FirstAsync(u => u.Id == userId);
-
-        var userInfo = new UserDto
-        {
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
-            Role = user.Type.ToString(),
-            Teams = user.Teams.Select(team => team.Id).ToList()
-        };
+        var userInfo = _userService.GetUserInfo(userId);
 
         return Ok(new { user = userInfo });
     }

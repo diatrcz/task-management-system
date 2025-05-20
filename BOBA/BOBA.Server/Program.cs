@@ -39,36 +39,6 @@ builder.Services.AddOpenApiDocument(document =>
     document.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
 });
 
-/*builder.Services.AddSwaggerGen(opt =>
-{
-    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
-    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
-    });
-
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
-            },
-            new string[]{}
-        }
-    });
-});*/
-
-
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Password settings.
@@ -89,15 +59,30 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDevClient", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+        // .AllowCredentials(); 
+    });
+});
 
 var app = builder.Build();
+
+app.UseHttpsRedirection();
+
+app.UseCors("AllowAngularDevClient");
 
 app.MapIdentityApi<User>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
-    //app.UseSwagger();
     app.UseSwaggerUI();
 }
 
