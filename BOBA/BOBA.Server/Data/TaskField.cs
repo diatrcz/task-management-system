@@ -13,6 +13,10 @@ public class TaskField
 
     [StringLength(500)]
     public string Description { get; set; }
+
     [StringLength(100)]
-    public string Validation { get; set; }
+    public string? Validation { get; set; }
+
+    [StringLength(1000)]
+    public string? Options { get; set; }
 }

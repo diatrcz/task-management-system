@@ -14,13 +14,14 @@ namespace BOBA.Server.Data
         [Required]
         [ForeignKey("TaskType")]
         public string? TaskTypeId { get; set; }
+
         public TaskType? TaskType { get; set; }
 
         [Required]
         [ForeignKey("CurrentState")]
         public string CurrentStateId { get; set; }
-        public TaskState CurrentState { get; set; }
 
+        public TaskState CurrentState { get; set; }
         
         public string NextStateJson
         {
@@ -38,10 +39,24 @@ namespace BOBA.Server.Data
 
         [ForeignKey("EditRole")]
         public string? EditRoleId { get; set; }
+
         public virtual Team? EditRole { get; set; }
 
         public ICollection<Team> ReadOnlyRole { get; set; } = new List<Team>();
-    }
 
-    
+        public string FormFieldJson
+        {
+            get { return JsonSerializer.Serialize(FormField); }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    FormField = new List<FormFieldItem>();
+                else
+                    FormField = JsonSerializer.Deserialize<List<FormFieldItem>>(value);
+            }
+        }
+
+        [NotMapped]
+        public List<FormFieldItem> FormField { get; set; }
+    }
 }

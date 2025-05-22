@@ -17,8 +17,11 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Team> Teams => Set<Team>();
     public DbSet<TaskFlow> TaskFlows => Set<TaskFlow>();
     public DbSet<Choice> Choices => Set<Choice>();
-
     public DbSet<TaskField> TaskFields => Set<TaskField>();
+    public DbSet<FormDocument> FormDocuments => Set<FormDocument>();
+    public DbSet<FormField> FormFields => Set<FormField>();
+    public DbSet<Message> Messages => Set<Message>();
+    public DbSet<TaskDocType> TaskDocTypes => Set<TaskDocType>(); 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -57,11 +60,12 @@ public class ApplicationDbContext : IdentityDbContext<User>
            .Property(w => w.NextStateJson)
            .HasColumnType("nvarchar(max)");
 
-
         modelBuilder.ApplyConfiguration(new TaskStatusSeedConfig());
         modelBuilder.ApplyConfiguration(new TaskTypeSeedConfig());
         modelBuilder.ApplyConfiguration(new TeamSeedConfig());
         modelBuilder.ApplyConfiguration(new WorkflowSeedConfig());
         modelBuilder.ApplyConfiguration(new ChoiceSeedConfig());
+        modelBuilder.ApplyConfiguration(new TaskDocTypeSeedConfig());
+        modelBuilder.ApplyConfiguration(new TaskFieldSeedConfig());
     }
 }
