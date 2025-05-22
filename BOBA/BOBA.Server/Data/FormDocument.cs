@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BOBA.Server.Data;
 
@@ -8,7 +9,14 @@ public class FormDocument
     public string Id { get; set; }
 
     [Required]
+    [ForeignKey("Task")]
     public string TaskId { get; set; }
+    public Task Task { get; set; }
+
+    [Required]
+    [ForeignKey("DocType")]
+    public string DocTypeId { get; set; }
+    public TaskDocType DocType { get; set; }
 
     [Required]
     public string FileName { get; set; } = null!;
