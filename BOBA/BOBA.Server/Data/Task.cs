@@ -28,7 +28,7 @@ namespace BOBA.Server.Data
         [ForeignKey("Assignee")]
         public string? AssigneeId { get; set; }
         public User Assignee { get; set; }
-
+        public string? TeamId { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

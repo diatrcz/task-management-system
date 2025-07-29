@@ -3,17 +3,20 @@ using BOBA.Server.Models;
 using BOBA.Server.Models.Dto;
 using BOBA.Server.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Formats.Asn1;
 
 namespace BOBA.Server.Services;
 
 public class TaskService : ITaskService
 {
     private readonly ApplicationDbContext _context;
+    private readonly ITaskFlowService _taskFlowService;
     private const string starterId = "1";
 
-    public TaskService(ApplicationDbContext context)
+    public TaskService(ApplicationDbContext context, ITaskFlowService taskFlowService)
     {
         _context = context;
+        _taskFlowService = taskFlowService;
     }
 
     public async Task<List<TaskTypeDto>> GetTaskTypes()
@@ -49,13 +52,12 @@ public class TaskService : ITaskService
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
             AssigneeId = task.AssigneeId,
+            TeamId = task.TeamId,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
         };
 
         return taskdto;
-
-
     }
 
     public async Task<TaskFlowSummaryDto> GetTaskFlow(string taskId)
@@ -131,6 +133,7 @@ public class TaskService : ITaskService
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
             AssigneeId = task.AssigneeId,
+            TeamId = task.TeamId,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
         }).ToList();
@@ -156,6 +159,7 @@ public class TaskService : ITaskService
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
             AssigneeId = task.AssigneeId,
+            TeamId = task.TeamId,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
         }).ToList();
@@ -167,6 +171,7 @@ public class TaskService : ITaskService
     {
         var taskType = await _context.TaskTypes.SingleAsync(tt => tt.Id == request.TaskTypeId);
         var starterState = await _context.TaskStates.SingleAsync(s => s.Id == starterId);
+        var teamId = await _taskFlowService.GetEditRoleId(request.TaskTypeId, starterId);
 
         var task = new BOBA.Server.Data.Task
         {
@@ -175,6 +180,7 @@ public class TaskService : ITaskService
             CreatorId = creatorId,
             CurrentStateId = starterId,
             AssigneeId = creatorId,
+            TeamId = teamId,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -203,5 +209,83 @@ public class TaskService : ITaskService
         _context.Tasks.Update(task);
         await _context.SaveChangesAsync();
         return task.Id;
+    }
+
+    public async Task<List<TaskSummaryDto>> GetClosedTasksByTeamId(string team_id)
+    {
+        var tasks = await _context.Tasks
+             .Where(t => t.TeamId == team_id && t.CurrentState.IsFinal == true) 
+             .Include(t => t.CurrentState)
+             .Include(t => t.TaskType)
+             .ToListAsync();
+
+        var taskDtos = tasks.Select(task => new TaskSummaryDto
+        {
+            Id = task.Id,
+            TaskTypeId = task.TaskTypeId,
+            TaskTypeName = task.TaskType.Name,
+            CreatorId = task.CreatorId,
+            CurrentStateId = task.CurrentStateId,
+            CurrentStateName = task.CurrentState.Name,
+            CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
+            AssigneeId = task.AssigneeId,
+            TeamId = task.TeamId,
+            CreatedAt = task.CreatedAt.ToString("o"),
+            UpdatedAt = task.UpdatedAt.ToString("o")
+        }).ToList();
+
+        return taskDtos;
+    }
+
+    public async Task<List<TaskSummaryDto>> GetUnassignedTasksByTeamId(string team_id)
+    {
+        var tasks = await _context.Tasks
+             .Where(t => t.TeamId == team_id && t.CurrentState.IsFinal == false && t.AssigneeId == null)
+             .Include(t => t.CurrentState)
+             .Include(t => t.TaskType)
+             .ToListAsync();
+
+        var taskDtos = tasks.Select(task => new TaskSummaryDto
+        {
+            Id = task.Id,
+            TaskTypeId = task.TaskTypeId,
+            TaskTypeName = task.TaskType.Name,
+            CreatorId = task.CreatorId,
+            CurrentStateId = task.CurrentStateId,
+            CurrentStateName = task.CurrentState.Name,
+            CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
+            AssigneeId = task.AssigneeId,
+            TeamId = task.TeamId,
+            CreatedAt = task.CreatedAt.ToString("o"),
+            UpdatedAt = task.UpdatedAt.ToString("o")
+        }).ToList();
+
+        return taskDtos;
+    }
+
+    public async Task<List<TaskSummaryDto>> GetAssignedTasksForUserByTeamId(string team_id, string user_id)
+    {
+        var tasks = await _context.Tasks
+             .Where(t => t.TeamId == team_id && t.CurrentState.IsFinal == false && t.AssigneeId == user_id)
+             .Include(t => t.CurrentState)
+             .Include(t => t.TaskType)
+             .ToListAsync();
+
+        var taskDtos = tasks.Select(task => new TaskSummaryDto
+        {
+            Id = task.Id,
+            TaskTypeId = task.TaskTypeId,
+            TaskTypeName = task.TaskType.Name,
+            CreatorId = task.CreatorId,
+            CurrentStateId = task.CurrentStateId,
+            CurrentStateName = task.CurrentState.Name,
+            CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
+            AssigneeId = task.AssigneeId,
+            TeamId = task.TeamId,
+            CreatedAt = task.CreatedAt.ToString("o"),
+            UpdatedAt = task.UpdatedAt.ToString("o")
+        }).ToList();
+
+        return taskDtos;
     }
 }
