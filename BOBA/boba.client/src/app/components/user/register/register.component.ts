@@ -20,7 +20,7 @@ export class RegisterComponent {
     const userData = { username: this.username, email: this.email, password: this.password };
     this.userService.register(userData).subscribe({
       next: (response) => {
-        this.router.navigate(['/userlogin']);
+        this.router.navigate(['/user  login']);
         console.log('success');
       },
       error: (err) => {
