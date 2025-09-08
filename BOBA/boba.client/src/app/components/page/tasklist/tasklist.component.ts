@@ -19,7 +19,7 @@ export class TasklistComponent implements OnInit {
   }
 
   loadTaskTypes(): void {
-  this.apiService.task_GetTaskTypes().subscribe(
+  this.apiService.task_GetAllTaskTypes().subscribe(
     (data) => {
       this.taskTypes = data.map(item => TaskTypeDto.fromJS(item));
     },

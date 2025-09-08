@@ -8,9 +8,6 @@ public interface ITaskService
 {
     Task<List<TaskTypeDto>> GetTaskTypes();
     Task<TaskSummaryDto> GetTask(string taskId);
-    Task<TaskFlowSummaryDto> GetTaskFlow(string taskId);
-    Task<List<ChoiceSummaryDto>> GetChoices(List<string> ids);
-    Task<string> GetTaskStateName(string stateId);
     Task<List<TaskSummaryDto>> GetUserTasks(string userId);
     Task<List<TaskSummaryDto>> GetClosedTasksByTeamId(string team_id);
     Task<List<TaskSummaryDto>> GetUnassignedTasksByTeamId(string team_id);
