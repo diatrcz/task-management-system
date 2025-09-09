@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TaskService } from '../../../services/task/task.service';
 import { TaskSummary } from '../../../models/TaskSummary';
+import { ApiService } from '../../../services/api-service.service';
 
 @Component({
     selector: 'app-user-task-list',
@@ -16,7 +16,7 @@ export class UserTaskListComponent implements OnInit{
   constructor(
       private router: Router,
       private route: ActivatedRoute,
-      private taskService: TaskService
+      private apiService: ApiService
     ) {}
 
   ngOnInit(): void {
@@ -33,10 +33,10 @@ export class UserTaskListComponent implements OnInit{
       this.route.paramMap.subscribe(params => {
         const type = params.get('type');
         if (type !== null) {
-          this.listType = type; 
+          this.listType = type;
         }
         console.log(this.listType);
-        resolve(); 
+        resolve();
       });
     });
   }
@@ -44,7 +44,7 @@ export class UserTaskListComponent implements OnInit{
   loadTasks():Promise<void> {
     return new Promise((resolve, reject) => {
       if(this.listType == 'closed-tasks') {
-        this.taskService.getClosedTasks().subscribe({
+        /*this.apiService.task_GetClosedTasksByTeamId().subscribe({
           next: (tasks) => {
             this.tasks = tasks;
             console.log(this.tasks);
@@ -54,10 +54,10 @@ export class UserTaskListComponent implements OnInit{
             console.error('Error loading tasks:', err);
             reject(err);
           }
-        });
+        });*/
       }
       else if(this.listType == 'my-tasks') {
-        this.taskService.getOwnTasks().subscribe({
+        /*this.apiService.getOwnTasks().subscribe({
           next: (tasks) => {
             this.tasks = tasks;
             console.log(this.tasks);
@@ -67,7 +67,7 @@ export class UserTaskListComponent implements OnInit{
             console.error('Error loading tasks:', err);
             reject(err);
           }
-        });
+        });*/
 
       }
     });

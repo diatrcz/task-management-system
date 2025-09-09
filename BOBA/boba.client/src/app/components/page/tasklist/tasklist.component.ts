@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TaskService } from '../../../services/task/task.service';
 import { Router } from '@angular/router';
-import { ApiService, TaskTypeDto } from '../../../services/api-service.service';
+import { ApiService, CreateTaskRequest, TaskTypeDto } from '../../../services/api-service.service';
 
 @Component({
     selector: 'app-tasklist',
@@ -12,7 +11,7 @@ import { ApiService, TaskTypeDto } from '../../../services/api-service.service';
 export class TasklistComponent implements OnInit {
   taskTypes: any[] = [];
 
-  constructor(private taskService: TaskService, private apiService: ApiService, private router: Router) {}
+  constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadTaskTypes();
@@ -32,7 +31,10 @@ export class TasklistComponent implements OnInit {
 
   startTask(taskTypeId: string): void {
     console.log(taskTypeId);
-    this.taskService.startTask(taskTypeId).subscribe(
+
+    const request = new CreateTaskRequest({ taskTypeId });
+
+    this.apiService.task_CreateTask(request).subscribe(
       (response) => {
         console.log('Task started successfully', response);
         this.router.navigate(['/task-details', response]);

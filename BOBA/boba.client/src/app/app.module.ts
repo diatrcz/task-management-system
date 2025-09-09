@@ -25,13 +25,13 @@ import { FormsModule } from '@angular/forms';
         TasklistComponent,
         UserTaskListComponent
     ],
-    bootstrap: [AppComponent], 
-    imports: 
+    bootstrap: [AppComponent],
+    imports:
     [
         BrowserModule,
         AppRoutingModule,
         FormsModule
-    ], 
+    ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         AuthGuard,

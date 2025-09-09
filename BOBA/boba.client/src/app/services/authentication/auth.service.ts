@@ -5,20 +5,17 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class AuthService {
-  userId: string | null = null;
   accessToken: string | null = null;
   refreshToken: string | null = null;
 
   constructor(private http: HttpClient) { }
 
-  setLoggedInUser(userId: string, accessToken: string, refreshToken: string) {
-    this.userId = userId;
+  setLoggedInUser(accessToken: string, refreshToken: string) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
   }
 
   clearLoggedInUser() {
-    this.userId = null;
     this.accessToken = null;
     this.refreshToken = null;
   }

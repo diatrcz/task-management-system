@@ -748,7 +748,7 @@ export class ApiService {
         return _observableOf(null as any);
     }
 
-    task_GetTaskById(task_id: string): Observable<TaskTypeDto> {
+    task_GetTaskById(task_id: string): Observable<TaskSummaryDto> {
         let url_ = this.baseUrl + "/api/tasks/{task_id}";
         if (task_id === undefined || task_id === null)
             throw new globalThis.Error("The parameter 'task_id' must be defined.");
@@ -770,14 +770,14 @@ export class ApiService {
                 try {
                     return this.processTask_GetTaskById(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<TaskTypeDto>;
+                    return _observableThrow(e) as any as Observable<TaskSummaryDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<TaskTypeDto>;
+                return _observableThrow(response_) as any as Observable<TaskSummaryDto>;
         }));
     }
 
-    protected processTask_GetTaskById(response: HttpResponseBase): Observable<TaskTypeDto> {
+    protected processTask_GetTaskById(response: HttpResponseBase): Observable<TaskSummaryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -788,7 +788,7 @@ export class ApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TaskTypeDto.fromJS(resultData200);
+            result200 = TaskSummaryDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2176,46 +2176,6 @@ export interface ITaskTypeDto {
     name?: string;
 }
 
-export class MoveTaskRequest implements IMoveTaskRequest {
-    choiceId?: string;
-    taskId?: string;
-
-    constructor(data?: IMoveTaskRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.choiceId = _data["choiceId"];
-            this.taskId = _data["taskId"];
-        }
-    }
-
-    static fromJS(data: any): MoveTaskRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new MoveTaskRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["choiceId"] = this.choiceId;
-        data["taskId"] = this.taskId;
-        return data;
-    }
-}
-
-export interface IMoveTaskRequest {
-    choiceId?: string;
-    taskId?: string;
-}
-
 export class TaskSummaryDto implements ITaskSummaryDto {
     id?: string;
     taskTypeId?: string;
@@ -2290,6 +2250,46 @@ export interface ITaskSummaryDto {
     teamId?: string;
     updatedAt?: string;
     createdAt?: string;
+}
+
+export class MoveTaskRequest implements IMoveTaskRequest {
+    choiceId?: string;
+    taskId?: string;
+
+    constructor(data?: IMoveTaskRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.choiceId = _data["choiceId"];
+            this.taskId = _data["taskId"];
+        }
+    }
+
+    static fromJS(data: any): MoveTaskRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new MoveTaskRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["choiceId"] = this.choiceId;
+        data["taskId"] = this.taskId;
+        return data;
+    }
+}
+
+export interface IMoveTaskRequest {
+    choiceId?: string;
+    taskId?: string;
 }
 
 export class TaskFlowSummaryDto implements ITaskFlowSummaryDto {

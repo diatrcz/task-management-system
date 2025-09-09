@@ -104,7 +104,7 @@ namespace BOBA.Server.Controllers
 
             var creatorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var taskId = await _taskService.CreateTask(request, creatorId);
-            return Ok(new { taskId });
+            return Ok(taskId);
         }
 
         [HttpGet("tasks/types")]
@@ -118,7 +118,7 @@ namespace BOBA.Server.Controllers
         }
 
         [HttpGet("tasks/{task_id}")]
-        public async Task<ActionResult<TaskTypeDto>> GetTaskById([FromRoute] string task_id)
+        public async Task<ActionResult<TaskSummaryDto>> GetTaskById([FromRoute] string task_id)
         {
             var task = await _taskService.GetTask(task_id);
             return Ok(task);
