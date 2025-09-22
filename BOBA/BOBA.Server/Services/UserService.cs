@@ -56,4 +56,33 @@ public class UserService : IUserService
             Teams = user.Teams.Select(t => t.Id).ToList()
         };
     }
+
+    public async Task<List<TeamSummaryDto>> GetTeamsByUserId(string userId) 
+    {
+        var teams = await _context.Users
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.Teams)
+            .ToListAsync();
+
+        var teamDtos = teams.Select(team => new TeamSummaryDto
+        { 
+            Id = team.Id,
+            Name = team.Name
+        }).ToList();
+
+        return teamDtos;
+    }
+
+    public async Task<List<TeamSummaryDto>> GetTeams()
+    {
+        var teams = await _context.Teams.ToListAsync();
+
+        var teamDtos = teams.Select(team => new TeamSummaryDto 
+        {
+            Id = team.Id,
+            Name= team.Name
+        }).ToList();
+
+        return teamDtos;
+    }
 }

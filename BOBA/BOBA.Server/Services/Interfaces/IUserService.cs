@@ -9,4 +9,6 @@ public interface IUserService
     Task<string?> GetUserNameById(string userId);
     Task<Role?> GetUserType(string userId);
     Task<UserDto?> GetUserInfo(string userId);
+    Task<List<TeamSummaryDto>> GetTeamsByUserId(string userId);
+    Task<List<TeamSummaryDto>> GetTeams();
 }

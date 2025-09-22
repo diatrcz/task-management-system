@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TaskSummary } from '../../../models/TaskSummary';
 import { ApiService } from '../../../services/api-service.service';
 
 @Component({
@@ -11,7 +10,7 @@ import { ApiService } from '../../../services/api-service.service';
 })
 export class UserTaskListComponent implements OnInit{
   listType!: string;
-  tasks!: TaskSummary[];
+  tasks!: any[];
 
   constructor(
       private router: Router,

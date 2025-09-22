@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TaskSummary } from '../../../models/TaskSummary';
-import { TaskFlowSummary } from '../../../models/TaskFlowSummary';
-import { ChoiceSummary } from '../../../models/ChoiceSummary';
 import { response } from 'express';
 import { ApiService, ChoiceSummaryDto, MoveTaskRequest, TaskFlowSummaryDto, TaskSummaryDto } from '../../../services/api-service.service';
 
@@ -61,7 +58,7 @@ export class TaskDetailsComponent implements OnInit{
       this.apiService.task_GetTaskById(this.taskId).subscribe({
         next: (task) => {
           this.task = task;
-          console.log(this.task); // should now be TaskTypeDto
+          console.log(this.task);
           resolve();
         },
         error: (err) => {
