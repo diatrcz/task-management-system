@@ -1029,6 +1029,124 @@ export class ApiService {
         return _observableOf(null as any);
     }
 
+    task_GetExternalTasksByTeamId(team_id: string): Observable<TaskSummaryDto[]> {
+        let url_ = this.baseUrl + "/api/tasks/teams/{team_id}/external";
+        if (team_id === undefined || team_id === null)
+            throw new globalThis.Error("The parameter 'team_id' must be defined.");
+        url_ = url_.replace("{team_id}", encodeURIComponent("" + team_id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTask_GetExternalTasksByTeamId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTask_GetExternalTasksByTeamId(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TaskSummaryDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TaskSummaryDto[]>;
+        }));
+    }
+
+    protected processTask_GetExternalTasksByTeamId(response: HttpResponseBase): Observable<TaskSummaryDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(TaskSummaryDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    task_GetTasksCount(team_id: string): Observable<{ [key: string]: number; }> {
+        let url_ = this.baseUrl + "/api/tasks/teams/{team_id}/count";
+        if (team_id === undefined || team_id === null)
+            throw new globalThis.Error("The parameter 'team_id' must be defined.");
+        url_ = url_.replace("{team_id}", encodeURIComponent("" + team_id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTask_GetTasksCount(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTask_GetTasksCount(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: number; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: number; }>;
+        }));
+    }
+
+    protected processTask_GetTasksCount(response: HttpResponseBase): Observable<{ [key: string]: number; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (result200 as any)![key] = resultData200[key] !== undefined ? resultData200[key] : null as any;
+                }
+            }
+            else {
+                result200 = null as any;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     taskFlow_GetTaskFlow(task_id: string): Observable<TaskFlowSummaryDto> {
         let url_ = this.baseUrl + "/api/taskflows/{task_id}";
         if (task_id === undefined || task_id === null)
@@ -2212,6 +2330,7 @@ export interface IInfoRequest {
 
 export class CreateTaskRequest implements ICreateTaskRequest {
     taskTypeId!: string;
+    teamId!: string;
 
     constructor(data?: ICreateTaskRequest) {
         if (data) {
@@ -2225,6 +2344,7 @@ export class CreateTaskRequest implements ICreateTaskRequest {
     init(_data?: any) {
         if (_data) {
             this.taskTypeId = _data["taskTypeId"];
+            this.teamId = _data["teamId"];
         }
     }
 
@@ -2238,12 +2358,14 @@ export class CreateTaskRequest implements ICreateTaskRequest {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["taskTypeId"] = this.taskTypeId;
+        data["teamId"] = this.teamId;
         return data;
     }
 }
 
 export interface ICreateTaskRequest {
     taskTypeId: string;
+    teamId: string;
 }
 
 export class TaskTypeDto implements ITaskTypeDto {

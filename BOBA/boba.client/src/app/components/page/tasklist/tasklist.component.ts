@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService, CreateTaskRequest, TaskTypeDto } from '../../../services/api-service.service';
+import { AuthService } from '../../../services/authentication/auth.service';
 
 @Component({
     selector: 'app-tasklist',
@@ -11,7 +12,11 @@ import { ApiService, CreateTaskRequest, TaskTypeDto } from '../../../services/ap
 export class TasklistComponent implements OnInit {
   taskTypes: any[] = [];
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loadTaskTypes();
@@ -32,7 +37,8 @@ export class TasklistComponent implements OnInit {
   startTask(taskTypeId: string): void {
     console.log(taskTypeId);
 
-    const request = new CreateTaskRequest({ taskTypeId });
+    const teamId = this.authService.getTeam()?.id!;
+    const request = new CreateTaskRequest({ taskTypeId, teamId });
 
     this.apiService.task_CreateTask(request).subscribe(
       (response) => {

@@ -22,16 +22,17 @@ namespace BOBA.Server.Controllers
         [HttpPost("tasks")]
         public async Task<ActionResult<string>> CreateTask([FromBody] CreateTaskRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var creatorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var taskId = await _taskService.CreateTask(request, creatorId);
+
+            if (taskId == null)
+                return BadRequest(ModelState);
+
             return Ok(taskId);
         }
 
         [HttpGet("tasks/types")]
-        public async Task<ActionResult<List<TaskTypeDto>>> GetAllTaskTypes() 
+        public async Task<ActionResult<List<TaskTypeDto>>> GetAllTaskTypes()
         {
             var taskTypes = await _taskService.GetTaskTypes();
             if (taskTypes == null || taskTypes.Count == 0)
@@ -49,15 +50,15 @@ namespace BOBA.Server.Controllers
 
         [HttpPatch("tasks/{task_id}")]
         public async Task<ActionResult<string>> UpdateTask(
-            [FromRoute] string task_id, 
+            [FromRoute] string task_id,
             [FromBody] MoveTaskRequest request
-        ){
+        ) {
             var taskId = await _taskService.MoveTask(request);
             return Ok();
         }
 
         [HttpGet("tasks/teams/{team_id}/closed")]
-        public async Task<ActionResult<List<TaskSummaryDto>>> GetClosedTasksByTeamId([FromRoute] string team_id) 
+        public async Task<ActionResult<List<TaskSummaryDto>>> GetClosedTasksByTeamId([FromRoute] string team_id)
         {
             var tasks = await _taskService.GetClosedTasksByTeamId(team_id);
             return Ok(tasks);
@@ -79,6 +80,24 @@ namespace BOBA.Server.Controllers
             return Ok(tasks);
         }
 
+        [HttpGet("tasks/teams/{team_id}/external")]
+        public async Task<ActionResult<List<TaskSummaryDto>>> GetExternalTasksByTeamId([FromRoute] string team_id)
+        {
+            var tasks = await _taskService.GetExternalTasksByTeamId(team_id);
+
+            return Ok(tasks);
+        }
+
+        [HttpGet("tasks/teams/{team_id}/count")]
+        public async Task<ActionResult<Dictionary<string, int>>> GetTasksCount([FromRoute]string team_id)
+        {
+            var user_id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var taskcounts = await _taskService.GetTasksCount(team_id, user_id);
+
+            return Ok(taskcounts);
+
+        }
 
     }
 

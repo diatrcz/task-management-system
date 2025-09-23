@@ -118,21 +118,27 @@ public class TaskService : ITaskService
         var starterState = await _context.TaskStates.SingleAsync(s => s.Id == starterId);
         var teamId = await _taskFlowService.GetEditRoleId(request.TaskTypeId, starterId);
 
-        var task = new BOBA.Server.Data.Task
+        if (teamId == request.TeamId) 
         {
-            Id = Guid.NewGuid().ToString(),
-            TaskTypeId = request.TaskTypeId,
-            CreatorId = creatorId,
-            CurrentStateId = starterId,
-            AssigneeId = creatorId,
-            TeamId = teamId,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
+            var task = new BOBA.Server.Data.Task
+            {
+                Id = Guid.NewGuid().ToString(),
+                TaskTypeId = request.TaskTypeId,
+                CreatorId = creatorId,
+                CreatorTeamId = request.TeamId,
+                CurrentStateId = starterId,
+                AssigneeId = creatorId,
+                TeamId = teamId,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
 
-        _context.Tasks.Add(task);
-        await _context.SaveChangesAsync();
-        return task.Id;
+            _context.Tasks.Add(task);
+            await _context.SaveChangesAsync();
+            return task.Id;
+        }
+
+        return null;
     }
 
     public async Task<string> MoveTask(MoveTaskRequest request)
@@ -233,4 +239,54 @@ public class TaskService : ITaskService
 
         return taskDtos;
     }
+
+    public async Task<List<TaskSummaryDto>> GetExternalTasksByTeamId(string team_id)
+    {
+        var tasks = await _context.Tasks
+            .Where(t => t.CreatorTeamId == team_id && t.CurrentState.IsFinal == false)
+            .Include(t => t.CurrentState)
+            .Include(t => t.TaskType)
+            .ToListAsync();
+
+        var taskDtos = tasks.Select(task => new TaskSummaryDto
+        {
+            Id = task.Id,
+            TaskTypeId = task.TaskTypeId,
+            TaskTypeName = task.TaskType.Name,
+            CreatorId = task.CreatorId,
+            CurrentStateId = task.CurrentStateId,
+            CurrentStateName = task.CurrentState.Name,
+            CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
+            AssigneeId = task.AssigneeId,
+            TeamId = task.TeamId,
+            CreatedAt = task.CreatedAt.ToString("o"),
+            UpdatedAt = task.UpdatedAt.ToString("o")
+        }).ToList();
+
+        return taskDtos;
+    }
+
+    public async Task<Dictionary<string, int>> GetTasksCount(string teamId, string userId)
+    {
+        var counts = await _context.Tasks
+            .Where(t => t.TeamId == teamId)
+            .GroupBy(t => 1) // trick to aggregate into one row
+            .Select(g => new
+            {
+                MyTasks = g.Count(t => !t.CurrentState.IsFinal && t.AssigneeId == userId),
+                UnassignedTasks = g.Count(t => !t.CurrentState.IsFinal && t.AssigneeId == null),
+                ExternalTasks = g.Count(t => !t.CurrentState.IsFinal && t.CreatorTeamId == teamId),
+                ClosedTasks = g.Count(t => t.CurrentState.IsFinal)
+            })
+            .FirstOrDefaultAsync();
+
+        return new Dictionary<string, int>
+        {
+            ["my-tasks"] = counts?.MyTasks ?? 0,
+            ["unassigned-tasks"] = counts?.UnassignedTasks ?? 0,
+            ["external-tasks"] = counts?.ExternalTasks ?? 0,
+            ["closed-tasks"] = counts?.ClosedTasks ?? 0
+        };
+    }
+
 }
