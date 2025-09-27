@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BOBA.Server.Data.model;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
 
-namespace BOBA.Server.Data
+namespace BOBA.Server.Data.implementation
 {
     //List of tasks users have started
     public class Task

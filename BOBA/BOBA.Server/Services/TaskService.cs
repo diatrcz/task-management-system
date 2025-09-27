@@ -120,7 +120,7 @@ public class TaskService : ITaskService
 
         if (teamId == request.TeamId) 
         {
-            var task = new BOBA.Server.Data.Task
+            var task = new BOBA.Server.Data.implementation.Task
             {
                 Id = Guid.NewGuid().ToString(),
                 TaskTypeId = request.TaskTypeId,
@@ -156,6 +156,7 @@ public class TaskService : ITaskService
         task.CurrentStateId = nextStateItem.NextStateId;
         task.UpdatedAt = DateTime.UtcNow;
         task.AssigneeId = null;
+        //task.TeamId = taskflow.EditRoleId;
 
         _context.Tasks.Update(task);
         await _context.SaveChangesAsync();

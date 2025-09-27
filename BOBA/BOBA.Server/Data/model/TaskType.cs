@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BOBA.Server.Data;
+namespace BOBA.Server.Data.model;
 
-public class Choice
+public class TaskType
 {
     [Key]
     public string Id { get; set; }
@@ -13,4 +13,6 @@ public class Choice
 
     [StringLength(500)]
     public string Description { get; set; }
+
+    public virtual ICollection<TaskDocType> DocTypes { get; set; } = new List<TaskDocType>();
 }

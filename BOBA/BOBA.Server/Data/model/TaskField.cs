@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BOBA.Server.Data;
+namespace BOBA.Server.Data.model;
 
-public class TaskType
+public class TaskField
 {
     [Key]
     public string Id { get; set; }
@@ -14,5 +14,9 @@ public class TaskType
     [StringLength(500)]
     public string Description { get; set; }
 
-    public virtual ICollection<TaskDocType> DocTypes { get; set; } = new List<TaskDocType>();
+    [StringLength(100)]
+    public string? Validation { get; set; }
+
+    [StringLength(1000)]
+    public string? Options { get; set; }
 }

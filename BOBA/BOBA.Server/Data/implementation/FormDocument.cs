@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BOBA.Server.Data.model;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BOBA.Server.Data;
+namespace BOBA.Server.Data.implementation;
 
 public class FormDocument
 {

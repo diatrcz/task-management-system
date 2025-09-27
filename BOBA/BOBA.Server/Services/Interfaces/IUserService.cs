@@ -1,5 +1,5 @@
 ﻿using BOBA.Server.Models.Dto;
-using BOBA.Server.Data;
+using BOBA.Server.Data.model;
 
 namespace BOBA.Server.Services.Interfaces;
 

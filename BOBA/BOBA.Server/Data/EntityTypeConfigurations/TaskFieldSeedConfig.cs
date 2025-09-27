@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using BOBA.Server.Data.model;
 
 namespace BOBA.Server.Data.EntityTypeConfigurations;
 

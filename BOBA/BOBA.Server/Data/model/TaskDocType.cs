@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BOBA.Server.Data;
+namespace BOBA.Server.Data.model;
 
 public class TaskDocType
 {
