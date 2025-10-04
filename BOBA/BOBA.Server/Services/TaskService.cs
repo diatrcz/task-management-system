@@ -116,9 +116,8 @@ public class TaskService : ITaskService
     {
         var taskType = await _context.TaskTypes.SingleAsync(tt => tt.Id == request.TaskTypeId);
         var starterState = await _context.TaskStates.SingleAsync(s => s.Id == starterId);
-        var teamId = await _taskFlowService.GetEditRoleId(request.TaskTypeId, starterId);
 
-        if (teamId == request.TeamId) 
+        if (taskType.StarterTeamId == request.TeamId) 
         {
             var task = new BOBA.Server.Data.implementation.Task
             {
@@ -128,7 +127,7 @@ public class TaskService : ITaskService
                 CreatorTeamId = request.TeamId,
                 CurrentStateId = starterId,
                 AssigneeId = creatorId,
-                TeamId = teamId,
+                TeamId = taskType.StarterTeamId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -156,7 +155,7 @@ public class TaskService : ITaskService
         task.CurrentStateId = nextStateItem.NextStateId;
         task.UpdatedAt = DateTime.UtcNow;
         task.AssigneeId = null;
-        //task.TeamId = taskflow.EditRoleId;
+        task.TeamId = nextStateItem.EditRoleId;
 
         _context.Tasks.Update(task);
         await _context.SaveChangesAsync();
@@ -166,7 +165,7 @@ public class TaskService : ITaskService
     public async Task<List<TaskSummaryDto>> GetClosedTasksByTeamId(string team_id)
     {
         var tasks = await _context.Tasks
-             .Where(t => t.TeamId == team_id && t.CurrentState.IsFinal == true) 
+             .Where(t => (t.CreatorTeamId == team_id || t.TeamId == team_id) && t.CurrentState.IsFinal == true) 
              .Include(t => t.CurrentState)
              .Include(t => t.TaskType)
              .ToListAsync();
@@ -270,16 +269,17 @@ public class TaskService : ITaskService
     public async Task<Dictionary<string, int>> GetTasksCount(string teamId, string userId)
     {
         var counts = await _context.Tasks
-            .Where(t => t.TeamId == teamId)
-            .GroupBy(t => 1) // trick to aggregate into one row
+            .Where(t => t.TeamId == teamId || t.CreatorTeamId == teamId)
+            .GroupBy(t => 1)
             .Select(g => new
             {
-                MyTasks = g.Count(t => !t.CurrentState.IsFinal && t.AssigneeId == userId),
-                UnassignedTasks = g.Count(t => !t.CurrentState.IsFinal && t.AssigneeId == null),
-                ExternalTasks = g.Count(t => !t.CurrentState.IsFinal && t.CreatorTeamId == teamId),
-                ClosedTasks = g.Count(t => t.CurrentState.IsFinal)
+                MyTasks = g.Count(t => !t.CurrentState.IsFinal && t.AssigneeId == userId && t.TeamId == teamId),
+                UnassignedTasks = g.Count(t => !t.CurrentState.IsFinal && t.AssigneeId == null && t.TeamId == teamId),
+                ExternalTasks = g.Count(t => !t.CurrentState.IsFinal && t.CreatorTeamId == teamId && t.TeamId != teamId),
+                ClosedTasks = g.Count(t => t.CurrentState.IsFinal && (t.TeamId == teamId || t.CreatorTeamId == teamId))
             })
             .FirstOrDefaultAsync();
+
 
         return new Dictionary<string, int>
         {
