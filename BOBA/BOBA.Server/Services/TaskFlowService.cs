@@ -1,5 +1,6 @@
 ﻿using BOBA.Server.Data;
 using BOBA.Server.Data.model;
+using BOBA.Server.Models;
 using BOBA.Server.Models.Dto;
 using BOBA.Server.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,28 @@ namespace BOBA.Server.Services
                     NextStateId = ns.NextStateId
                 }).ToList(),
                 EditRoleId = taskflow.EditRoleId,
-                ReadOnlyRole = taskflow.ReadOnlyRole.Select(team => team.Id).ToList()
+                ReadOnlyRole = taskflow.ReadOnlyRole.Select(team => team.Id).ToList(),
+                FormFields = taskflow.FormField.Select(ff => new FormJsonDto
+                {
+                    Layout = new LayoutDto
+                    {
+                        Type = ff.Layout.Type,
+                        Columns = ff.Layout.Columns,
+                        GapClasses = ff.Layout.GapClasses
+                    },
+                    Fields = ff.Fields.Select(f => new FieldDto
+                    {
+                        FieldId = f.FieldId,
+                        Required = f.Required,
+                        Disabled = f.Disabled,
+                        Rows = f.Rows,
+                        StyleClasses = new StyleClassesDto
+                        {
+                            Label = f.StyleClasses.Label,
+                            Input = f.StyleClasses.Input
+                        }
+                    }).ToList()
+                }).ToList()
             };
 
             return taskFlowDto;

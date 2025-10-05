@@ -60,6 +60,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskFlowService, TaskFlowService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFormService, FormService>();
 
 builder.Services.AddCors(options =>
 {

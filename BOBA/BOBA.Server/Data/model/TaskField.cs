@@ -23,6 +23,9 @@ public class TaskField
     [StringLength(100)]
     public string? Validation { get; set; }
 
+    [StringLength(100)]
+    public string? ValidationErrorMessage { get; set; }
+
     [StringLength(1000)]
     public string? Options { get; set; }
 }

@@ -12,32 +12,32 @@ public class TaskTypeSeedConfig : IEntityTypeConfiguration<TaskType>
             new TaskType 
             { 
                 Id = "1", 
-                Name = "Social Media Campaign", 
-                Description = "Plan, create, and schedule posts for social media platforms." 
+                Name = "Social Media Campaign",
+                StarterTeamId = "1"
             },
             new TaskType 
             { 
                 Id = "2", 
-                Name = "Ad Campaign", 
-                Description = "Create and manage an advertising campaign across different channels." 
+                Name = "Ad Campaign",
+                StarterTeamId = "1"
             },
             new TaskType 
             { 
                 Id = "3", 
-                Name = "Email Marketing", 
-                Description = "Design and send promotional emails to targeted audiences." 
+                Name = "Email Marketing",
+                StarterTeamId = "2"
             },
             new TaskType 
             { 
                 Id = "4", 
-                Name = "SEO Optimization", 
-                Description = "Improve website SEO through keyword research and content updates." 
+                Name = "SEO Optimization",
+                StarterTeamId = "3"
             },
             new TaskType 
             { 
                 Id = "5",
                 Name = "Market Research",
-                Description = "Analyze competitors, customer behavior, and industry trends." 
+                StarterTeamId = "4"
             }
         );
     }

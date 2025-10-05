@@ -16,6 +16,7 @@ public class TaskFieldSeedConfig : IEntityTypeConfiguration<TaskField>
                 Type =  "text",
                 Label = "First Name",
                 Validation = "^[A-Za-z]+$",
+                ValidationErrorMessage = "Name should only contain letters!"
             },
             new TaskField
             {
@@ -24,6 +25,7 @@ public class TaskFieldSeedConfig : IEntityTypeConfiguration<TaskField>
                 Type =  "text",
                 Label = "Last Name",
                 Validation = "^[A-Za-z]+$",
+                ValidationErrorMessage = "Name should only contain letters!"
             },
             new TaskField
             {
@@ -32,7 +34,7 @@ public class TaskFieldSeedConfig : IEntityTypeConfiguration<TaskField>
                 Type =  "email",
                 Label = "E-mail",
                 Placeholder = "email@email.com",
-                Validation = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+                Validation = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
             },
             new TaskField
             {
@@ -42,6 +44,7 @@ public class TaskFieldSeedConfig : IEntityTypeConfiguration<TaskField>
                 Label = "Phone Number",
                 Placeholder = "+36201234567",
                 Validation = "^\\+?[0-9\\s\\-()]{7,15}$",
+                ValidationErrorMessage = "Doesn't match phone number pattern!"
             },
             new TaskField
             {
@@ -57,6 +60,7 @@ public class TaskFieldSeedConfig : IEntityTypeConfiguration<TaskField>
                 Type = "text" ,
                 Label = "City",
                 Validation = "^[A-Za-z]+$",
+                ValidationErrorMessage = "Field should only contain letters!"
             },
             new TaskField
             {
@@ -65,6 +69,7 @@ public class TaskFieldSeedConfig : IEntityTypeConfiguration<TaskField>
                 Type =  "text",
                 Label = "State",
                 Validation = "^[A-Za-z]+$",
+                ValidationErrorMessage = "Field should only contain letters!"
             },
             new TaskField
             {
@@ -73,6 +78,7 @@ public class TaskFieldSeedConfig : IEntityTypeConfiguration<TaskField>
                 Type =  "text",
                 Label = "Zip",
                 Validation = "^[0-9]+$",
+                ValidationErrorMessage = "Field should only contain numbers!"
             },
             new TaskField
             {
