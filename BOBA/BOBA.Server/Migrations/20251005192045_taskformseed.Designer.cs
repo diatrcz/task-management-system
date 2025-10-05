@@ -4,6 +4,7 @@ using BOBA.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BOBA.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251005192045_taskformseed")]
+    partial class taskformseed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -351,10 +354,10 @@ namespace BOBA.Server.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Label")
+                    b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -364,15 +367,6 @@ namespace BOBA.Server.Migrations
                     b.Property<string>("Options")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("Placeholder")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Validation")
                         .HasMaxLength(100)
@@ -386,74 +380,38 @@ namespace BOBA.Server.Migrations
                         new
                         {
                             Id = "1",
-                            Label = "First Name",
-                            Name = "firstName",
-                            Type = "text",
-                            Validation = "^[A-Za-z]+$"
+                            Description = "Deadline for task completion.",
+                            Name = "Due Date",
+                            Validation = "^\\d{4}-\\d{2}-\\d{2}$"
                         },
                         new
                         {
                             Id = "2",
-                            Label = "Last Name",
-                            Name = "lastName",
-                            Type = "text",
-                            Validation = "^[A-Za-z]+$"
+                            Description = "Task urgency level.",
+                            Name = "Priority",
+                            Options = "Low,Medium,High,Urgent",
+                            Validation = "^(Low|Medium|High|Urgent)$"
                         },
                         new
                         {
                             Id = "3",
-                            Label = "E-mail",
-                            Name = "email",
-                            Placeholder = "email@email.com",
-                            Type = "email",
-                            Validation = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+                            Description = "Person responsible for the task.",
+                            Name = "Assigned To"
                         },
                         new
                         {
                             Id = "4",
-                            Label = "Phone Number",
-                            Name = "phone",
-                            Placeholder = "+36201234567",
-                            Type = "text",
-                            Validation = "^\\+?[0-9\\s\\-()]{7,15}$"
+                            Description = "Marketing channel the task belongs to.",
+                            Name = "Channel",
+                            Options = "Email,Social Media,SEO,Paid Ads,Events",
+                            Validation = "^(Email|Social Media|SEO|Paid Ads|Events)$"
                         },
                         new
                         {
                             Id = "5",
-                            Label = "Address",
-                            Name = "address",
-                            Type = "text"
-                        },
-                        new
-                        {
-                            Id = "6",
-                            Label = "City",
-                            Name = "city",
-                            Type = "text",
-                            Validation = "^[A-Za-z]+$"
-                        },
-                        new
-                        {
-                            Id = "7",
-                            Label = "State",
-                            Name = "state",
-                            Type = "text",
-                            Validation = "^[A-Za-z]+$"
-                        },
-                        new
-                        {
-                            Id = "8",
-                            Label = "Zip",
-                            Name = "zip",
-                            Type = "text",
-                            Validation = "^[0-9]+$"
-                        },
-                        new
-                        {
-                            Id = "9",
-                            Label = "Additional Notes",
-                            Name = "notes",
-                            Type = "textarea"
+                            Description = "Estimated task budget.",
+                            Name = "Budget",
+                            Validation = "^\\d+(\\.\\d{1,2})?$"
                         });
                 });
 

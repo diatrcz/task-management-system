@@ -12,42 +12,74 @@ public class TaskFieldSeedConfig : IEntityTypeConfiguration<TaskField>
             new TaskField
             {
                 Id = "1",
-                Name = "Due Date",
-                Description = "Deadline for task completion.",
-                Validation = @"^\d{4}-\d{2}-\d{2}$",
-                Options = null
+                Name = "firstName",
+                Type =  "text",
+                Label = "First Name",
+                Validation = "^[A-Za-z]+$",
             },
             new TaskField
             {
                 Id = "2",
-                Name = "Priority",
-                Description = "Task urgency level.",
-                Validation = @"^(Low|Medium|High|Urgent)$",
-                Options = "Low,Medium,High,Urgent"
+                Name = "lastName",
+                Type =  "text",
+                Label = "Last Name",
+                Validation = "^[A-Za-z]+$",
             },
             new TaskField
             {
                 Id = "3",
-                Name = "Assigned To",
-                Description = "Person responsible for the task.",
-                Validation = null,
-                Options = null
+                Name = "email",
+                Type =  "email",
+                Label = "E-mail",
+                Placeholder = "email@email.com",
+                Validation = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
             },
             new TaskField
             {
                 Id = "4",
-                Name = "Channel",
-                Description = "Marketing channel the task belongs to.",
-                Validation = @"^(Email|Social Media|SEO|Paid Ads|Events)$",
-                Options = "Email,Social Media,SEO,Paid Ads,Events"
+                Name = "phone",
+                Type =  "text",
+                Label = "Phone Number",
+                Placeholder = "+36201234567",
+                Validation = "^\\+?[0-9\\s\\-()]{7,15}$",
             },
             new TaskField
             {
                 Id = "5",
-                Name = "Budget",
-                Description = "Estimated task budget.",
-                Validation = @"^\d+(\.\d{1,2})?$",
-                Options = null
+                Name = "address",
+                Type =  "text",
+                Label = "Address",
+            },
+            new TaskField
+            {
+                Id = "6",
+                Name = "city",
+                Type = "text" ,
+                Label = "City",
+                Validation = "^[A-Za-z]+$",
+            },
+            new TaskField
+            {
+                Id = "7",
+                Name = "state",
+                Type =  "text",
+                Label = "State",
+                Validation = "^[A-Za-z]+$",
+            },
+            new TaskField
+            {
+                Id = "8",
+                Name = "zip",
+                Type =  "text",
+                Label = "Zip",
+                Validation = "^[0-9]+$",
+            },
+            new TaskField
+            {
+                Id = "9",
+                Name = "notes",
+                Type = "textarea",
+                Label = "Additional Notes",
             }
         );
     }

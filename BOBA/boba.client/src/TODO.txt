@@ -6,167 +6,263 @@ FRONTEND
 
 minta json:
 
-"sections": [
+"Id": "firstName",
+"Type": "text",
+"Label": "First Name",
+"Placeholder": "",
+
+[
   {
-    "id": "personalInfo",
-    "layout": {
-      "type": "grid",
-      "columns": 2,
-      "gapClasses": "gap-6"
-    },
-    "fields": [
+    "Layout": { "Type": "grid", "Columns": 2, "GapClasses": "gap-6" },
+    "Fields": [
       {
-        "id": "firstName",
-        "type": "text",
-        "label": "First Name",
-        "placeholder": "",
-        "required": true,
-        "disabled": false,
-        "styleClasses": {
-          "container": "",
-          "label": "block text-sm font-medium text-gray-700 mb-1",
-          "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        "FieldId": "firstName",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
         }
       },
       {
-        "id": "lastName",
-        "type": "text",
-        "label": "Last Name",
-        "placeholder": "",
-        "required": true,
-        "disabled": false,
-        "styleClasses": {
-          "container": "",
-          "label": "block text-sm font-medium text-gray-700 mb-1",
-          "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        "FieldId": "lastName",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
         }
       }
     ]
   },
   {
-    "id": "contactInfo",
-    "layout": {
-      "type": "full-width"
-    },
-    "fields": [
+    "Layout": { "Type": "full-width" },
+    "Fields": [
       {
-        "id": "email",
-        "type": "email",
-        "label": "Email Address",
-        "placeholder": "",
-        "required": true,
-        "disabled": false,
-        "styleClasses": {
-          "container": "",
-          "label": "block text-sm font-medium text-gray-700 mb-1",
-          "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        "FieldId": "email",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
         }
       },
       {
-        "id": "phone",
-        "type": "tel",
-        "label": "Phone Number",
-        "placeholder": "",
-        "required": false,
-        "disabled": false,
-        "styleClasses": {
-          "container": "",
-          "label": "block text-sm font-medium text-gray-700 mb-1",
-          "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        "FieldId": "phone",
+        "Required": false,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      },
+      {
+        "FieldId": "address",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Container": "",
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
         }
       }
     ]
   },
   {
-    "id": "addressInfo",
-    "layout": {
-      "type": "combined"
-    },
-    "fields": [
+    "Layout": { "Type": "grid", "Columns": 3, "GapClasses": "gap-6" },
+    "Fields": [
       {
-        "id": "address",
-        "type": "text",
-        "label": "Address",
-        "placeholder": "",
-        "required": true,
-        "disabled": false,
-        "styleClasses": {
-          "container": "",
-          "label": "block text-sm font-medium text-gray-700 mb-1",
-          "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        "FieldId": "city",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
         }
-      }
-    ],
-    "subSections": [
+      },
       {
-        "id": "cityStateZip",
-        "layout": {
-          "type": "grid",
-          "columns": 3,
-          "gapClasses": "gap-6"
-        },
-        "fields": [
-          {
-            "id": "city",
-            "type": "text",
-            "label": "City",
-            "placeholder": "",
-            "required": true,
-            "disabled": false,
-            "styleClasses": {
-              "container": "",
-              "label": "block text-sm font-medium text-gray-700 mb-1",
-              "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
-            }
-          },
-          {
-            "id": "state",
-            "type": "text",
-            "label": "State",
-            "placeholder": "",
-            "required": true,
-            "disabled": false,
-            "styleClasses": {
-              "container": "",
-              "label": "block text-sm font-medium text-gray-700 mb-1",
-              "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
-            }
-          },
-          {
-            "id": "zip",
-            "type": "text",
-            "label": "Zip Code",
-            "placeholder": "",
-            "required": true,
-            "disabled": false,
-            "styleClasses": {
-              "container": "",
-              "label": "block text-sm font-medium text-gray-700 mb-1",
-              "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
-            }
-          }
-        ]
+        "FieldId": "state",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      },
+      {
+        "FieldId": "zip",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
       }
     ]
   },
   {
-    "id": "additionalInfo",
-    "layout": {
-      "type": "full-width"
-    },
-    "fields": [
+    "Layout": { "Type": "full-width" },
+    "Fields": [
       {
-        "id": "notes",
-        "type": "textarea",
-        "label": "Additional Notes",
-        "placeholder": "",
-        "required": false,
-        "disabled": false,
-        "rows": 4,
-        "styleClasses": {
-          "container": "",
-          "label": "block text-sm font-medium text-gray-700 mb-1",
-          "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        "FieldId": "notes",
+        "Required": false,
+        "Disabled": false,
+        "Rows": 4,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      }
+    ]
+  }
+]
+
+
+[
+  {
+    "Layout": { "Type": "grid", "Columns": 2, "GapClasses": "gap-6" },
+    "Fields": [
+      {
+        "FieldId": "firstName",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      },
+      {
+        "FieldId": "lastName",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      }
+    ]
+  },
+  {
+    "Layout": { "Type": "full-width" },
+    "Fields": [
+      {
+        "FieldId": "notes",
+        "Required": false,
+        "Disabled": false,
+        "Rows": 4,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      }
+    ]
+  }
+]
+
+[
+  {
+    "Layout": { "Type": "grid", "Columns": 2, "GapClasses": "gap-6" },
+    "Fields": [
+      {
+        "FieldId": "firstName",
+        "Required": true,
+        "Disabled": true,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      },
+      {
+        "FieldId": "lastName",
+        "Required": true,
+        "Disabled": true,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      }
+    ]
+  },
+  {
+    "Layout": { "Type": "full-width" },
+    "Fields": [
+      {
+        "FieldId": "email",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      }
+    ]
+  },
+  {
+    "Layout": { "Type": "full-width" },
+    "Fields": [
+      {
+        "FieldId": "notes",
+        "Required": false,
+        "Disabled": false,
+        "Rows": 4,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      }
+    ]
+  }
+]
+
+[
+  {
+    "Layout": { "Type": "grid", "Columns": 2, "GapClasses": "gap-6" },
+    "Fields": [
+      {
+        "FieldId": "firstName",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      },
+      {
+        "FieldId": "lastName",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      }
+    ]
+  },
+  {
+    "Layout": { "Type": "full-width" },
+    "Fields": [
+      {
+        "FieldId": "email",
+        "Required": true,
+        "Disabled": false,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
+        }
+      }
+    ]
+  },
+  {
+    "Layout": { "Type": "full-width" },
+    "Fields": [
+      {
+        "FieldId": "notes",
+        "Required": false,
+        "Disabled": false,
+        "Rows": 4,
+        "StyleClasses": {
+          "Label": "block text-sm font-medium text-gray-700 mb-1",
+          "Input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300"
         }
       }
     ]

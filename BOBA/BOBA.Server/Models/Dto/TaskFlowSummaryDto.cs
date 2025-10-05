@@ -6,6 +6,5 @@ public class TaskFlowSummaryDto
     public List<NextStateDto> NextState { get; set; }
     public string? EditRoleId { get; set; }
     public List<string> ReadOnlyRole { get; set; }
-
     public List<TaskFieldDto> TaskFields { get; set; }
 }
