@@ -1,4 +1,4 @@
-﻿namespace BOBA.Server.Data;
+﻿namespace BOBA.Server.Data.model;
 
 public enum Role
 {

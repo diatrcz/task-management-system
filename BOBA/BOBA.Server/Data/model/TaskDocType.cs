@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BOBA.Server.Data;
+namespace BOBA.Server.Data.model;
 
-public class TaskType
+public class TaskDocType
 {
+
     [Key]
     public string Id { get; set; }
 
@@ -11,8 +12,9 @@ public class TaskType
     [StringLength(100)]
     public string Name { get; set; }
 
+    [StringLength(100)]
+    public string Type { get; set; }
+
     [StringLength(500)]
     public string Description { get; set; }
-
-    public virtual ICollection<TaskDocType> DocTypes { get; set; } = new List<TaskDocType>();
 }

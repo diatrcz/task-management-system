@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../../services/authentication/auth.service';
 import { Router } from '@angular/router';
-import { UserService } from '../../../services/user/user.service';
+import { ApiService, LoginRequest } from '../../../services/api-service.service';
 
 @Component({
     selector: 'app-login',
@@ -10,22 +10,29 @@ import { UserService } from '../../../services/user/user.service';
     standalone: false
 })
 export class LoginComponent {
-  email: string = '';
-  password: string = '';
+  email!: string;
+  password!: string;
   errorMessage: string = '';
 
-  constructor(private userService: UserService, private authService: AuthService, private router: Router) {}
+  constructor(private apiService: ApiService, private authService: AuthService, private router: Router) {}
 
   login() {
-    this.userService.login({ email: this.email, password: this.password }).subscribe({
-      next: (response) => {
-        this.authService.setLoggedInUser(response.userId, response.accessToken, response.refreshToken);
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        this.errorMessage = 'Invalid credentials. Please try again.';
-      }
-    });
-  }
+  const request = new LoginRequest({
+    email: this.email,
+    password: this.password
+  });
+
+  this.apiService.postLogin(request, false, false).subscribe({
+    next: (response) => {
+      if(response.accessToken && response.refreshToken)
+        this.authService.setLoggedInUser(response.accessToken, response.refreshToken);
+      this.router.navigate(['/dashboard']);
+    },
+    error: () => {
+      this.errorMessage = 'Invalid credentials. Please try again.';
+    }
+  });
+}
+
 
 }

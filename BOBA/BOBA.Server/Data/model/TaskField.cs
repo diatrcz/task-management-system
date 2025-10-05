@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BOBA.Server.Data;
+namespace BOBA.Server.Data.model;
 
 public class TaskField
 {
@@ -11,11 +11,20 @@ public class TaskField
     [StringLength(100)]
     public string Name { get; set; }
 
-    [StringLength(500)]
-    public string Description { get; set; }
+    [StringLength(100)]
+    public string Type { get; set; }
+
+    [StringLength(100)]
+    public string Label { get; set; }
+
+    [StringLength(100)]
+    public string? Placeholder { get; set; }
 
     [StringLength(100)]
     public string? Validation { get; set; }
+
+    [StringLength(100)]
+    public string? ValidationErrorMessage { get; set; }
 
     [StringLength(1000)]
     public string? Options { get; set; }

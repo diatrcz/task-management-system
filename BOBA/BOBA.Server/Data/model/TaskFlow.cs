@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Policy;
 using System.Text.Json;
 
-namespace BOBA.Server.Data
+namespace BOBA.Server.Data.model
 {
     public class TaskFlow
     {

@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BOBA.Server.Data.implementation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BOBA.Server.Data
+namespace BOBA.Server.Data.model
 {
     public class Team
     {

@@ -1,4 +1,6 @@
 ﻿using BOBA.Server.Data;
+using BOBA.Server.Data.implementation;
+using BOBA.Server.Data.model;
 using BOBA.Server.Models.Dto;
 using BOBA.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -55,5 +57,34 @@ public class UserService : IUserService
             Role = user.Type.ToString(),
             Teams = user.Teams.Select(t => t.Id).ToList()
         };
+    }
+
+    public async Task<List<TeamSummaryDto>> GetTeamsByUserId(string userId) 
+    {
+        var teams = await _context.Users
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.Teams)
+            .ToListAsync();
+
+        var teamDtos = teams.Select(team => new TeamSummaryDto
+        { 
+            Id = team.Id,
+            Name = team.Name
+        }).ToList();
+
+        return teamDtos;
+    }
+
+    public async Task<List<TeamSummaryDto>> GetTeams()
+    {
+        var teams = await _context.Teams.ToListAsync();
+
+        var teamDtos = teams.Select(team => new TeamSummaryDto 
+        {
+            Id = team.Id,
+            Name= team.Name
+        }).ToList();
+
+        return teamDtos;
     }
 }

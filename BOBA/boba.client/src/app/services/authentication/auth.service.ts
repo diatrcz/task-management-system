@@ -1,24 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Team } from '../../models/Team';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  userId: string | null = null;
   accessToken: string | null = null;
   refreshToken: string | null = null;
+  private teamSubject = new BehaviorSubject<Team | null>(null);
+  team$ = this.teamSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
-  setLoggedInUser(userId: string, accessToken: string, refreshToken: string) {
-    this.userId = userId;
+  setLoggedInUser(accessToken: string, refreshToken: string) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
   }
 
   clearLoggedInUser() {
-    this.userId = null;
     this.accessToken = null;
     this.refreshToken = null;
   }
@@ -33,6 +34,14 @@ export class AuthService {
     }
 
     return true;
+  }
+
+  setTeam(team: Team) {
+    this.teamSubject.next(team);
+  }
+
+  getTeam(): Team | null {
+    return this.teamSubject.value;
   }
 }
 

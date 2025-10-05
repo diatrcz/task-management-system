@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BOBA.Server.Data.model;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BOBA.Server.Data
+namespace BOBA.Server.Data.implementation
 {
     public class User: IdentityUser
     {

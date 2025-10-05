@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TaskService } from '../../../services/task/task.service';
-import { TaskSummary } from '../../../models/TaskSummary';
+import { ApiService } from '../../../services/api-service.service';
+import { AuthService } from '../../../services/authentication/auth.service';
 
 @Component({
     selector: 'app-user-task-list',
@@ -11,12 +11,13 @@ import { TaskSummary } from '../../../models/TaskSummary';
 })
 export class UserTaskListComponent implements OnInit{
   listType!: string;
-  tasks!: TaskSummary[];
+  tasks!: any[];
 
   constructor(
       private router: Router,
       private route: ActivatedRoute,
-      private taskService: TaskService
+      private apiService: ApiService,
+      private authService: AuthService
     ) {}
 
   ngOnInit(): void {
@@ -33,18 +34,20 @@ export class UserTaskListComponent implements OnInit{
       this.route.paramMap.subscribe(params => {
         const type = params.get('type');
         if (type !== null) {
-          this.listType = type; 
+          this.listType = type;
         }
         console.log(this.listType);
-        resolve(); 
+        resolve();
       });
     });
   }
 
   loadTasks():Promise<void> {
     return new Promise((resolve, reject) => {
-      if(this.listType == 'closed-tasks') {
-        this.taskService.getClosedTasks().subscribe({
+      const team_id = this.authService.getTeam()?.id;
+
+      if(this.listType == 'closed-tasks' && team_id) {
+        this.apiService.task_GetClosedTasksByTeamId(team_id).subscribe({
           next: (tasks) => {
             this.tasks = tasks;
             console.log(this.tasks);
@@ -56,8 +59,9 @@ export class UserTaskListComponent implements OnInit{
           }
         });
       }
-      else if(this.listType == 'my-tasks') {
-        this.taskService.getOwnTasks().subscribe({
+
+      else if(this.listType == 'my-tasks' && team_id) {
+        this.apiService.task_GetAssignedTasksForUserByTeamId(team_id).subscribe({
           next: (tasks) => {
             this.tasks = tasks;
             console.log(this.tasks);
@@ -68,7 +72,34 @@ export class UserTaskListComponent implements OnInit{
             reject(err);
           }
         });
+      }
 
+      else if(this.listType == 'unassigned-tasks' && team_id) {
+        this.apiService.task_GetUnassignedTasksByTeamId(team_id).subscribe({
+          next: (tasks) => {
+            this.tasks = tasks;
+            console.log(this.tasks);
+            resolve();
+          },
+          error: (err) => {
+            console.error('Error loading tasks:', err);
+            reject(err);
+          }
+        });
+      }
+
+      else if(this.listType == 'external-tasks' && team_id) {
+        this.apiService.task_GetExternalTasksByTeamId(team_id).subscribe({
+          next: (tasks) => {
+            this.tasks = tasks;
+            console.log(this.tasks);
+            resolve();
+          },
+          error: (err) => {
+            console.error('Error loading tasks:', err);
+            reject(err);
+          }
+        });
       }
     });
   }

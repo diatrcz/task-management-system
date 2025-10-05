@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { TaskService } from '../../../services/task/task.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TaskSummary } from '../../../models/TaskSummary';
-import { TaskFlowSummary } from '../../../models/TaskFlowSummary';
-import { ChoiceSummary } from '../../../models/ChoiceSummary';
 import { response } from 'express';
-import { MoveTaskRequest } from '../../../models/MoveTaskRequest';
+import { ApiService, ChoiceSummaryDto, MoveTaskRequest, TaskFlowSummaryDto, TaskSummaryDto } from '../../../services/api-service.service';
 
 @Component({
     selector: 'app-task-details',
@@ -15,20 +11,20 @@ import { MoveTaskRequest } from '../../../models/MoveTaskRequest';
 })
 export class TaskDetailsComponent implements OnInit{
   taskId!: string;
-  task!: TaskSummary;
-  taskflow!: TaskFlowSummary;
+  task!: TaskSummaryDto;
+  taskflow!: TaskFlowSummaryDto;
   choiceIds!: string[];
-  choices!: ChoiceSummary[];
+  choices!: ChoiceSummaryDto[];
   selectedChoiceId: string | null = null;
-  selectedChoice: ChoiceSummary | null = null;
+  selectedChoice: ChoiceSummaryDto | null = null;
   nextStateName: string | null = null;
   showConfirmDialog: boolean = false;
-  
+
 
   constructor(
+    private apiService: ApiService,
     private router: Router,
-    private route: ActivatedRoute,
-    private taskService: TaskService
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +34,7 @@ export class TaskDetailsComponent implements OnInit{
   async loadData(): Promise<void> {
     await this.loadRoute();
     await this.loadTask();
-    
+
     if(!this.task.currentStateIsFinal) {
       await this.loadTaskFlow();
       await this.loadChoices();
@@ -50,16 +46,16 @@ export class TaskDetailsComponent implements OnInit{
       this.route.paramMap.subscribe(params => {
         const id = params.get('id');
         if (id !== null) {
-          this.taskId = id; 
+          this.taskId = id;
         }
-        resolve(); 
+        resolve();
       });
     });
   }
 
   loadTask(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.taskService.getTaskSummaryById(this.taskId).subscribe({
+      this.apiService.task_GetTaskById(this.taskId).subscribe({
         next: (task) => {
           this.task = task;
           console.log(this.task);
@@ -75,7 +71,7 @@ export class TaskDetailsComponent implements OnInit{
 
   loadTaskFlow(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.taskService.getTaskFlowSummaryById(this.taskId).subscribe({
+      this.apiService.taskFlow_GetTaskFlow(this.taskId).subscribe({
         next: (taskflow) => {
           this.taskflow = taskflow;
           console.log(this.taskflow);
@@ -100,7 +96,7 @@ export class TaskDetailsComponent implements OnInit{
             }
           }
         }
-        this.taskService.getChoicesByIds(this.choiceIds).subscribe({
+        this.apiService.taskFlow_GetChoices(this.choiceIds).subscribe({
           next: (choices) => {
             this.choices = choices;
             console.log(this.choices);
@@ -117,12 +113,12 @@ export class TaskDetailsComponent implements OnInit{
     });
   }
 
-  onChoiceSelected(choice: ChoiceSummary): void {
+  onChoiceSelected(choice: ChoiceSummaryDto): void {
     this.selectedChoice = choice;
     if (this.taskflow?.nextState) {
       const nextState = this.taskflow.nextState.find(state => state.choiceId === choice.id);
       if (nextState && this.selectedChoiceId) {
-        this.taskService.getStateNameById(this.selectedChoiceId).subscribe({
+        this.apiService.taskFlow_GetTaskStateName(this.selectedChoiceId).subscribe({
           next: (stateName) => {
             this.nextStateName = stateName;
             console.log('Next state: ' + stateName);
@@ -145,21 +141,24 @@ export class TaskDetailsComponent implements OnInit{
 
   submitTask(): void {
     console.log('Submitting task with choice:', this.selectedChoiceId);
-    var request: MoveTaskRequest = {
+
+    const request = new MoveTaskRequest({
       choiceId: this.selectedChoiceId!,
       taskId: this.taskId!
-     }
-    this.taskService.moveTask(request).subscribe(
+    });
+
+    this.apiService.task_UpdateTask(this.taskId!, request).subscribe(
       (response) => {
-          console.log('Task moved to next state successfully', response);
-          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            this.router.navigate([`/task-details/${this.taskId}`]);
-          });
+        console.log('Task moved to next state successfully', response);
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+          this.router.navigate([`/task-details/${this.taskId}`]);
+        });
       },
       (error) => {
         console.error('Error moving task', error);
       }
     );
+
     this.showConfirmDialog = false;
   }
 }

@@ -1,11 +1,10 @@
 using BOBA.Server.Data;
+using BOBA.Server.Data.implementation;
 using BOBA.Server.Services;
 using BOBA.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using System.Text.Json.Serialization;
@@ -59,13 +58,15 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ITaskFlowService, TaskFlowService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFormService, FormService>();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDevClient", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200", "https://localhost:4200", "https://127.0.0.1:4200")
               .AllowAnyHeader()
               .AllowAnyMethod();
         // .AllowCredentials(); 
@@ -79,6 +80,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAngularDevClient");
 
 app.MapIdentityApi<User>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

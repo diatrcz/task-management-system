@@ -22,7 +22,203 @@ namespace BOBA.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BOBA.Server.Data.Choice", b =>
+            modelBuilder.Entity("BOBA.Server.Data.implementation.FormDocument", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("DocTypeId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TaskId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("UploadeddAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UploaderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocTypeId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("FormDocuments");
+                });
+
+            modelBuilder.Entity("BOBA.Server.Data.implementation.FormField", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ModelId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ModifierId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TaskId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModelId");
+
+                    b.HasIndex("ModifierId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("FormFields");
+                });
+
+            modelBuilder.Entity("BOBA.Server.Data.implementation.Task", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AssigneeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CreatorTeamId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CurrentStateId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TaskTypeId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TeamId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssigneeId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("CurrentStateId");
+
+                    b.HasIndex("TaskTypeId");
+
+                    b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("BOBA.Server.Data.implementation.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("BOBA.Server.Data.model.Choice", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -68,84 +264,7 @@ namespace BOBA.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.FormDocument", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("Data")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("DocTypeId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaskId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("UploadeddAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UploaderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocTypeId");
-
-                    b.HasIndex("TaskId");
-
-                    b.ToTable("FormDocuments");
-                });
-
-            modelBuilder.Entity("BOBA.Server.Data.FormField", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ModelId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ModifierId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaskId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Validation")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ModelId");
-
-                    b.HasIndex("TaskId");
-
-                    b.ToTable("FormFields");
-                });
-
-            modelBuilder.Entity("BOBA.Server.Data.Message", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.Message", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -167,46 +286,7 @@ namespace BOBA.Server.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.Task", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AssigneeId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CurrentStateId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TaskTypeId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssigneeId");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("CurrentStateId");
-
-                    b.HasIndex("TaskTypeId");
-
-                    b.ToTable("Tasks");
-                });
-
-            modelBuilder.Entity("BOBA.Server.Data.TaskDocType", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.TaskDocType", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -266,15 +346,15 @@ namespace BOBA.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.TaskField", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.TaskField", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Label")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -285,7 +365,20 @@ namespace BOBA.Server.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<string>("Placeholder")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("Validation")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ValidationErrorMessage")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -297,42 +390,84 @@ namespace BOBA.Server.Migrations
                         new
                         {
                             Id = "1",
-                            Description = "Deadline for task completion.",
-                            Name = "Due Date",
-                            Validation = "^\\d{4}-\\d{2}-\\d{2}$"
+                            Label = "First Name",
+                            Name = "firstName",
+                            Type = "text",
+                            Validation = "^[A-Za-z]+$",
+                            ValidationErrorMessage = "Name should only contain letters!"
                         },
                         new
                         {
                             Id = "2",
-                            Description = "Task urgency level.",
-                            Name = "Priority",
-                            Options = "Low,Medium,High,Urgent",
-                            Validation = "^(Low|Medium|High|Urgent)$"
+                            Label = "Last Name",
+                            Name = "lastName",
+                            Type = "text",
+                            Validation = "^[A-Za-z]+$",
+                            ValidationErrorMessage = "Name should only contain letters!"
                         },
                         new
                         {
                             Id = "3",
-                            Description = "Person responsible for the task.",
-                            Name = "Assigned To"
+                            Label = "E-mail",
+                            Name = "email",
+                            Placeholder = "email@email.com",
+                            Type = "email",
+                            Validation = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
                         },
                         new
                         {
                             Id = "4",
-                            Description = "Marketing channel the task belongs to.",
-                            Name = "Channel",
-                            Options = "Email,Social Media,SEO,Paid Ads,Events",
-                            Validation = "^(Email|Social Media|SEO|Paid Ads|Events)$"
+                            Label = "Phone Number",
+                            Name = "phone",
+                            Placeholder = "+36201234567",
+                            Type = "text",
+                            Validation = "^\\+?[0-9\\s\\-()]{7,15}$",
+                            ValidationErrorMessage = "Doesn't match phone number pattern!"
                         },
                         new
                         {
                             Id = "5",
-                            Description = "Estimated task budget.",
-                            Name = "Budget",
-                            Validation = "^\\d+(\\.\\d{1,2})?$"
+                            Label = "Address",
+                            Name = "address",
+                            Type = "text"
+                        },
+                        new
+                        {
+                            Id = "6",
+                            Label = "City",
+                            Name = "city",
+                            Type = "text",
+                            Validation = "^[A-Za-z]+$",
+                            ValidationErrorMessage = "Field should only contain letters!"
+                        },
+                        new
+                        {
+                            Id = "7",
+                            Label = "State",
+                            Name = "state",
+                            Type = "text",
+                            Validation = "^[A-Za-z]+$",
+                            ValidationErrorMessage = "Field should only contain letters!"
+                        },
+                        new
+                        {
+                            Id = "8",
+                            Label = "Zip",
+                            Name = "zip",
+                            Type = "text",
+                            Validation = "^[0-9]+$",
+                            ValidationErrorMessage = "Field should only contain numbers!"
+                        },
+                        new
+                        {
+                            Id = "9",
+                            Label = "Additional Notes",
+                            Name = "notes",
+                            Type = "textarea"
                         });
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.TaskFlow", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.TaskFlow", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -371,53 +506,69 @@ namespace BOBA.Server.Migrations
                         {
                             Id = "1",
                             CurrentStateId = "1",
-                            FormFieldJson = "[{\"Id\":\"personalInfo\",\"Layout\":{\"Type\":\"grid\",\"Columns\":2,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"Id\":\"firstName\",\"Type\":\"text\",\"Label\":\"First Name\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"Id\":\"lastName\",\"Type\":\"text\",\"Label\":\"Last Name\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}],\"SubSections\":null},{\"Id\":\"contactInfo\",\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"Id\":\"email\",\"Type\":\"email\",\"Label\":\"Email Address\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"Id\":\"phone\",\"Type\":\"tel\",\"Label\":\"Phone Number\",\"Placeholder\":\"\",\"Required\":false,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}],\"SubSections\":null},{\"Id\":\"addressInfo\",\"Layout\":{\"Type\":\"combined\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"Id\":\"address\",\"Type\":\"text\",\"Label\":\"Address\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}],\"SubSections\":[{\"Id\":\"cityStateZip\",\"Layout\":{\"Type\":\"grid\",\"Columns\":3,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"Id\":\"city\",\"Type\":\"text\",\"Label\":\"City\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"Id\":\"state\",\"Type\":\"text\",\"Label\":\"State\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"Id\":\"zip\",\"Type\":\"text\",\"Label\":\"Zip Code\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}],\"SubSections\":null}]},{\"Id\":\"additionalInfo\",\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"Id\":\"notes\",\"Type\":\"textarea\",\"Label\":\"Additional Notes\",\"Placeholder\":\"\",\"Required\":false,\"Disabled\":false,\"Rows\":4,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}],\"SubSections\":null}]",
-                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"2\"}]",
+                            FormFieldJson = "[{\"Layout\":{\"Type\":\"grid\",\"Columns\":2,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"firstName\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"lastName\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"notes\",\"Required\":false,\"Disabled\":false,\"Rows\":4,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"2\",\"EditRoleId\":\"2\"}]",
                             TaskTypeId = "2"
                         },
                         new
                         {
                             Id = "2",
                             CurrentStateId = "2",
-                            FormFieldJson = "[{\"Id\":\"personalInfo\",\"Layout\":{\"Type\":\"grid\",\"Columns\":2,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"Id\":\"firstName\",\"Type\":\"text\",\"Label\":\"First Name\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"Id\":\"lastName\",\"Type\":\"text\",\"Label\":\"Last Name\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}],\"SubSections\":null},{\"Id\":\"contactInfo\",\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"Id\":\"email\",\"Type\":\"email\",\"Label\":\"Email Address\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"Id\":\"phone\",\"Type\":\"tel\",\"Label\":\"Phone Number\",\"Placeholder\":\"\",\"Required\":false,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}],\"SubSections\":null},{\"Id\":\"addressInfo\",\"Layout\":{\"Type\":\"combined\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"Id\":\"address\",\"Type\":\"text\",\"Label\":\"Address\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}],\"SubSections\":[{\"Id\":\"cityStateZip\",\"Layout\":{\"Type\":\"grid\",\"Columns\":3,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"Id\":\"city\",\"Type\":\"text\",\"Label\":\"City\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"Id\":\"state\",\"Type\":\"text\",\"Label\":\"State\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"Id\":\"zip\",\"Type\":\"text\",\"Label\":\"Zip Code\",\"Placeholder\":\"\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}],\"SubSections\":null}]},{\"Id\":\"additionalInfo\",\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"Id\":\"notes\",\"Type\":\"textarea\",\"Label\":\"Additional Notes\",\"Placeholder\":\"\",\"Required\":false,\"Disabled\":false,\"Rows\":4,\"StyleClasses\":{\"Container\":\"\",\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}],\"SubSections\":null}]",
-                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"3\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"1\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"9\"}]",
+                            FormFieldJson = "[{\"Layout\":{\"Type\":\"grid\",\"Columns\":2,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"firstName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"lastName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"email\",\"Required\":false,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"notes\",\"Required\":false,\"Disabled\":false,\"Rows\":4,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"3\",\"EditRoleId\":\"3\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"1\",\"EditRoleId\":\"1\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"9\",\"EditRoleId\":null}]",
                             TaskTypeId = "2"
                         },
                         new
                         {
                             Id = "3",
                             CurrentStateId = "3",
-                            FormFieldJson = "null",
-                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"4\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"2\"}]",
+                            FormFieldJson = "[{\"Layout\":{\"Type\":\"grid\",\"Columns\":2,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"firstName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"lastName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"email\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"notes\",\"Required\":false,\"Disabled\":false,\"Rows\":4,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"4\",\"EditRoleId\":\"1\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"2\",\"EditRoleId\":\"2\"}]",
                             TaskTypeId = "2"
                         },
                         new
                         {
                             Id = "4",
                             CurrentStateId = "4",
-                            FormFieldJson = "null",
-                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"5\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"3\"}]",
+                            FormFieldJson = "[{\"Layout\":{\"Type\":\"grid\",\"Columns\":2,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"firstName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"lastName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"address\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"grid\",\"Columns\":3,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"city\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"state\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"zip\",\"Required\":true,\"Disabled\":false,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"notes\",\"Required\":false,\"Disabled\":false,\"Rows\":4,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"5\",\"EditRoleId\":\"2\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"3\",\"EditRoleId\":\"3\"}]",
                             TaskTypeId = "2"
                         },
                         new
                         {
                             Id = "5",
                             CurrentStateId = "5",
-                            FormFieldJson = "null",
-                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"6\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"4\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"9\"}]",
+                            FormFieldJson = "[{\"Layout\":{\"Type\":\"grid\",\"Columns\":2,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"firstName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"lastName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"email\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"notes\",\"Required\":false,\"Disabled\":true,\"Rows\":4,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"6\",\"EditRoleId\":\"3\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"4\",\"EditRoleId\":\"1\"},{\"ChoiceId\":\"3\",\"NextStateId\":\"9\",\"EditRoleId\":null}]",
                             TaskTypeId = "2"
                         },
                         new
                         {
                             Id = "6",
                             CurrentStateId = "6",
-                            FormFieldJson = "null",
-                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"8\"},{\"ChoiceId\":\"2\",\"NextStateId\":\"5\"}]",
+                            FormFieldJson = "[{\"Layout\":{\"Type\":\"grid\",\"Columns\":2,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"firstName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"lastName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"email\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"phone\",\"Required\":false,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"address\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"grid\",\"Columns\":3,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"city\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"state\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"zip\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"notes\",\"Required\":false,\"Disabled\":true,\"Rows\":4,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]}]",
+                            NextStateJson = "[{\"ChoiceId\":\"1\",\"NextStateId\":\"8\",\"EditRoleId\":null},{\"ChoiceId\":\"2\",\"NextStateId\":\"5\",\"EditRoleId\":\"2\"}]",
+                            TaskTypeId = "2"
+                        },
+                        new
+                        {
+                            Id = "7",
+                            CurrentStateId = "8",
+                            FormFieldJson = "[{\"Layout\":{\"Type\":\"grid\",\"Columns\":2,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"firstName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"lastName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"email\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"phone\",\"Required\":false,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"address\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"grid\",\"Columns\":3,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"city\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"state\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"zip\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"notes\",\"Required\":false,\"Disabled\":true,\"Rows\":4,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]}]",
+                            NextStateJson = "[{\"ChoiceId\":null,\"NextStateId\":null,\"EditRoleId\":null}]",
+                            TaskTypeId = "2"
+                        },
+                        new
+                        {
+                            Id = "8",
+                            CurrentStateId = "9",
+                            FormFieldJson = "[{\"Layout\":{\"Type\":\"grid\",\"Columns\":2,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"firstName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"lastName\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"email\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"phone\",\"Required\":false,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"address\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"grid\",\"Columns\":3,\"GapClasses\":\"gap-6\"},\"Fields\":[{\"FieldId\":\"city\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"state\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}},{\"FieldId\":\"zip\",\"Required\":true,\"Disabled\":true,\"Rows\":null,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]},{\"Layout\":{\"Type\":\"full-width\",\"Columns\":null,\"GapClasses\":null},\"Fields\":[{\"FieldId\":\"notes\",\"Required\":false,\"Disabled\":true,\"Rows\":4,\"StyleClasses\":{\"Label\":\"block text-sm font-medium text-gray-700 mb-1\",\"Input\":\"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300\"}}]}]",
+                            NextStateJson = "[{\"ChoiceId\":null,\"NextStateId\":null,\"EditRoleId\":null}]",
                             TaskTypeId = "2"
                         });
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.TaskState", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.TaskState", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -504,22 +655,22 @@ namespace BOBA.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.TaskType", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.TaskType", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("StarterTeamId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("StarterTeamId");
 
                     b.ToTable("TaskTypes");
 
@@ -527,36 +678,36 @@ namespace BOBA.Server.Migrations
                         new
                         {
                             Id = "1",
-                            Description = "Plan, create, and schedule posts for social media platforms.",
-                            Name = "Social Media Campaign"
+                            Name = "Social Media Campaign",
+                            StarterTeamId = "1"
                         },
                         new
                         {
                             Id = "2",
-                            Description = "Create and manage an advertising campaign across different channels.",
-                            Name = "Ad Campaign"
+                            Name = "Ad Campaign",
+                            StarterTeamId = "1"
                         },
                         new
                         {
                             Id = "3",
-                            Description = "Design and send promotional emails to targeted audiences.",
-                            Name = "Email Marketing"
+                            Name = "Email Marketing",
+                            StarterTeamId = "2"
                         },
                         new
                         {
                             Id = "4",
-                            Description = "Improve website SEO through keyword research and content updates.",
-                            Name = "SEO Optimization"
+                            Name = "SEO Optimization",
+                            StarterTeamId = "3"
                         },
                         new
                         {
                             Id = "5",
-                            Description = "Analyze competitors, customer behavior, and industry trends.",
-                            Name = "Market Research"
+                            Name = "Market Research",
+                            StarterTeamId = "4"
                         });
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.Team", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.Team", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -596,82 +747,6 @@ namespace BOBA.Server.Migrations
                             Id = "5",
                             Name = "Client Management"
                         });
-                });
-
-            modelBuilder.Entity("BOBA.Server.Data.User", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -837,15 +912,15 @@ namespace BOBA.Server.Migrations
                     b.ToTable("TeamUser");
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.FormDocument", b =>
+            modelBuilder.Entity("BOBA.Server.Data.implementation.FormDocument", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.TaskDocType", "DocType")
+                    b.HasOne("BOBA.Server.Data.model.TaskDocType", "DocType")
                         .WithMany()
                         .HasForeignKey("DocTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BOBA.Server.Data.Task", "Task")
+                    b.HasOne("BOBA.Server.Data.implementation.Task", "Task")
                         .WithMany()
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -856,45 +931,53 @@ namespace BOBA.Server.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.FormField", b =>
+            modelBuilder.Entity("BOBA.Server.Data.implementation.FormField", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.TaskField", "TaskField")
+                    b.HasOne("BOBA.Server.Data.model.TaskField", "TaskField")
                         .WithMany()
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BOBA.Server.Data.Task", "Task")
+                    b.HasOne("BOBA.Server.Data.implementation.User", "Modifier")
+                        .WithMany()
+                        .HasForeignKey("ModifierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BOBA.Server.Data.implementation.Task", "Task")
                         .WithMany()
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Modifier");
 
                     b.Navigation("Task");
 
                     b.Navigation("TaskField");
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.Task", b =>
+            modelBuilder.Entity("BOBA.Server.Data.implementation.Task", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.User", "Assignee")
+                    b.HasOne("BOBA.Server.Data.implementation.User", "Assignee")
                         .WithMany("AssignedTasks")
                         .HasForeignKey("AssigneeId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("BOBA.Server.Data.User", "Creator")
+                    b.HasOne("BOBA.Server.Data.implementation.User", "Creator")
                         .WithMany("CreatedTasks")
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("BOBA.Server.Data.TaskState", "CurrentState")
+                    b.HasOne("BOBA.Server.Data.model.TaskState", "CurrentState")
                         .WithMany("CurrentStateTasks")
                         .HasForeignKey("CurrentStateId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("BOBA.Server.Data.TaskType", "TaskType")
+                    b.HasOne("BOBA.Server.Data.model.TaskType", "TaskType")
                         .WithMany()
                         .HasForeignKey("TaskTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -909,26 +992,26 @@ namespace BOBA.Server.Migrations
                     b.Navigation("TaskType");
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.TaskDocType", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.TaskDocType", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.TaskType", null)
+                    b.HasOne("BOBA.Server.Data.model.TaskType", null)
                         .WithMany("DocTypes")
                         .HasForeignKey("TaskTypeId");
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.TaskFlow", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.TaskFlow", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.TaskState", "CurrentState")
+                    b.HasOne("BOBA.Server.Data.model.TaskState", "CurrentState")
                         .WithMany("CurrentStateTaskflows")
                         .HasForeignKey("CurrentStateId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("BOBA.Server.Data.Team", "EditRole")
+                    b.HasOne("BOBA.Server.Data.model.Team", "EditRole")
                         .WithMany("EditRoleWorkflows")
                         .HasForeignKey("EditRoleId");
 
-                    b.HasOne("BOBA.Server.Data.TaskType", "TaskType")
+                    b.HasOne("BOBA.Server.Data.model.TaskType", "TaskType")
                         .WithMany()
                         .HasForeignKey("TaskTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -939,6 +1022,15 @@ namespace BOBA.Server.Migrations
                     b.Navigation("EditRole");
 
                     b.Navigation("TaskType");
+                });
+
+            modelBuilder.Entity("BOBA.Server.Data.model.TaskType", b =>
+                {
+                    b.HasOne("BOBA.Server.Data.model.Team", "StarterTeam")
+                        .WithMany()
+                        .HasForeignKey("StarterTeamId");
+
+                    b.Navigation("StarterTeam");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -952,7 +1044,7 @@ namespace BOBA.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.User", null)
+                    b.HasOne("BOBA.Server.Data.implementation.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -961,7 +1053,7 @@ namespace BOBA.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.User", null)
+                    b.HasOne("BOBA.Server.Data.implementation.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -976,7 +1068,7 @@ namespace BOBA.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BOBA.Server.Data.User", null)
+                    b.HasOne("BOBA.Server.Data.implementation.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -985,7 +1077,7 @@ namespace BOBA.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.User", null)
+                    b.HasOne("BOBA.Server.Data.implementation.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -994,13 +1086,13 @@ namespace BOBA.Server.Migrations
 
             modelBuilder.Entity("TaskFlowTeam", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.Team", null)
+                    b.HasOne("BOBA.Server.Data.model.Team", null)
                         .WithMany()
                         .HasForeignKey("ReadOnlyRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BOBA.Server.Data.TaskFlow", null)
+                    b.HasOne("BOBA.Server.Data.model.TaskFlow", null)
                         .WithMany()
                         .HasForeignKey("ReadOnlyRoleWorkflowsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1009,41 +1101,41 @@ namespace BOBA.Server.Migrations
 
             modelBuilder.Entity("TeamUser", b =>
                 {
-                    b.HasOne("BOBA.Server.Data.Team", null)
+                    b.HasOne("BOBA.Server.Data.model.Team", null)
                         .WithMany()
                         .HasForeignKey("TeamsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BOBA.Server.Data.User", null)
+                    b.HasOne("BOBA.Server.Data.implementation.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.TaskState", b =>
+            modelBuilder.Entity("BOBA.Server.Data.implementation.User", b =>
+                {
+                    b.Navigation("AssignedTasks");
+
+                    b.Navigation("CreatedTasks");
+                });
+
+            modelBuilder.Entity("BOBA.Server.Data.model.TaskState", b =>
                 {
                     b.Navigation("CurrentStateTaskflows");
 
                     b.Navigation("CurrentStateTasks");
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.TaskType", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.TaskType", b =>
                 {
                     b.Navigation("DocTypes");
                 });
 
-            modelBuilder.Entity("BOBA.Server.Data.Team", b =>
+            modelBuilder.Entity("BOBA.Server.Data.model.Team", b =>
                 {
                     b.Navigation("EditRoleWorkflows");
-                });
-
-            modelBuilder.Entity("BOBA.Server.Data.User", b =>
-                {
-                    b.Navigation("AssignedTasks");
-
-                    b.Navigation("CreatedTasks");
                 });
 #pragma warning restore 612, 618
         }

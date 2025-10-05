@@ -19,8 +19,20 @@ namespace BOBA.Server.Controllers
             _taskService = taskService;
         }
 
-        [HttpGet("tasktypes")]
-        public async Task<ActionResult<List<TaskTypeDto>>> GetTaskTypes()
+        [HttpPost("tasks")]
+        public async Task<ActionResult<string>> CreateTask([FromBody] CreateTaskRequest request)
+        {
+            var creatorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var taskId = await _taskService.CreateTask(request, creatorId);
+
+            if (taskId == null)
+                return BadRequest(ModelState);
+
+            return Ok(taskId);
+        }
+
+        [HttpGet("tasks/types")]
+        public async Task<ActionResult<List<TaskTypeDto>>> GetAllTaskTypes()
         {
             var taskTypes = await _taskService.GetTaskTypes();
             if (taskTypes == null || taskTypes.Count == 0)
@@ -29,72 +41,64 @@ namespace BOBA.Server.Controllers
             return Ok(taskTypes);
         }
 
-        [HttpGet("task")]
-        public async Task<ActionResult<TaskTypeDto>> GetTask([FromQuery] string taskId)
+        [HttpGet("tasks/{task_id}")]
+        public async Task<ActionResult<TaskSummaryDto>> GetTaskById([FromRoute] string task_id)
         {
-            var task = await _taskService.GetTask(taskId);
+            var task = await _taskService.GetTask(task_id);
             return Ok(task);
         }
 
-        [HttpGet("taskflow")]
-        public async Task<ActionResult<TaskFlowSummaryDto>> GetTaskFLow([FromQuery] string taskId)
-        {
-            var taskflow = await _taskService.GetTaskFlow(taskId);
-            return Ok(taskflow);
+        [HttpPatch("tasks/{task_id}")]
+        public async Task<ActionResult<string>> UpdateTask(
+            [FromRoute] string task_id,
+            [FromBody] MoveTaskRequest request
+        ) {
+            var taskId = await _taskService.MoveTask(request);
+            return Ok();
         }
 
-        [HttpGet("choices")]
-        public async Task<ActionResult<List<ChoiceSummaryDto>>> GetChoices([FromQuery] List<string> ids)
+        [HttpGet("tasks/teams/{team_id}/closed")]
+        public async Task<ActionResult<List<TaskSummaryDto>>> GetClosedTasksByTeamId([FromRoute] string team_id)
         {
-            if (ids == null || !ids.Any())
-                return BadRequest("At least one ID must be provided.");
-
-            var choices = await _taskService.GetChoices(ids);
-            if (choices.Count == 0)
-                return NotFound("No choices found for the provided IDs.");
-
-            return Ok(choices);
+            var tasks = await _taskService.GetClosedTasksByTeamId(team_id);
+            return Ok(tasks);
         }
 
-        [HttpGet("state-name")]
-        public async Task<ActionResult<string>> GetTaskStateName([FromQuery] string stateId)
+        [HttpGet("taks/teams/{team_id}/unassigned")]
+        public async Task<ActionResult<List<TaskSummaryDto>>> GetUnassignedTasksByTeamId([FromRoute] string team_id)
         {
-            var stateName = await _taskService.GetTaskStateName(stateId);
-            return Ok(new { stateName });
+            var tasks = await _taskService.GetUnassignedTasksByTeamId(team_id);
+            return Ok(tasks);
         }
 
-        [HttpGet("own-tasks")]
-        public async Task<ActionResult<List<TaskSummaryDto>>> GetUserTasks()
+        [HttpGet("tasks/teams/{team_id}/user")]
+        public async Task<ActionResult<List<TaskSummaryDto>>> GetAssignedTasksForUserByTeamId([FromRoute] string team_id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var tasks = await _taskService.GetUserTasks(userId);
+
+            var tasks = await _taskService.GetAssignedTasksForUserByTeamId(team_id, userId);
             return Ok(tasks);
         }
 
-        [HttpGet("closed-tasks")]
-        public async Task<ActionResult<List<TaskSummaryDto>>> GetClosedTask()
+        [HttpGet("tasks/teams/{team_id}/external")]
+        public async Task<ActionResult<List<TaskSummaryDto>>> GetExternalTasksByTeamId([FromRoute] string team_id)
         {
-            var tasks = await _taskService.GetClosedTasks();
+            var tasks = await _taskService.GetExternalTasksByTeamId(team_id);
+
             return Ok(tasks);
         }
 
-        [HttpPost("create-task")]
-        public async Task<ActionResult<string>> CreateTask([FromBody] CreateTaskRequest request)
+        [HttpGet("tasks/teams/{team_id}/count")]
+        public async Task<ActionResult<Dictionary<string, int>>> GetTasksCount([FromRoute]string team_id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var user_id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var creatorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var taskId = await _taskService.CreateTask(request, creatorId);
-            return Ok(new { taskId });
+            var taskcounts = await _taskService.GetTasksCount(team_id, user_id);
+
+            return Ok(taskcounts);
+
         }
 
-        [HttpPost("move-task")]
-        public async Task<ActionResult<string>> MoveTask([FromBody] MoveTaskRequest request)
-        {
-            var taskId = await _taskService.MoveTask(request);
-            return Ok(new { taskId });
-        }
     }
 
 }

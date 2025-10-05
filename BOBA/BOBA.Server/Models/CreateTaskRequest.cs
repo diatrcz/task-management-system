@@ -6,4 +6,7 @@ public class CreateTaskRequest
 {
     [Required]
     public string TaskTypeId { get; set; }
+
+    [Required] 
+    public string TeamId { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using BOBA.Server.Data;
+using BOBA.Server.Data.implementation;
 using BOBA.Server.Models.Dto;
 using BOBA.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,7 @@ using System.Security.Claims;
 namespace BOBA.Server.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/user")]
 [Authorize]
 public class UserController : ControllerBase
 {
@@ -114,4 +115,24 @@ public class UserController : ControllerBase
 
         return Ok();
     }
+
+    [HttpGet("teams/userid")]
+    public async Task<ActionResult<List<TeamSummaryDto>>> GetUserTeamsById()
+    {
+        var user_id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var teams = await _userService.GetTeamsByUserId(user_id);
+
+        return Ok(teams);
+    }
+
+    [HttpGet("teams")]
+    [AllowAnonymous]
+    public async Task<ActionResult<List<TeamSummaryDto>>> GetTeams() 
+    {
+        var teams = await _userService.GetTeams();
+
+        return Ok(teams);
+    }
+
 }

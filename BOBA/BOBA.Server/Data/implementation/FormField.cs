@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BOBA.Server.Data.model;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BOBA.Server.Data;
+namespace BOBA.Server.Data.implementation;
 
 public class FormField
 {
@@ -21,10 +22,8 @@ public class FormField
     [StringLength(500)]
     public string Value { get; set; }
 
-    [StringLength(100)]
-    public string Validation { get; set; }
-
     [Required]
+    [ForeignKey("Modifier")]
     public string ModifierId { get; set; }
-
+    public User Modifier { get; set;  }
 }
