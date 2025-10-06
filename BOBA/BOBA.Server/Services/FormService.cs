@@ -53,8 +53,12 @@ public class FormService : IFormService
 
         foreach (var field in formFieldDtos)
         {
+            var taskField = await _context.TaskFields
+                .Where(tf => tf.Name == field.ModelId)
+                .FirstOrDefaultAsync();
 
-            var taskField = await _context.TaskFields.FindAsync(field.ModelId);
+            if (taskField == null)
+                throw new Exception($"TaskField with Name '{field.ModelId}' not found.");
 
             if (!string.IsNullOrWhiteSpace(taskField.Validation))
             {
@@ -66,16 +70,25 @@ public class FormService : IFormService
                 }
             }
 
-            var existing = await _context.FormFields
-                .SingleOrDefaultAsync(f => f.TaskId == field.TaskId && f.ModelId == field.ModelId);
+            var existingFields = await _context.FormFields
+                .Where(f => f.TaskId == field.TaskId && f.ModelId == taskField.Id)
+                .ToListAsync(); // get all duplicates if they exist
+
+            FormField existing = existingFields.FirstOrDefault();
 
             if (existing != null)
             {
-                if (existing.Value != field.Value || existing.ModifierId != field.ModifierId)
+                if (existing.Value != field.Value || existing.ModifierId != userId)
                 {
                     existing.Value = field.Value;
                     existing.ModifierId = userId;
                     _context.FormFields.Update(existing);
+                }
+
+                if (existingFields.Count > 1)
+                {
+                    var duplicates = existingFields.Skip(1);
+                    _context.FormFields.RemoveRange(duplicates);
                 }
             }
             else
@@ -84,45 +97,47 @@ public class FormService : IFormService
                 {
                     Id = Guid.NewGuid().ToString(),
                     TaskId = field.TaskId,
-                    ModelId = field.ModelId,
+                    ModelId = taskField.Id,
                     Value = field.Value,
                     ModifierId = userId,
                 };
 
                 await _context.FormFields.AddAsync(newField);
+                existing = newField;
             }
 
-            savedIds.Add(field.Id); ;
+            savedIds.Add(existing.Id);
         }
 
         await _context.SaveChangesAsync();
-
         return savedIds;
     }
 
-    public async Task<Dictionary<string, FormFieldDto>> GetSavedFieldsForTask(List<string> fieldIds, string taskId)
+    public async Task<List<FormFieldDto>> GetSavedFieldsForTask(List<string> fieldIds, string taskId)
     {
         var formFields = new Dictionary<string, FormField>();
+
         foreach (var fieldId in fieldIds)
         {
             var field = await _context.FormFields
                 .Where(f => f.TaskId == taskId && f.ModelId == fieldId)
-                .SingleAsync();
+                .SingleOrDefaultAsync();
 
-            formFields.Add(fieldId, field);
+            if (field != null)
+            {
+                formFields.Add(fieldId, field);
+            }
         }
 
-        var formFieldDtos = formFields.Select(f => new FormFieldDto
-        {
-            Id = f.Value.Id,
-            ModelId = f.Value.ModelId,
-            TaskId = f.Value.TaskId,
-            Value = f.Value.Value,
-            ModifierId = f.Value.ModifierId
-        }).ToDictionary(f => f.ModelId, f => f);
+        var formFieldDtos = formFields.Select(formField => new FormFieldDto {
+            Id = formField.Value.Id,
+            ModelId = formField.Value.ModelId,
+            TaskId = formField.Value.TaskId,
+            Value = formField.Value.Value,
+            ModifierId = formField.Value.ModifierId
+        }).ToList();
 
-        return formFieldDtos;
-
+        return formFieldDtos; 
     }
 
 }

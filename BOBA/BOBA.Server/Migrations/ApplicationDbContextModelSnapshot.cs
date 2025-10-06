@@ -60,7 +60,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("FormDocuments");
+                    b.ToTable("FormDocuments", (string)null);
                 });
 
             modelBuilder.Entity("BOBA.Server.Data.implementation.FormField", b =>
@@ -93,7 +93,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("FormFields");
+                    b.ToTable("FormFields", (string)null);
                 });
 
             modelBuilder.Entity("BOBA.Server.Data.implementation.Task", b =>
@@ -139,7 +139,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasIndex("TaskTypeId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("BOBA.Server.Data.implementation.User", b =>
@@ -235,7 +235,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Choices");
+                    b.ToTable("Choices", (string)null);
 
                     b.HasData(
                         new
@@ -283,7 +283,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("BOBA.Server.Data.model.TaskDocType", b =>
@@ -313,7 +313,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasIndex("TaskTypeId");
 
-                    b.ToTable("TaskDocTypes");
+                    b.ToTable("TaskDocTypes", (string)null);
 
                     b.HasData(
                         new
@@ -384,7 +384,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TaskFields");
+                    b.ToTable("TaskFields", (string)null);
 
                     b.HasData(
                         new
@@ -499,7 +499,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasIndex("TaskTypeId");
 
-                    b.ToTable("TaskFlows");
+                    b.ToTable("TaskFlows", (string)null);
 
                     b.HasData(
                         new
@@ -587,7 +587,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TaskStates");
+                    b.ToTable("TaskStates", (string)null);
 
                     b.HasData(
                         new
@@ -672,7 +672,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasIndex("StarterTeamId");
 
-                    b.ToTable("TaskTypes");
+                    b.ToTable("TaskTypes", (string)null);
 
                     b.HasData(
                         new
@@ -719,7 +719,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teams");
+                    b.ToTable("Teams", (string)null);
 
                     b.HasData(
                         new
@@ -894,7 +894,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasIndex("ReadOnlyRoleWorkflowsId");
 
-                    b.ToTable("TaskFlowTeam");
+                    b.ToTable("TaskFlowTeam", (string)null);
                 });
 
             modelBuilder.Entity("TeamUser", b =>
@@ -909,7 +909,7 @@ namespace BOBA.Server.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("TeamUser");
+                    b.ToTable("TeamUser", (string)null);
                 });
 
             modelBuilder.Entity("BOBA.Server.Data.implementation.FormDocument", b =>

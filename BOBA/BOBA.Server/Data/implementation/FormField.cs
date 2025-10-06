@@ -7,7 +7,7 @@ namespace BOBA.Server.Data.implementation;
 public class FormField
 {
     [Key]
-    public string Id { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     [Required]
     [ForeignKey("TaskField")]

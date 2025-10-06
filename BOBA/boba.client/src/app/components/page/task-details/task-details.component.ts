@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { response } from 'express';
-import { ApiService, ChoiceSummaryDto, MoveTaskRequest, TaskFlowSummaryDto, TaskSummaryDto } from '../../../services/api-service.service';
+import { ApiService, ChoiceSummaryDto, FormFieldDto, MoveTaskRequest, TaskFieldDto, TaskFlowSummaryDto, TaskSummaryDto } from '../../../services/api-service.service';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 @Component({
     selector: 'app-task-details',
@@ -20,6 +22,8 @@ export class TaskDetailsComponent implements OnInit{
   nextStateName: string | null = null;
   showConfirmDialog: boolean = false;
 
+  dynamicForm!: FormGroup;
+  mergedFields: any[] = [];
 
   constructor(
     private apiService: ApiService,
@@ -36,10 +40,11 @@ export class TaskDetailsComponent implements OnInit{
     await this.loadTask();
 
     if(!this.task.currentStateIsFinal) {
-      await this.loadTaskFlow();
-      await this.loadChoices();
-      }
-  }
+        await this.loadTaskFlow();
+        await this.loadChoices();
+        await this.buildDynamicForm();  // <-- new function
+    }
+}
 
   loadRoute(): Promise<void> {
     return new Promise((resolve) => {
@@ -84,6 +89,82 @@ export class TaskDetailsComponent implements OnInit{
       });
     });
   }
+
+  async buildDynamicForm(): Promise<void> {
+    if (!this.taskflow?.formFields) return;
+
+    const fieldIds = this.taskflow.formFields.flatMap(section =>
+        section.fields?.map(f => f.fieldId!) ?? []
+    );
+
+    if (!fieldIds.length) return;
+
+    const taskFields: TaskFieldDto[] = (await this.apiService.form_GetTaskFieldsByName(fieldIds).toPromise()) || [];
+    const taskFieldIds: string[] = taskFields.map(tf => tf.id!).filter(id => !!id);
+    const savedFields: FormFieldDto[] = (await this.apiService.form_GetSavedFieldsForTask(this.taskId, taskFieldIds).toPromise()) || [];
+
+
+    this.mergedFields = [];
+
+    for (const section of this.taskflow.formFields) {
+        const mergedSection: any = {
+            layout: section.layout,
+            fields: []
+        };
+
+        for (const field of section.fields ?? []) {
+            const metadata = taskFields.find(tf => tf.name === field.fieldId);
+            console.log(metadata);
+            const saved = savedFields.find(sf => sf.modelId === metadata?.id);
+            console.log(saved);
+
+            const mergedField = {
+                ...field,
+                ...metadata,
+                value: saved?.value ?? '',
+            };
+
+            mergedSection.fields.push(mergedField);
+        }
+
+        this.mergedFields.push(mergedSection);
+    }
+
+    const group: { [key: string]: FormControl } = {};
+
+    this.mergedFields.forEach(section => {
+      section.fields.forEach((f: any) => {
+        const validators = [];
+
+        if (f.required) {
+          validators.push(this.conditionalRequired());
+        }
+
+        if (f.validation === 'email') {
+          validators.push(Validators.email);
+        }
+
+        group[f.fieldId] = new FormControl(
+          { value: f.value ?? '', disabled: f.disabled },
+          validators
+        );
+      });
+    });
+
+    this.dynamicForm = new FormGroup(group);
+
+}
+
+  conditionalRequired(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+    return value ? null : { required: true };
+  };
+}
+
 
   loadChoices(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -140,25 +221,55 @@ export class TaskDetailsComponent implements OnInit{
   }
 
   submitTask(): void {
-    console.log('Submitting task with choice:', this.selectedChoiceId);
+    if (this.dynamicForm && !this.dynamicForm.valid) {
+        console.log('Form is invalid');
+        Object.entries(this.dynamicForm.controls).forEach(([name, control]) => {
+          console.log(name, control.value, control.errors);
+          if (control.invalid) console.log(name, control.value, control.errors);
+        });
+        this.dynamicForm.markAllAsTouched();
+        return;
+    }
 
-    const request = new MoveTaskRequest({
-      choiceId: this.selectedChoiceId!,
-      taskId: this.taskId!
+    const formFieldDtos: FormFieldDto[] = [];
+
+    this.mergedFields.forEach(section => {
+        section.fields.forEach((f: any) => {
+            const dto = new FormFieldDto();   // <-- instantiate the class
+            dto.modelId = f.fieldId;
+            dto.taskId = this.taskId;
+            dto.value = this.dynamicForm.get(f.fieldId)?.value;
+            formFieldDtos.push(dto);
+        });
     });
 
-    this.apiService.task_UpdateTask(this.taskId!, request).subscribe(
-      (response) => {
-        console.log('Task moved to next state successfully', response);
-        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-          this.router.navigate([`/task-details/${this.taskId}`]);
-        });
-      },
-      (error) => {
-        console.error('Error moving task', error);
-      }
-    );
+    this.apiService.form_SaveFormFields(this.taskId, formFieldDtos).subscribe({
+        next: () => {
+            console.log('Form saved successfully');
 
-    this.showConfirmDialog = false;
-  }
+            const request = new MoveTaskRequest({
+                choiceId: this.selectedChoiceId!,
+                taskId: this.taskId!
+            });
+
+            this.apiService.task_UpdateTask(this.taskId!, request).subscribe(
+                (response) => {
+                    console.log('Task moved to next state successfully', response);
+                    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                        this.router.navigate([`/task-details/${this.taskId}`]);
+                    });
+                },
+                (error) => {
+                    console.error('Error moving task', error);
+                }
+            );
+
+            this.showConfirmDialog = false;
+        },
+        error: err => {
+            console.error('Error saving form:', err);
+        }
+    });
+}
+
 }
