@@ -42,6 +42,8 @@ public class TaskService : ITaskService
             .Include(t => t.Assignee)
             .SingleAsync();
 
+        var team = await _context.Teams.Where(t => t.Id == task.TeamId).SingleAsync();
+
         var taskdto = new TaskSummaryDto
         {
             Id = task.Id,
@@ -51,8 +53,9 @@ public class TaskService : ITaskService
             CurrentStateId = task.CurrentStateId,
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
-            AssigneeId = task.AssigneeId,
+            Assignee = task.AssigneeId,
             TeamId = task.TeamId,
+            Team = team.Name,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
         };
@@ -65,6 +68,7 @@ public class TaskService : ITaskService
         var tasks = await _context.Tasks
             .Where(t => t.AssigneeId == userId)
             .Include(t => t.CurrentState)
+            .Include(t => t.Assignee)
             .Include(t => t.TaskType)
             .ToListAsync();
 
@@ -77,7 +81,7 @@ public class TaskService : ITaskService
             CurrentStateId = task.CurrentStateId,
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
-            AssigneeId = task.AssigneeId,
+            Assignee = task.AssigneeId,
             TeamId = task.TeamId,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
@@ -91,6 +95,7 @@ public class TaskService : ITaskService
         var tasks =  await _context.Tasks
             .Where(t => t.CurrentState.IsFinal)
             .Include(t => t.CurrentState)
+            .Include(t => t.Assignee)
             .Include(t => t.TaskType)
             .ToListAsync();
 
@@ -103,7 +108,7 @@ public class TaskService : ITaskService
             CurrentStateId = task.CurrentStateId,
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
-            AssigneeId = task.AssigneeId,
+            Assignee = task.AssigneeId,
             TeamId = task.TeamId,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
@@ -167,6 +172,7 @@ public class TaskService : ITaskService
         var tasks = await _context.Tasks
              .Where(t => (t.CreatorTeamId == team_id || t.TeamId == team_id) && t.CurrentState.IsFinal == true) 
              .Include(t => t.CurrentState)
+             .Include(t => t.Assignee)
              .Include(t => t.TaskType)
              .ToListAsync();
 
@@ -179,7 +185,7 @@ public class TaskService : ITaskService
             CurrentStateId = task.CurrentStateId,
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
-            AssigneeId = task.AssigneeId,
+            Assignee = task.AssigneeId,
             TeamId = task.TeamId,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
@@ -193,6 +199,7 @@ public class TaskService : ITaskService
         var tasks = await _context.Tasks
              .Where(t => t.TeamId == team_id && t.CurrentState.IsFinal == false && t.AssigneeId == null)
              .Include(t => t.CurrentState)
+             .Include(t => t.Assignee)
              .Include(t => t.TaskType)
              .ToListAsync();
 
@@ -205,7 +212,7 @@ public class TaskService : ITaskService
             CurrentStateId = task.CurrentStateId,
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
-            AssigneeId = task.AssigneeId,
+            Assignee = task.AssigneeId,
             TeamId = task.TeamId,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
@@ -219,6 +226,7 @@ public class TaskService : ITaskService
         var tasks = await _context.Tasks
              .Where(t => t.TeamId == team_id && t.CurrentState.IsFinal == false && t.AssigneeId == user_id)
              .Include(t => t.CurrentState)
+             .Include(t => t.Assignee)
              .Include(t => t.TaskType)
              .ToListAsync();
 
@@ -231,7 +239,7 @@ public class TaskService : ITaskService
             CurrentStateId = task.CurrentStateId,
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
-            AssigneeId = task.AssigneeId,
+            Assignee = task.AssigneeId,
             TeamId = task.TeamId,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
@@ -245,6 +253,7 @@ public class TaskService : ITaskService
         var tasks = await _context.Tasks
             .Where(t => t.CreatorTeamId == team_id && t.CurrentState.IsFinal == false)
             .Include(t => t.CurrentState)
+            .Include(t => t.Assignee)
             .Include(t => t.TaskType)
             .ToListAsync();
 
@@ -257,7 +266,7 @@ public class TaskService : ITaskService
             CurrentStateId = task.CurrentStateId,
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
-            AssigneeId = task.AssigneeId,
+            Assignee = task.AssigneeId,
             TeamId = task.TeamId,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")

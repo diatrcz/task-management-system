@@ -17,4 +17,6 @@ public class TaskDocType
 
     [StringLength(500)]
     public string Description { get; set; }
+
+    public virtual ICollection<TaskType> TaskTypes { get; set; } = new List<TaskType>();
 }
