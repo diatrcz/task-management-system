@@ -42,7 +42,8 @@ public class TaskService : ITaskService
             .Include(t => t.Assignee)
             .SingleAsync();
 
-        var team = await _context.Teams.Where(t => t.Id == task.TeamId).SingleAsync();
+       // problem is that in the end states team accidentally set to null which results i n the 500 server error
+       //var team = await _context.Teams.Where(t => t.Id == task.TeamId).SingleAsync();
 
         var taskdto = new TaskSummaryDto
         {
@@ -55,7 +56,7 @@ public class TaskService : ITaskService
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
             Assignee = task.AssigneeId,
             TeamId = task.TeamId,
-            Team = team.Name,
+            //Team = team.Name,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
         };
