@@ -583,16 +583,140 @@ export class ApiService {
         return _observableOf(null as any);
     }
 
-    document_Upload(file?: FileParameter | null | undefined): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/Document";
+    document_GetDocTypes(task_id: string): Observable<TaskDocTypeDto[]> {
+        let url_ = this.baseUrl + "/api/document/{task_id}/doctypes";
+        if (task_id === undefined || task_id === null)
+            throw new globalThis.Error("The parameter 'task_id' must be defined.");
+        url_ = url_.replace("{task_id}", encodeURIComponent("" + task_id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDocument_GetDocTypes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDocument_GetDocTypes(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TaskDocTypeDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TaskDocTypeDto[]>;
+        }));
+    }
+
+    protected processDocument_GetDocTypes(response: HttpResponseBase): Observable<TaskDocTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(TaskDocTypeDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    document_UploadFiles(task_id: string, files?: FileParameter[] | null | undefined, docTypeId?: string | null | undefined): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/document/{task_id}/upload";
+        if (task_id === undefined || task_id === null)
+            throw new globalThis.Error("The parameter 'task_id' must be defined.");
+        url_ = url_.replace("{task_id}", encodeURIComponent("" + task_id));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
-        if (file !== null && file !== undefined)
-            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+        if (files !== null && files !== undefined)
+            files.forEach(item_ => content_.append("files", item_.data, item_.fileName ? item_.fileName : "files") );
+        if (docTypeId !== null && docTypeId !== undefined)
+            content_.append("docTypeId", docTypeId.toString());
 
         let options_ : any = {
             body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDocument_UploadFiles(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDocument_UploadFiles(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string[]>;
+        }));
+    }
+
+    protected processDocument_UploadFiles(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            else {
+                result200 = null as any;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    document_DownloadFile(task_id: string, file_id: string): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/document/{task_id}/{file_id}";
+        if (task_id === undefined || task_id === null)
+            throw new globalThis.Error("The parameter 'task_id' must be defined.");
+        url_ = url_.replace("{task_id}", encodeURIComponent("" + task_id));
+        if (file_id === undefined || file_id === null)
+            throw new globalThis.Error("The parameter 'file_id' must be defined.");
+        url_ = url_.replace("{file_id}", encodeURIComponent("" + file_id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
@@ -600,12 +724,12 @@ export class ApiService {
             })
         };
 
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDocument_Upload(response_);
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDocument_DownloadFile(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processDocument_Upload(response_ as any);
+                    return this.processDocument_DownloadFile(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<FileResponse>;
                 }
@@ -614,7 +738,7 @@ export class ApiService {
         }));
     }
 
-    protected processDocument_Upload(response: HttpResponseBase): Observable<FileResponse> {
+    protected processDocument_DownloadFile(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -632,6 +756,119 @@ export class ApiService {
                 fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
             }
             return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    document_DeleteFile(task_id: string, file_id: string): Observable<string> {
+        let url_ = this.baseUrl + "/api/document/{task_id}/{file_id}/delete";
+        if (task_id === undefined || task_id === null)
+            throw new globalThis.Error("The parameter 'task_id' must be defined.");
+        url_ = url_.replace("{task_id}", encodeURIComponent("" + task_id));
+        if (file_id === undefined || file_id === null)
+            throw new globalThis.Error("The parameter 'file_id' must be defined.");
+        url_ = url_.replace("{file_id}", encodeURIComponent("" + file_id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDocument_DeleteFile(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDocument_DeleteFile(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processDocument_DeleteFile(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : null as any;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    document_GetFilesForTask(task_id: string): Observable<FormDocumentDto[]> {
+        let url_ = this.baseUrl + "/api/document/{task_id}/documents";
+        if (task_id === undefined || task_id === null)
+            throw new globalThis.Error("The parameter 'task_id' must be defined.");
+        url_ = url_.replace("{task_id}", encodeURIComponent("" + task_id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDocument_GetFilesForTask(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDocument_GetFilesForTask(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FormDocumentDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FormDocumentDto[]>;
+        }));
+    }
+
+    protected processDocument_GetFilesForTask(response: HttpResponseBase): Observable<FormDocumentDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(FormDocumentDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -2511,6 +2748,98 @@ export interface IInfoRequest {
     oldPassword?: string | undefined;
 }
 
+export class TaskDocTypeDto implements ITaskDocTypeDto {
+    id?: string;
+    name?: string;
+
+    constructor(data?: ITaskDocTypeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): TaskDocTypeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TaskDocTypeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ITaskDocTypeDto {
+    id?: string;
+    name?: string;
+}
+
+export class FormDocumentDto implements IFormDocumentDto {
+    id?: string | undefined;
+    docTypeId?: string;
+    fileName?: string;
+    uploadedAt?: Date;
+    uploaderName?: string;
+
+    constructor(data?: IFormDocumentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.docTypeId = _data["docTypeId"];
+            this.fileName = _data["fileName"];
+            this.uploadedAt = _data["uploadedAt"] ? new Date(_data["uploadedAt"].toString()) : undefined as any;
+            this.uploaderName = _data["uploaderName"];
+        }
+    }
+
+    static fromJS(data: any): FormDocumentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FormDocumentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["docTypeId"] = this.docTypeId;
+        data["fileName"] = this.fileName;
+        data["uploadedAt"] = this.uploadedAt ? this.uploadedAt.toISOString() : undefined as any;
+        data["uploaderName"] = this.uploaderName;
+        return data;
+    }
+}
+
+export interface IFormDocumentDto {
+    id?: string | undefined;
+    docTypeId?: string;
+    fileName?: string;
+    uploadedAt?: Date;
+    uploaderName?: string;
+}
+
 export class TaskFieldDto implements ITaskFieldDto {
     id?: string;
     name?: string;
@@ -2576,7 +2905,7 @@ export interface ITaskFieldDto {
 }
 
 export class FormFieldDto implements IFormFieldDto {
-    id?: string;
+    id?: string | undefined;
     modelId?: string;
     taskId?: string;
     value?: string;
@@ -2620,7 +2949,7 @@ export class FormFieldDto implements IFormFieldDto {
 }
 
 export interface IFormFieldDto {
-    id?: string;
+    id?: string | undefined;
     modelId?: string;
     taskId?: string;
     value?: string;
@@ -2715,8 +3044,9 @@ export class TaskSummaryDto implements ITaskSummaryDto {
     currentStateId?: string;
     currentStateName?: string;
     currentStateIsFinal?: boolean;
-    assigneeId?: string;
+    assignee?: string;
     teamId?: string;
+    team?: string;
     updatedAt?: string;
     createdAt?: string;
 
@@ -2738,8 +3068,9 @@ export class TaskSummaryDto implements ITaskSummaryDto {
             this.currentStateId = _data["currentStateId"];
             this.currentStateName = _data["currentStateName"];
             this.currentStateIsFinal = _data["currentStateIsFinal"];
-            this.assigneeId = _data["assigneeId"];
+            this.assignee = _data["assignee"];
             this.teamId = _data["teamId"];
+            this.team = _data["team"];
             this.updatedAt = _data["updatedAt"];
             this.createdAt = _data["createdAt"];
         }
@@ -2761,8 +3092,9 @@ export class TaskSummaryDto implements ITaskSummaryDto {
         data["currentStateId"] = this.currentStateId;
         data["currentStateName"] = this.currentStateName;
         data["currentStateIsFinal"] = this.currentStateIsFinal;
-        data["assigneeId"] = this.assigneeId;
+        data["assignee"] = this.assignee;
         data["teamId"] = this.teamId;
+        data["team"] = this.team;
         data["updatedAt"] = this.updatedAt;
         data["createdAt"] = this.createdAt;
         return data;
@@ -2777,8 +3109,9 @@ export interface ITaskSummaryDto {
     currentStateId?: string;
     currentStateName?: string;
     currentStateIsFinal?: boolean;
-    assigneeId?: string;
+    assignee?: string;
     teamId?: string;
+    team?: string;
     updatedAt?: string;
     createdAt?: string;
 }

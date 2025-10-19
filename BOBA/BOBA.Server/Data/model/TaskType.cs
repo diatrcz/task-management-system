@@ -17,5 +17,5 @@ public class TaskType
 
     public virtual Team? StarterTeam { get; set; }
 
-    public virtual ICollection<TaskDocType> DocTypes { get; set; } = new List<TaskDocType>();
+    public virtual ICollection<TaskDocType> TaskDocTypes { get; set; } = new List<TaskDocType>();
 }

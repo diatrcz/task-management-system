@@ -20,10 +20,10 @@ public class FormDocument
     public TaskDocType DocType { get; set; }
 
     [Required]
-    public string FileName { get; set; } = null!;
+    public string FileName { get; set; }
 
     [Required]
-    public string ContentType { get; set; } = null!;
+    public string ContentType { get; set; }   
 
     [Required]
     public byte[] Data { get; set; } = null!;
@@ -33,4 +33,7 @@ public class FormDocument
 
     [Required]
     public string UploaderId { get; set; }
+
+    [Required]
+    public bool IsDeleted { get; set; } = false;
 }

@@ -70,5 +70,16 @@ public class ApplicationDbContext : IdentityDbContext<User>
         modelBuilder.ApplyConfiguration(new ChoiceSeedConfig());
         modelBuilder.ApplyConfiguration(new TaskDocTypeSeedConfig());
         modelBuilder.ApplyConfiguration(new TaskFieldSeedConfig());
+
+        modelBuilder.Entity("TaskDocTypeTaskType").HasData(
+            new { TaskDocTypesId = "1", TaskTypesId = "1" },
+            new { TaskDocTypesId = "1", TaskTypesId = "2" },
+            new { TaskDocTypesId = "2", TaskTypesId = "2" },
+            new { TaskDocTypesId = "3", TaskTypesId = "2" },
+            new { TaskDocTypesId = "4", TaskTypesId = "2" },
+            new { TaskDocTypesId = "1", TaskTypesId = "3" },
+            new { TaskDocTypesId = "2", TaskTypesId = "3" },
+            new { TaskDocTypesId = "4", TaskTypesId = "4" }
+        );
     }
 }

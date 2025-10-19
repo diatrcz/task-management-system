@@ -13,7 +13,7 @@ import { TasklistComponent } from './components/page/tasklist/tasklist.component
 import { UserTaskListComponent } from './components/page/user-task-list/user-task-list.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 @NgModule({ declarations: [
         AppComponent,
@@ -30,7 +30,8 @@ import { FormsModule } from '@angular/forms';
     [
         BrowserModule,
         AppRoutingModule,
-        FormsModule
+        FormsModule,
+        ReactiveFormsModule
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
