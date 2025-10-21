@@ -18,9 +18,7 @@ public class FormServiceAdditionalTests
         return new ApplicationDbContext(options);
     }
 
-    // ---------------------------------------------------------
-    // GetTaskTypesByName - Additional Tests
-    // ---------------------------------------------------------
+    #region GetTaskTypesByName Tests
 
     [Fact]
     public async System.Threading.Tasks.Task GetTaskTypesByName_ReturnsEmptyList_WhenEmptyInput()
@@ -28,10 +26,8 @@ public class FormServiceAdditionalTests
         using var context = CreateInMemoryDbContext();
         var service = new FormService(context);
 
-        // Act
         var result = await service.GetTaskTypesByName(new List<string>());
 
-        // Assert
         Assert.Empty(result);
     }
 
@@ -49,10 +45,8 @@ public class FormServiceAdditionalTests
 
         var service = new FormService(context);
 
-        // Act
         var result = await service.GetTaskTypesByName(new List<string> { "Gamma", "Alpha", "Beta" });
 
-        // Assert
         Assert.Equal(3, result.Count);
         Assert.Equal("Gamma", result[0].Name);
         Assert.Equal("Alpha", result[1].Name);
@@ -81,10 +75,8 @@ public class FormServiceAdditionalTests
 
         var service = new FormService(context);
 
-        // Act
         var result = await service.GetTaskTypesByName(new List<string> { "Email" });
 
-        // Assert
         Assert.Single(result);
         var dto = result[0];
         Assert.Equal("f1", dto.Id);
@@ -97,9 +89,9 @@ public class FormServiceAdditionalTests
         Assert.Equal("option1,option2", dto.Options);
     }
 
-    // ---------------------------------------------------------
-    // SaveFormFields - Additional Tests
-    // ---------------------------------------------------------
+    #endregion
+
+    #region SaveFormFields Tests
 
     [Fact]
     public async System.Threading.Tasks.Task SaveFormFields_ReturnsEmptyList_WhenEmptyInput()
@@ -107,10 +99,8 @@ public class FormServiceAdditionalTests
         using var context = CreateInMemoryDbContext();
         var service = new FormService(context);
 
-        // Act
         var result = await service.SaveFormFields(new List<FormFieldDto>(), "user1");
 
-        // Assert
         Assert.Empty(result);
     }
 
@@ -134,10 +124,8 @@ public class FormServiceAdditionalTests
         var service = new FormService(context);
         var dto = new FormFieldDto { TaskId = "t1", ModelId = "Email", Value = "valid@example.com" };
 
-        // Act
         var result = await service.SaveFormFields(new List<FormFieldDto> { dto }, "u1");
 
-        // Assert
         Assert.Single(result);
         var saved = await context.FormFields.FirstAsync();
         Assert.Equal("valid@example.com", saved.Value);
@@ -162,10 +150,8 @@ public class FormServiceAdditionalTests
         var service = new FormService(context);
         var dto = new FormFieldDto { TaskId = "t1", ModelId = "Comment", Value = "any value works" };
 
-        // Act
         var result = await service.SaveFormFields(new List<FormFieldDto> { dto }, "u1");
 
-        // Assert
         Assert.Single(result);
         var saved = await context.FormFields.FirstAsync();
         Assert.Equal("any value works", saved.Value);
@@ -190,10 +176,8 @@ public class FormServiceAdditionalTests
         var service = new FormService(context);
         var dto = new FormFieldDto { TaskId = "t1", ModelId = "Comment", Value = "any value works" };
 
-        // Act
         var result = await service.SaveFormFields(new List<FormFieldDto> { dto }, "u1");
 
-        // Assert
         Assert.Single(result);
     }
 
@@ -217,10 +201,8 @@ public class FormServiceAdditionalTests
             new FormFieldDto { TaskId = "t1", ModelId = "Priority", Value = "High" }
         };
 
-        // Act
         var result = await service.SaveFormFields(dtos, "user1");
 
-        // Assert
         Assert.Equal(3, result.Count);
         var allFields = await context.FormFields.ToListAsync();
         Assert.Equal(3, allFields.Count);
@@ -251,10 +233,8 @@ public class FormServiceAdditionalTests
         var service = new FormService(context);
         var dto = new FormFieldDto { TaskId = "t1", ModelId = "Title", Value = "SameValue" };
 
-        // Act
         var result = await service.SaveFormFields(new List<FormFieldDto> { dto }, "user1");
 
-        // Assert
         var updated = await context.FormFields.FindAsync("oldid");
         Assert.Equal("SameValue", updated!.Value);
         Assert.Equal("user1", updated.ModifierId);
@@ -282,10 +262,8 @@ public class FormServiceAdditionalTests
         var service = new FormService(context);
         var dto = new FormFieldDto { TaskId = "t1", ModelId = "Title", Value = "SameValue" };
 
-        // Act
         var result = await service.SaveFormFields(new List<FormFieldDto> { dto }, "user2");
 
-        // Assert
         var updated = await context.FormFields.FindAsync("oldid");
         Assert.Equal("SameValue", updated!.Value);
         Assert.Equal("user2", updated.ModifierId);
@@ -310,10 +288,8 @@ public class FormServiceAdditionalTests
         var service = new FormService(context);
         var dto = new FormFieldDto { TaskId = "t1", ModelId = "Title", Value = "NewVal" };
 
-        // Act
         await service.SaveFormFields(new List<FormFieldDto> { dto }, "u2");
 
-        // Assert
         var all = await context.FormFields.Where(f => f.TaskId == "t1").ToListAsync();
         Assert.Single(all);
         Assert.Equal("NewVal", all.First().Value);
@@ -327,7 +303,6 @@ public class FormServiceAdditionalTests
         var tf = new TaskField { Id = "tf1", Name = "Title", Type = "text", Label = "Title" };
         context.TaskFields.Add(tf);
 
-        // Existing field for different task
         var otherTaskField = new FormField
         {
             Id = "other",
@@ -343,19 +318,17 @@ public class FormServiceAdditionalTests
         var service = new FormService(context);
         var dto = new FormFieldDto { TaskId = "t1", ModelId = "Title", Value = "Current Task Value" };
 
-        // Act
         await service.SaveFormFields(new List<FormFieldDto> { dto }, "u2");
 
-        // Assert
         var allFields = await context.FormFields.ToListAsync();
         Assert.Equal(2, allFields.Count);
         Assert.Contains(allFields, f => f.TaskId == "t1" && f.Value == "Current Task Value");
         Assert.Contains(allFields, f => f.TaskId == "t2" && f.Value == "Other Task Value");
     }
 
-    // ---------------------------------------------------------
-    // GetSavedFieldsForTask - Additional Tests
-    // ---------------------------------------------------------
+    #endregion
+
+    #region GetSavedFieldsForTask Tests
 
     [Fact]
     public async System.Threading.Tasks.Task GetSavedFieldsForTask_ReturnsEmptyList_WhenNoMatchingFields()
@@ -368,10 +341,8 @@ public class FormServiceAdditionalTests
 
         var service = new FormService(context);
 
-        // Act
         var result = await service.GetSavedFieldsForTask(new List<string> { "m1" }, "t1");
 
-        // Assert
         Assert.Empty(result);
     }
 
@@ -381,10 +352,8 @@ public class FormServiceAdditionalTests
         using var context = CreateInMemoryDbContext();
         var service = new FormService(context);
 
-        // Act
         var result = await service.GetSavedFieldsForTask(new List<string>(), "t1");
 
-        // Assert
         Assert.Empty(result);
     }
 
@@ -407,10 +376,8 @@ public class FormServiceAdditionalTests
 
         var service = new FormService(context);
 
-        // Act
         var result = await service.GetSavedFieldsForTask(new List<string> { "model789" }, "task456");
 
-        // Assert
         Assert.Single(result);
         var dto = result[0];
         Assert.Equal("field123", dto.Id);
@@ -434,10 +401,8 @@ public class FormServiceAdditionalTests
 
         var service = new FormService(context);
 
-        // Act
         var result = await service.GetSavedFieldsForTask(new List<string> { "m1" }, "t1");
 
-        // Assert
         Assert.Single(result);
         Assert.Equal("match", result[0].Value);
         Assert.Equal("m1", result[0].ModelId);
@@ -458,10 +423,8 @@ public class FormServiceAdditionalTests
 
         var service = new FormService(context);
 
-        // Act
         var result = await service.GetSavedFieldsForTask(new List<string> { "m1", "m2", "m3" }, "t1");
 
-        // Assert
         Assert.Equal(3, result.Count);
         Assert.Contains(result, r => r.ModelId == "m1" && r.Value == "val1");
         Assert.Contains(result, r => r.ModelId == "m2" && r.Value == "val2");
@@ -481,10 +444,11 @@ public class FormServiceAdditionalTests
 
         var service = new FormService(context);
 
-        // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             await service.GetSavedFieldsForTask(new List<string> { "m1" }, "t1");
         });
     }
+
+    #endregion
 }

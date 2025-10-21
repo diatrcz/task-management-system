@@ -24,7 +24,7 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetEditRoleId_ReturnsCorrectEditRoleId()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             var taskFlow = new TaskFlow
             {
@@ -42,21 +42,17 @@ namespace BOBA.Tests
 
             var service = new TaskFlowService(context);
 
-            // Act
             var result = await service.GetEditRoleId("type1", "s1");
 
-            // Assert
             Assert.Equal("role1", result);
         }
 
         [Fact]
         public async System.Threading.Tasks.Task GetEditRoleId_ThrowsException_WhenFlowNotFound()
         {
-            // Arrange
             using var context = CreateInMemoryDbContext();
             var service = new TaskFlowService(context);
 
-            // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 service.GetEditRoleId("nonexistent", "nonexistent"));
         }
@@ -68,7 +64,7 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetTaskFlowById_ReturnsCompleteTaskFlowDto()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             var taskType = new TaskType { Id = "type1", Name = "Bug" };
             var state = new TaskState { Id = "s1", Name = "Open", IsFinal = false };
@@ -142,10 +138,8 @@ namespace BOBA.Tests
 
             var service = new TaskFlowService(context);
 
-            // Act
             var result = await service.GetTaskFlowById("t1");
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal("tf1", result.Id);
             Assert.Equal("role1", result.EditRoleId);
@@ -165,7 +159,7 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetTaskFlowById_HandlesEmptyCollections()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             var taskType = new TaskType { Id = "type1", Name = "Bug" };
             var state = new TaskState { Id = "s1", Name = "Open", IsFinal = false };
@@ -208,10 +202,8 @@ namespace BOBA.Tests
 
             var service = new TaskFlowService(context);
 
-            // Act
             var result = await service.GetTaskFlowById("t1");
 
-            // Assert
             Assert.NotNull(result);
             Assert.Empty(result.NextState);
             Assert.Empty(result.ReadOnlyRole);
@@ -221,7 +213,7 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetTaskFlowById_HandlesMultipleNextStates()
         {
-            // Arrange
+   
             using var context = CreateInMemoryDbContext();
             var taskType = new TaskType { Id = "type1", Name = "Bug" };
             var state = new TaskState { Id = "s1", Name = "Open", IsFinal = false };
@@ -269,10 +261,8 @@ namespace BOBA.Tests
 
             var service = new TaskFlowService(context);
 
-            // Act
             var result = await service.GetTaskFlowById("t1");
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(3, result.NextState.Count);
             Assert.Contains(result.NextState, ns => ns.ChoiceId == "approve" && ns.NextStateId == "s2");
@@ -283,7 +273,7 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetTaskFlowById_HandlesMultipleReadOnlyRoles()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             var taskType = new TaskType { Id = "type1", Name = "Bug" };
             var state = new TaskState { Id = "s1", Name = "Open", IsFinal = false };
@@ -329,10 +319,8 @@ namespace BOBA.Tests
 
             var service = new TaskFlowService(context);
 
-            // Act
             var result = await service.GetTaskFlowById("t1");
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(2, result.ReadOnlyRole.Count);
             Assert.Contains("team1", result.ReadOnlyRole);
@@ -342,7 +330,7 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetTaskFlowById_HandlesMultipleFormFields()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             var taskType = new TaskType { Id = "type1", Name = "Bug" };
             var state = new TaskState { Id = "s1", Name = "Open", IsFinal = false };
@@ -417,10 +405,8 @@ namespace BOBA.Tests
 
             var service = new TaskFlowService(context);
 
-            // Act
             var result = await service.GetTaskFlowById("t1");
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(2, result.FormFields.Count);
             Assert.Equal("field1", result.FormFields[0].Fields[0].FieldId);
@@ -432,11 +418,11 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetTaskFlowById_ThrowsException_WhenTaskNotFound()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             var service = new TaskFlowService(context);
 
-            // Act & Assert
+
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 service.GetTaskFlowById("nonexistent"));
         }
@@ -444,7 +430,7 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetTaskFlowById_ThrowsException_WhenTaskFlowNotFound()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             var taskType = new TaskType { Id = "type1", Name = "Bug" };
             var state = new TaskState { Id = "s1", Name = "Open", IsFinal = false };
@@ -475,7 +461,6 @@ namespace BOBA.Tests
 
             var service = new TaskFlowService(context);
 
-            // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 service.GetTaskFlowById("t1"));
         }
@@ -487,7 +472,7 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetChoices_ReturnsAllValidChoices()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             context.Choices.AddRange(
                 new Choice { Id = "choice1", Name = "Approve", Description = "Approve action" },
@@ -499,10 +484,8 @@ namespace BOBA.Tests
             var service = new TaskFlowService(context);
             var ids = new List<string> { "choice1", "choice2", "choice3" };
 
-            // Act
             var result = await service.GetChoices(ids);
 
-            // Assert
             Assert.Equal(3, result.Count);
             Assert.Contains(result, c => c.Id == "choice1" && c.Name == "Approve");
             Assert.Contains(result, c => c.Id == "choice2" && c.Name == "Reject");
@@ -512,7 +495,7 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetChoices_SkipsNonExistentChoices()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             context.Choices.AddRange(
                 new Choice { Id = "choice1", Name = "Approve", Description = "Approve action" },
@@ -523,10 +506,8 @@ namespace BOBA.Tests
             var service = new TaskFlowService(context);
             var ids = new List<string> { "choice1", "nonexistent", "choice2" };
 
-            // Act
             var result = await service.GetChoices(ids);
 
-            // Assert
             Assert.Equal(2, result.Count);
             Assert.Contains(result, c => c.Id == "choice1");
             Assert.Contains(result, c => c.Id == "choice2");
@@ -536,37 +517,33 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetChoices_ReturnsEmptyList_WhenNoValidChoices()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             var service = new TaskFlowService(context);
             var ids = new List<string> { "nonexistent1", "nonexistent2" };
 
-            // Act
             var result = await service.GetChoices(ids);
 
-            // Assert
             Assert.Empty(result);
         }
 
         [Fact]
         public async System.Threading.Tasks.Task GetChoices_ReturnsEmptyList_WhenEmptyIdList()
         {
-            // Arrange
+ 
             using var context = CreateInMemoryDbContext();
             var service = new TaskFlowService(context);
             var ids = new List<string>();
 
-            // Act
             var result = await service.GetChoices(ids);
 
-            // Assert
             Assert.Empty(result);
         }
 
         [Fact]
         public async System.Threading.Tasks.Task GetChoices_PreservesOrderBasedOnFoundChoices()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             context.Choices.AddRange(
                 new Choice { Id = "c1", Name = "First", Description = "First choice" },
@@ -578,12 +555,11 @@ namespace BOBA.Tests
             var service = new TaskFlowService(context);
             var ids = new List<string> { "c1", "c2", "c3" };
 
-            // Act
+
             var result = await service.GetChoices(ids);
 
-            // Assert
             Assert.Equal(3, result.Count);
-            // Verify choices are returned in the order they were requested
+
             Assert.Equal("c1", result[0].Id);
             Assert.Equal("c2", result[1].Id);
             Assert.Equal("c3", result[2].Id);
@@ -596,7 +572,7 @@ namespace BOBA.Tests
         [Fact]
         public async System.Threading.Tasks.Task GetTaskStateNameById_ReturnsCorrectStateName()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             context.TaskStates.AddRange(
                 new TaskState { Id = "s1", Name = "Open", IsFinal = false },
@@ -606,21 +582,18 @@ namespace BOBA.Tests
 
             var service = new TaskFlowService(context);
 
-            // Act
             var result = await service.GetTaskStateNameById("s1");
 
-            // Assert
             Assert.Equal("Open", result);
         }
 
         [Fact]
         public async System.Threading.Tasks.Task GetTaskStateNameById_ThrowsException_WhenStateNotFound()
         {
-            // Arrange
+
             using var context = CreateInMemoryDbContext();
             var service = new TaskFlowService(context);
 
-            // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 service.GetTaskStateNameById("nonexistent"));
         }

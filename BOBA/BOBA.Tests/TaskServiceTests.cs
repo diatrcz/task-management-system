@@ -25,7 +25,6 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetTaskTypes_ReturnsAllTaskTypes()
     {
-        // Arrange
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         context.TaskTypes.AddRange(
@@ -35,10 +34,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetTaskTypes();
 
-        // Assert
         Assert.Equal(2, result.Count);
         Assert.Contains(result, t => t.Name == "Bug");
         Assert.Contains(result, t => t.Name == "Feature");
@@ -47,15 +44,12 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetTaskTypes_ReturnsEmptyList_WhenNoTaskTypes()
     {
-        // Arrange
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetTaskTypes();
 
-        // Assert
         Assert.Empty(result);
     }
 
@@ -66,7 +60,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetTask_ReturnsExpectedTaskSummaryDto()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -95,10 +89,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetTask("t1");
 
-        // Assert
         Assert.NotNull(result);
         Assert.Equal("t1", result.Id);
         Assert.Equal("Bug", result.TaskTypeName);
@@ -110,7 +102,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetTask_ReturnsFinalState_WhenTaskIsClosed()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -139,10 +131,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetTask("t1");
 
-        // Assert
         Assert.True(result.CurrentStateIsFinal);
         Assert.Equal("Closed", result.CurrentStateName);
     }
@@ -150,12 +140,11 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetTask_ThrowsException_WhenTaskNotFound()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetTask("nonexistent"));
     }
 
@@ -166,7 +155,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetUserTasks_ReturnsOnlyTasksAssignedToUser()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -214,10 +203,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetUserTasks("u1");
 
-        // Assert
         Assert.Single(result);
         Assert.Equal("t1", result[0].Id);
         Assert.Equal("u1", result[0].Assignee);
@@ -226,15 +213,12 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetUserTasks_ReturnsEmptyList_WhenNoTasksAssigned()
     {
-        // Arrange
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetUserTasks("u1");
 
-        // Assert
         Assert.Empty(result);
     }
 
@@ -245,7 +229,6 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetClosedTasks_ReturnsOnlyFinalTasks()
     {
-        // Arrange
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -293,10 +276,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetClosedTasks();
 
-        // Assert
         Assert.Single(result);
         Assert.Equal("t1", result[0].Id);
         Assert.True(result[0].CurrentStateIsFinal);
@@ -309,7 +290,6 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task CreateTask_CreatesTaskSuccessfully_WhenTeamMatches()
     {
-        // Arrange
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug", StarterTeamId = "team1" };
@@ -322,10 +302,8 @@ public class TaskServiceTests
         var service = new TaskService(context, mockFlowService.Object);
         var request = new CreateTaskRequest { TaskTypeId = "type1", TeamId = "team1" };
 
-        // Act
         var result = await service.CreateTask(request, "u1");
 
-        // Assert
         Assert.NotNull(result);
         var createdTask = await context.Tasks.FindAsync(result);
         Assert.NotNull(createdTask);
@@ -339,7 +317,6 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task CreateTask_ReturnsNull_WhenTeamDoesNotMatch()
     {
-        // Arrange
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug", StarterTeamId = "team1" };
@@ -352,10 +329,8 @@ public class TaskServiceTests
         var service = new TaskService(context, mockFlowService.Object);
         var request = new CreateTaskRequest { TaskTypeId = "type1", TeamId = "team2" };
 
-        // Act
         var result = await service.CreateTask(request, "u1");
 
-        // Assert
         Assert.Null(result);
         Assert.Empty(context.Tasks);
     }
@@ -367,7 +342,6 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task MoveTask_UpdatesTaskState_Successfully()
     {
-        // Arrange
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -418,10 +392,8 @@ public class TaskServiceTests
         var service = new TaskService(context, mockFlowService.Object);
         var request = new MoveTaskRequest { TaskId = "t1", ChoiceId = "choice1" };
 
-        // Act
         var result = await service.MoveTask(request);
 
-        // Assert
         Assert.Equal("t1", result);
         var updatedTask = await context.Tasks.FindAsync("t1");
         Assert.Equal("s2", updatedTask.CurrentStateId);
@@ -436,7 +408,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetClosedTasksByTeamId_ReturnsClosedTasksForTeam()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -500,10 +472,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetClosedTasksByTeamId("team1");
 
-        // Assert
         Assert.Single(result);
         Assert.Equal("t1", result[0].Id);
     }
@@ -511,7 +481,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetClosedTasksByTeamId_IncludesTasksWhereTeamIsCreator()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -542,10 +512,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetClosedTasksByTeamId("team1");
 
-        // Assert
         Assert.Single(result);
         Assert.Equal("t1", result[0].Id);
     }
@@ -557,7 +525,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetUnassignedTasksByTeamId_ReturnsOnlyUnassignedTasks()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -603,10 +571,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetUnassignedTasksByTeamId("team1");
 
-        // Assert
         Assert.Single(result);
         Assert.Equal("t1", result[0].Id);
         Assert.Null(result[0].Assignee);
@@ -619,7 +585,6 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetAssignedTasksForUserByTeamId_ReturnsUserTasksInTeam()
     {
-        // Arrange
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -683,10 +648,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetAssignedTasksForUserByTeamId("team1", "u1");
 
-        // Assert
         Assert.Single(result);
         Assert.Equal("t1", result[0].Id);
     }
@@ -698,7 +661,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetExternalTasksByTeamId_ReturnsTasksCreatedByTeam()
     {
-        // Arrange
+   
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -762,10 +725,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetExternalTasksByTeamId("team1");
 
-        // Assert
         Assert.Single(result);
         Assert.Equal("t2", result[0].Id);
         Assert.False(result[0].CurrentStateIsFinal);
@@ -778,7 +739,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetTasksCount_ReturnsCorrectCounts()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -790,7 +751,7 @@ public class TaskServiceTests
         context.TaskStates.AddRange(openState, closedState);
         context.Users.Add(user);
         context.Tasks.AddRange(
-            // My task
+
             new BOBA.Server.Data.implementation.Task
             {
                 Id = "t1",
@@ -807,7 +768,7 @@ public class TaskServiceTests
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             },
-            // Unassigned task
+
             new BOBA.Server.Data.implementation.Task
             {
                 Id = "t2",
@@ -823,7 +784,7 @@ public class TaskServiceTests
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             },
-            // External task
+
             new BOBA.Server.Data.implementation.Task
             {
                 Id = "t3",
@@ -840,7 +801,7 @@ public class TaskServiceTests
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             },
-            // Closed task
+
             new BOBA.Server.Data.implementation.Task
             {
                 Id = "t4",
@@ -861,10 +822,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetTasksCount("team1", "u1");
 
-        // Assert
         Assert.Equal(1, result["my-tasks"]);
         Assert.Equal(1, result["unassigned-tasks"]);
         Assert.Equal(1, result["external-tasks"]);
@@ -874,15 +833,13 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetTasksCount_ReturnsZeros_WhenNoTasks()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetTasksCount("team1", "u1");
 
-        // Assert
         Assert.Equal(0, result["my-tasks"]);
         Assert.Equal(0, result["unassigned-tasks"]);
         Assert.Equal(0, result["external-tasks"]);
@@ -892,7 +849,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetTasksCount_CountsMultipleTasks_InEachCategory()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -904,7 +861,6 @@ public class TaskServiceTests
         context.TaskStates.AddRange(openState, closedState);
         context.Users.Add(user);
 
-        // Add 3 my tasks, 2 unassigned, 2 external, 2 closed
         for (int i = 0; i < 3; i++)
         {
             context.Tasks.Add(new BOBA.Server.Data.implementation.Task
@@ -987,10 +943,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetTasksCount("team1", "u1");
 
-        // Assert
         Assert.Equal(3, result["my-tasks"]);
         Assert.Equal(2, result["unassigned-tasks"]);
         Assert.Equal(2, result["external-tasks"]);
@@ -1004,7 +958,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetTask_HandlesNullCurrentState_Gracefully()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -1031,15 +985,14 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act & Assert
-        // This should throw because of the SingleAsync() without the state being loaded
+
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetTask("t1"));
     }
 
     [Fact]
     public async System.Threading.Tasks.Task CreateTask_SetsCorrectTimestamps()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug", StarterTeamId = "team1" };
@@ -1053,11 +1006,9 @@ public class TaskServiceTests
         var request = new CreateTaskRequest { TaskTypeId = "type1", TeamId = "team1" };
         var beforeCreation = DateTime.UtcNow;
 
-        // Act
         var result = await service.CreateTask(request, "u1");
         var afterCreation = DateTime.UtcNow;
 
-        // Assert
         var createdTask = await context.Tasks.FindAsync(result);
         Assert.InRange(createdTask.CreatedAt, beforeCreation.AddSeconds(-1), afterCreation.AddSeconds(1));
         Assert.InRange(createdTask.UpdatedAt, beforeCreation.AddSeconds(-1), afterCreation.AddSeconds(1));
@@ -1070,7 +1021,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task MoveTask_UpdatesTimestamp()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -1123,11 +1074,9 @@ public class TaskServiceTests
         var request = new MoveTaskRequest { TaskId = "t1", ChoiceId = "choice1" };
         var beforeMove = DateTime.UtcNow;
 
-        // Act
         await service.MoveTask(request);
         var afterMove = DateTime.UtcNow;
 
-        // Assert
         var updatedTask = await context.Tasks.FindAsync("t1");
         Assert.Equal(originalTime, updatedTask.CreatedAt);
         Assert.InRange(updatedTask.UpdatedAt, beforeMove.AddSeconds(-1), afterMove.AddSeconds(1));
@@ -1137,7 +1086,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task MoveTask_ClearsAssignee()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -1188,10 +1137,8 @@ public class TaskServiceTests
         var service = new TaskService(context, mockFlowService.Object);
         var request = new MoveTaskRequest { TaskId = "t1", ChoiceId = "choice1" };
 
-        // Act
         await service.MoveTask(request);
 
-        // Assert
         var updatedTask = await context.Tasks.FindAsync("t1");
         Assert.Null(updatedTask.AssigneeId);
     }
@@ -1199,7 +1146,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetUnassignedTasksByTeamId_ExcludesClosedTasks()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -1245,10 +1192,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetUnassignedTasksByTeamId("team1");
 
-        // Assert
         Assert.Single(result);
         Assert.Equal("t2", result[0].Id);
     }
@@ -1256,7 +1201,7 @@ public class TaskServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetExternalTasksByTeamId_ExcludesClosedTasks()
     {
-        // Arrange
+
         using var context = CreateInMemoryDbContext();
         var mockFlowService = new Mock<ITaskFlowService>();
         var taskType = new TaskType { Id = "type1", Name = "Bug" };
@@ -1304,10 +1249,8 @@ public class TaskServiceTests
         await context.SaveChangesAsync();
         var service = new TaskService(context, mockFlowService.Object);
 
-        // Act
         var result = await service.GetExternalTasksByTeamId("team1");
 
-        // Assert
         Assert.Single(result);
         Assert.Equal("t2", result[0].Id);
     }

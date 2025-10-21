@@ -15,6 +15,5 @@ interface WeatherForecast {
     standalone: false
 })
 export class AppComponent  {
-
   title = 'boba.client';
 }
