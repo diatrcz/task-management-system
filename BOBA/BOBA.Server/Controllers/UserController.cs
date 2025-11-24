@@ -1,5 +1,7 @@
 ﻿using BOBA.Server.Data;
 using BOBA.Server.Data.implementation;
+using BOBA.Server.Data.model;
+using BOBA.Server.Models;
 using BOBA.Server.Models.Dto;
 using BOBA.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -28,36 +30,20 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    /*[HttpPost("register")]
     [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] UserModel model)
+    [HttpPost("register")]
+    public async Task<ActionResult<RegisterResponse>> Register([FromBody] UserModel model)
     {
-        if (ModelState.IsValid)
-        {
-            var user = new User
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                // Address = model.Address,
-                Type = UserType.LoggedInUser
-            };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userService.Register(model);
 
-            if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return Ok(new { Message = "Registration successful!!!!" });
-            }
+        if (!result.Success)
+            return BadRequest(result);
 
-            var errors = result.Errors.Select(e => e.Description).ToList();
-            return BadRequest(result.Errors);
-        }
+        return Ok(result);
+    }
 
-        return BadRequest(ModelState);
-    }*/
+
 
     [HttpGet("is-loggedin")]
     public IActionResult IsLoggedIn()

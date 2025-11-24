@@ -1,6 +1,7 @@
 ﻿using BOBA.Server.Data;
 using BOBA.Server.Data.implementation;
 using BOBA.Server.Data.model;
+using BOBA.Server.Models;
 using BOBA.Server.Models.Dto;
 using BOBA.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -87,4 +88,40 @@ public class UserService : IUserService
 
         return teamDtos;
     }
+
+    public async Task<RegisterResponse> Register(UserModel model)
+    {
+  
+        var teams = await _context.Teams
+            .Where(t => model.TeamIds.Contains(t.Id))
+            .ToListAsync();
+
+        var user = new User
+        {
+            UserName = model.Email,
+            Email = model.Email,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            Teams = teams
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+
+        if (!result.Succeeded)
+        {
+            return new RegisterResponse
+            {
+                Success = false,
+                Message = "Registration failed.",
+                Errors = result.Errors.Select(e => e.Description)
+            };
+        }
+
+        return new RegisterResponse
+        {
+            Success = true,
+            Message = "Registration successful!"
+        };
+    }
+
 }
