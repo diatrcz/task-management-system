@@ -11,6 +11,7 @@ import { ApiService, UserModel, TeamSummaryDto } from '../../../services/api-ser
 export class RegisterComponent implements OnInit {
   email: string = '';
   password: string = '';
+  confirmPassword: string = '';
   firstName: string = '';
   lastName: string = '';
   selectedTeamIds: string[] = [];
