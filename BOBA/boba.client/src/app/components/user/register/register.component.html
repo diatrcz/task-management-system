@@ -12,9 +12,9 @@
         <p class="text-sm text-gray-500 mt-2">Please wait</p>
       </div>
     </div>
-    
+
     <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Register</h2>
-    
+
     <!-- Error Messages -->
     <div *ngIf="errorMessage" class="mb-6 bg-red-50 border-l-4 border-red-400 p-4">
       <div class="flex">
@@ -30,7 +30,7 @@
     </div>
 
     <!-- Validation Errors -->
-    <div *ngIf="validationErrors.length > 0" class="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+    <div *ngIf="getValidationErrors().length > 0" class="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
       <div class="flex">
         <div class="flex-shrink-0">
           <svg class="h-5 w-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,13 +39,13 @@
         </div>
         <div class="ml-3">
           <ul class="text-sm text-yellow-700 list-disc list-inside">
-            <li *ngFor="let error of validationErrors">{{ error }}</li>
+            <li *ngFor="let error of getValidationErrors()">{{ error }}</li>
           </ul>
         </div>
       </div>
     </div>
-    
-    <form (ngSubmit)="register()">
+
+    <form [formGroup]="registerForm" (ngSubmit)="register()">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         
         <!-- Left Side - User Information -->
@@ -54,40 +54,60 @@
           
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-            <input type="email" id="email" [(ngModel)]="email" name="email" required
-                   [disabled]="isLoading"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 disabled:bg-gray-100 disabled:cursor-not-allowed">
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email"
+              [disabled]="isLoading"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              [class.border-red-500]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
           </div>
-          
+
           <div>
             <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
-            <input type="password" id="password" [(ngModel)]="password" name="password" required
-                   [disabled]="isLoading"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 disabled:bg-gray-100 disabled:cursor-not-allowed">
+            <input 
+              type="password" 
+              id="password" 
+              formControlName="password"
+              [disabled]="isLoading"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              [class.border-red-500]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
           </div>
-          
+
           <div>
             <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password *</label>
-            <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required
-                   [disabled]="isLoading"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 disabled:bg-gray-100 disabled:cursor-not-allowed">
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              formControlName="confirmPassword"
+              [disabled]="isLoading"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              [class.border-red-500]="(registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) || (registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched)">
           </div>
-          
+
           <div>
             <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-            <input type="text" id="firstName" [(ngModel)]="firstName" name="firstName" required
-                   [disabled]="isLoading"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 disabled:bg-gray-100 disabled:cursor-not-allowed">
+            <input 
+              type="text" 
+              id="firstName" 
+              formControlName="firstName"
+              [disabled]="isLoading"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              [class.border-red-500]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
           </div>
-          
+
           <div>
             <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
-            <input type="text" id="lastName" [(ngModel)]="lastName" name="lastName" required
-                   [disabled]="isLoading"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 disabled:bg-gray-100 disabled:cursor-not-allowed">
+            <input 
+              type="text" 
+              id="lastName" 
+              formControlName="lastName"
+              [disabled]="isLoading"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              [class.border-red-500]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
           </div>
         </div>
-        
+
         <!-- Right Side - Team Selection -->
         <div class="space-y-4">
           <h3 class="text-lg font-semibold text-gray-800 border-b-2 border-pink-200 pb-2">Select Teams *</h3>
@@ -99,7 +119,7 @@
             </svg>
             <p>Loading teams...</p>
           </div>
-          
+
           <div *ngIf="teams.length > 0" class="border border-gray-300 rounded-md p-4 bg-gray-50 max-h-96 overflow-y-auto">
             <div *ngFor="let team of teams" class="flex items-center mb-3 last:mb-0">
               <label class="flex items-center cursor-pointer hover:bg-white p-2 rounded transition w-full">
@@ -117,17 +137,18 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Submit Button -->
       <div class="mt-8">
-        <button type="submit"
-                [disabled]="isLoading"
-                class="w-full py-3 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed">
+        <button 
+          type="submit"
+          [disabled]="isLoading"
+          class="w-full py-3 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed">
           {{ isLoading ? 'Registering...' : 'Register' }}
         </button>
       </div>
     </form>
-    
+
     <div class="mt-6 p-4 bg-purple-100 rounded-md border border-gray-200">
       <p class="text-center text-gray-700">
         Already have an account? 
