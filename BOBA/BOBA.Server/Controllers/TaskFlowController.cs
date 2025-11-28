@@ -39,10 +39,10 @@ namespace BOBA.Server.Controllers
         }
 
         [HttpGet("taskflows/states/{state_id}")]
-        public async Task<ActionResult<string>> GetTaskStateName([FromRoute] string state_id)
+        public async Task<ActionResult<TaskStateDto>> GetTaskStateName([FromRoute] string state_id)
         {
-            var stateName = await _taskFlowService.GetTaskStateNameById(state_id);
-            return Ok(new { stateName });
+            var taskState = await _taskFlowService.GetTaskStateNameById(state_id);
+            return Ok(taskState);
         }
     }
 }

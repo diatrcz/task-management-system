@@ -45,62 +45,51 @@
       <!-- Task Form -->
       <div class="bg-white p-6 border-4 border-pink-100 rounded-lg shadow-sm mb-6">
         <h3 class="text-xl font-medium text-gray-900 mb-6">Task Form</h3>
-        
-        <form *ngIf="dynamicForm && mergedFields?.length" [formGroup]="dynamicForm" (ngSubmit)="submitTask()" class="space-y-6">
+
+        <form *ngIf="dynamicForm && mergedFields?.length" [formGroup]="dynamicForm" (ngSubmit)="submitTask()"
+          class="space-y-6">
           <ng-container *ngFor="let section of mergedFields">
-            <div [ngClass]="section.layout?.type === 'grid' ? 'grid gap-6' : ''" 
-                [ngStyle]="{'grid-template-columns': section.layout?.columns ? 'repeat(' + section.layout.columns + ', minmax(0, 1fr))' : 'none'}">
+            <div [ngClass]="section.layout?.type === 'grid' ? 'grid gap-6' : ''"
+              [ngStyle]="{'grid-template-columns': section.layout?.columns ? 'repeat(' + section.layout.columns + ', minmax(0, 1fr))' : 'none'}">
               <ng-container *ngFor="let field of section.fields">
                 <div [ngClass]="field.styleClasses?.container ?? ''">
                   <label [for]="field.fieldId" [ngClass]="field.styleClasses?.label" class="inline-flex">
                     {{field.label}}
                     <span *ngIf="isFieldRequired(field.fieldId)" class="text-red-500 ml-1">*</span>
                   </label>
-                  
+
                   <ng-container [ngSwitch]="field.type">
-                    <input *ngSwitchCase="'text'" 
-                          type="text" 
-                          [formControlName]="field.fieldId" 
-                          [placeholder]="field.placeholder || ''" 
-                          [ngClass]="[
+                    <input *ngSwitchCase="'text'" type="text" [formControlName]="field.fieldId"
+                      [placeholder]="field.placeholder || ''" [ngClass]="[
                             field.styleClasses?.input,
                             dynamicForm.get(field.fieldId)?.disabled ? 'bg-gray-200 cursor-not-allowed' : '',
                             'placeholder-gray-400'
                           ]" />
-                    
-                    <input *ngSwitchCase="'email'" 
-                          type="email" 
-                          [formControlName]="field.fieldId" 
-                          [placeholder]="field.placeholder || ''" 
-                          [ngClass]="[
+
+                    <input *ngSwitchCase="'email'" type="email" [formControlName]="field.fieldId"
+                      [placeholder]="field.placeholder || ''" [ngClass]="[
                             field.styleClasses?.input,
                             dynamicForm.get(field.fieldId)?.disabled ? 'bg-gray-200 cursor-not-allowed' : '',
                             'placeholder-gray-400'
                           ]" />
-                    
-                    <input *ngSwitchCase="'tel'" 
-                          type="tel" 
-                          [formControlName]="field.fieldId" 
-                          [placeholder]="field.placeholder || ''" 
-                          [ngClass]="[
+
+                    <input *ngSwitchCase="'tel'" type="tel" [formControlName]="field.fieldId"
+                      [placeholder]="field.placeholder || ''" [ngClass]="[
                             field.styleClasses?.input,
                             dynamicForm.get(field.fieldId)?.disabled ? 'bg-gray-200 cursor-not-allowed' : '',
                             'placeholder-gray-400'
                           ]" />
-                    
-                    <textarea *ngSwitchCase="'textarea'" 
-                              [rows]="field.rows || 3" 
-                              [formControlName]="field.fieldId" 
-                              [placeholder]="field.placeholder || ''" 
-                              [ngClass]="[
+
+                    <textarea *ngSwitchCase="'textarea'" [rows]="field.rows || 3" [formControlName]="field.fieldId"
+                      [placeholder]="field.placeholder || ''" [ngClass]="[
                                 field.styleClasses?.input,
                                 dynamicForm.get(field.fieldId)?.disabled ? 'bg-gray-200 cursor-not-allowed' : '',
                                 'placeholder-gray-400'
                               ]"></textarea>
                   </ng-container>
-                  
-                  <div class="text-red-500 text-sm mt-1" 
-                      *ngIf="dynamicForm.get(field.fieldId)?.invalid && (dynamicForm.get(field.fieldId)?.dirty || dynamicForm.get(field.fieldId)?.touched)">
+
+                  <div class="text-red-500 text-sm mt-1"
+                    *ngIf="dynamicForm.get(field.fieldId)?.invalid && (dynamicForm.get(field.fieldId)?.dirty || dynamicForm.get(field.fieldId)?.touched)">
                     {{field.validationErrorMessage}}
                   </div>
                 </div>
@@ -113,19 +102,18 @@
       <!-- Document Upload Section -->
       <div class="bg-white p-6 border-4 border-green-100 rounded-lg shadow-sm">
         <h3 class="text-xl font-medium text-gray-900 mb-6">Documents</h3>
-        
+
         <div *ngIf="!docTypes || docTypes.length === 0" class="text-gray-500 py-4">
           No document types configured for this task.
         </div>
 
         <div *ngIf="docTypes && docTypes.length > 0" class="space-y-4">
-          <div *ngFor="let docType of docTypes" class="border-2 border-gray-200 rounded-lg p-4 hover:border-green-300 transition">
+          <div *ngFor="let docType of docTypes"
+            class="border-2 border-gray-200 rounded-lg p-4 hover:border-green-300 transition">
             <!-- Document Type Header -->
             <div class="flex justify-between items-center mb-3">
               <h4 class="font-medium text-gray-900">{{ docType.name }}</h4>
-              <button *ngIf="docType.id"
-                type="button"
-                (click)="triggerFileInput(docType.id)"
+              <button *ngIf="docType.id" type="button" (click)="triggerFileInput(docType.id)"
                 [disabled]="task.currentStateIsFinal"
                 class="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition flex items-center disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:bg-gray-300">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,57 +121,49 @@
                 </svg>
                 Upload
               </button>
-              <input *ngIf="docType.id"
-                type="file" 
-                [id]="'file-input-' + docType.id"
-                (change)="onFileInputChange($event, docType.id)"
-                multiple
-                [disabled]="task.currentStateIsFinal"
+              <input *ngIf="docType.id" type="file" [id]="'file-input-' + docType.id"
+                (change)="onFileInputChange($event, docType.id)" multiple [disabled]="task.currentStateIsFinal"
                 class="hidden" />
             </div>
 
             <!-- Drop Zone -->
-            <div *ngIf="docType.id" 
-              (dragover)="onDragOver($event, docType.id)"
-              (dragleave)="onDragLeave($event)"
-              (drop)="onDrop($event, docType.id)"
-              [ngClass]="{
+            <div *ngIf="docType.id" (dragover)="onDragOver($event, docType.id)" (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event, docType.id)" [ngClass]="{
                 'bg-green-50 border-green-400': dragOverDocType === docType.id,
                 'bg-gray-50': dragOverDocType !== docType.id
-              }"
-              class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center transition min-h-[100px]">
-              
+              }" class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center transition min-h-[100px]">
+
               <!-- Documents List -->
               <div *ngIf="docType.id && getDocumentsForType(docType.id).length > 0" class="space-y-2">
-                <div *ngFor="let doc of getDocumentsForType(docType.id)" 
-                     class="flex items-center justify-between bg-white p-2 rounded border border-gray-200 hover:bg-gray-50 transition text-left">
+                <div *ngFor="let doc of getDocumentsForType(docType.id)"
+                  class="flex items-center justify-between bg-white p-2 rounded border border-gray-200 hover:bg-gray-50 transition text-left">
                   <div class="flex items-center flex-grow min-w-0">
-                    <svg class="w-5 h-5 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    <svg class="w-5 h-5 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                      </path>
                     </svg>
                     <div class="min-w-0 flex-grow">
                       <p class="text-sm font-medium text-gray-900 truncate">{{ doc.fileName }}</p>
-                      <p class="text-xs text-gray-500">{{ doc.uploadedAt | date:'MMM d, y' }} • {{ doc.uploaderName || 'Unknown' }}</p>
+                      <p class="text-xs text-gray-500">{{ doc.uploadedAt | date:'MMM d, y' }} • {{ doc.uploaderName ||
+                        'Unknown' }}</p>
                     </div>
                   </div>
                   <div class="flex items-center ml-2 flex-shrink-0">
-                    <button 
-                      type="button"
-                      (click)="downloadDocument(doc)"
-                      class="p-1 text-blue-600 hover:bg-blue-50 rounded transition"
-                      title="Download">
+                    <button type="button" (click)="downloadDocument(doc)"
+                      class="p-1 text-blue-600 hover:bg-blue-50 rounded transition" title="Download">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"></path>
                       </svg>
                     </button>
-                    <button 
-                      type="button"
-                      (click)="deleteDocument(doc)"
+                    <button type="button" (click)="deleteDocument(doc)"
                       class="p-1 text-red-600 hover:bg-red-50 rounded transition ml-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                      [disabled]="task.currentStateIsFinal"
-                      title="Delete">
+                      [disabled]="task.currentStateIsFinal" title="Delete">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                       </svg>
                     </button>
                   </div>
@@ -193,7 +173,8 @@
               <!-- Empty State / Drop Zone Text -->
               <div *ngIf="docType.id && getDocumentsForType(docType.id).length === 0" class="py-4">
                 <svg class="w-12 h-12 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                 </svg>
                 <p class="text-sm text-gray-500">Drop files here or click Upload</p>
               </div>
@@ -202,34 +183,33 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Choices Section (1/4) - Fixed Position -->
     <div class="w-full md:w-1/4">
       <div class="sticky top-24">
         <div class="bg-white p-6 border-4 border-purple-100 rounded-lg shadow-sm mb-4">
           <h3 class="text-xl font-medium text-gray-900 mb-4">Available Actions</h3>
-          
+
           <div *ngIf="!choices || choices.length === 0" class="text-gray-500 py-2">
             No actions available.
           </div>
-          
+
           <form *ngIf="choices && choices.length > 0" class="space-y-4">
             <div *ngFor="let choice of choices; let i = index" class="flex items-center">
-              <input type="radio" [id]="'choice-' + i" name="taskChoice" [value]="choice.id" 
-                     class="h-5 w-5 text-purple-600 focus:ring-purple-500"
-                     [(ngModel)]="selectedChoiceId" (change)="onChoiceSelected(choice)">
+              <input type="radio" [id]="'choice-' + i" name="taskChoice" [value]="choice.id"
+                class="h-5 w-5 text-purple-600 focus:ring-purple-500" [(ngModel)]="selectedChoiceId"
+                (change)="onChoiceSelected(choice)">
               <label [for]="'choice-' + i" class="ml-3 block text-gray-700">
                 {{ choice.name }}
               </label>
             </div>
           </form>
         </div>
-        
+
         <!-- Submit Button -->
-        <button 
+        <button
           class="w-full py-3 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
-          [disabled]="!selectedChoiceId"
-          (click)="openConfirmationDialog()">
+          [disabled]="!selectedChoiceId" (click)="openConfirmationDialog()">
           Submit
         </button>
       </div>
@@ -241,17 +221,18 @@
 <div *ngIf="showConfirmDialog" class="fixed inset-0 flex items-center justify-center z-50">
   <div class="subtle-backdrop"></div>
 
-  <div class="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden border-4 border-purple-100 z-10">
+  <div
+    class="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden border-4 border-purple-100 z-10">
     <div class="bg-purple-100 px-6 py-4">
       <h3 class="text-lg font-medium text-gray-900">Confirm Task Action</h3>
     </div>
-    
+
     <div class="px-6 py-4">
       <div class="space-y-4">
         <div>
           <p class="text-gray-700 font-medium">Are you sure you want to proceed with this action?</p>
         </div>
-        
+
         <div class="border-t border-b border-gray-200 py-4">
           <div *ngIf="task" class="grid grid-cols-1 gap-y-3">
             <div>
@@ -268,24 +249,21 @@
             </div>
             <div>
               <span class="text-sm text-gray-500">Next State:</span>
-              <span class="ml-2 text-gray-700">{{ nextStateName || 'Unknown' }}</span>
+              <span class="ml-2 text-gray-700">{{ nextTaskState?.name || 'Unknown' }}</span>
             </div>
           </div>
         </div>
-        
+
         <p class="text-sm text-gray-500">This action will move the task to the next state and cannot be undone.</p>
       </div>
     </div>
-    
+
     <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
-      <button 
-        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
+      <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
         (click)="cancelConfirmation()">
         Cancel
       </button>
-      <button 
-        class="px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition"
-        (click)="submitTask()">
+      <button class="px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition" (click)="submitTask()">
         Confirm
       </button>
     </div>
