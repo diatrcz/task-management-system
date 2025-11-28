@@ -75,21 +75,21 @@ namespace BOBA.Server.Services
 
         public async Task<List<ChoiceSummaryDto>> GetChoices(List<string> ids)
         {
-            var choices = new List<Choice>();
+            var choiceDtos = new List<ChoiceSummaryDto>();
             foreach (var id in ids)
             {
                 var choice = await _context.Choices.FindAsync(id);
                 if (choice != null)
                 {
-                    choices.Add(choice);
+                    var choiceDto = new ChoiceSummaryDto
+                    {
+                        Id = choice.Id,
+                        Name = choice.Name
+                    };
+
+                    choiceDtos.Add(choiceDto);
                 }
             }
-
-            var choiceDtos = choices.Select(choice => new ChoiceSummaryDto
-            {
-                Id = choice.Id,
-                Name = choice.Name
-            }).ToList();
 
             return choiceDtos;
         }
