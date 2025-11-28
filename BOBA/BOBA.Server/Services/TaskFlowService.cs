@@ -94,12 +94,13 @@ namespace BOBA.Server.Services
             return choiceDtos;
         }
 
-        public async Task<string> GetTaskStateNameById(string stateId)
+        public async Task<TaskStateDto> GetTaskStateNameById(string stateId)
         {
-            return await _context.TaskStates
+            var taskState = await _context.TaskStates
                 .Where(s => s.Id == stateId)
-                .Select(s => s.Name)
                 .FirstAsync();
+
+            return new TaskStateDto { Id = taskState.Id, Name = taskState.Name };
         }
     }
 }

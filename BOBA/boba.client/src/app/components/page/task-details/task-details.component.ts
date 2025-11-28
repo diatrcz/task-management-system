@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { response } from 'express';
-import { ApiService, ChoiceSummaryDto, FormDocumentDto, FormFieldDto, MoveTaskRequest, TaskDocTypeDto, TaskFieldDto, TaskFlowSummaryDto, TaskSummaryDto } from '../../../services/api-service.service';
+import { ApiService, ChoiceSummaryDto, FormDocumentDto, FormFieldDto, MoveTaskRequest, TaskDocTypeDto, TaskFieldDto, TaskFlowSummaryDto, TaskStateDto, TaskSummaryDto } from '../../../services/api-service.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
@@ -19,7 +19,7 @@ export class TaskDetailsComponent implements OnInit{
   choices!: ChoiceSummaryDto[];
   selectedChoiceId: string | null = null;
   selectedChoice: ChoiceSummaryDto | null = null;
-  nextStateName: string | null = null;
+  nextTaskState: TaskStateDto | null = null;
   showConfirmDialog: boolean = false;
 
   dynamicForm!: FormGroup;
@@ -223,10 +223,10 @@ export class TaskDetailsComponent implements OnInit{
     if (this.taskflow?.nextState) {
       const nextState = this.taskflow.nextState.find(state => state.choiceId === choice.id);
       if (nextState && this.selectedChoiceId) {
-        this.apiService.taskFlow_GetTaskStateName(this.selectedChoiceId).subscribe({
-          next: (stateName) => {
-            this.nextStateName = stateName;
-            console.log('Next state: ' + stateName);
+        this.apiService.taskFlow_GetTaskStateName(nextState.nextStateId!).subscribe({
+          next: (response) => {
+            this.nextTaskState = response;
+            console.log('Next state: ' + this.nextTaskState);
           },
           error: (err) => {
             console.log('Error loading statename:', err)

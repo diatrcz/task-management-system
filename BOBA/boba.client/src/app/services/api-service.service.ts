@@ -1677,7 +1677,7 @@ export class ApiService {
         return _observableOf(null as any);
     }
 
-    taskFlow_GetTaskStateName(state_id: string): Observable<string> {
+    taskFlow_GetTaskStateName(state_id: string): Observable<TaskStateDto> {
         let url_ = this.baseUrl + "/api/taskflows/states/{state_id}";
         if (state_id === undefined || state_id === null)
             throw new globalThis.Error("The parameter 'state_id' must be defined.");
@@ -1699,14 +1699,14 @@ export class ApiService {
                 try {
                     return this.processTaskFlow_GetTaskStateName(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<string>;
+                    return _observableThrow(e) as any as Observable<TaskStateDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<string>;
+                return _observableThrow(response_) as any as Observable<TaskStateDto>;
         }));
     }
 
-    protected processTaskFlow_GetTaskStateName(response: HttpResponseBase): Observable<string> {
+    protected processTaskFlow_GetTaskStateName(response: HttpResponseBase): Observable<TaskStateDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1717,8 +1717,7 @@ export class ApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : null as any;
-    
+            result200 = TaskStateDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3544,6 +3543,46 @@ export class ChoiceSummaryDto implements IChoiceSummaryDto {
 }
 
 export interface IChoiceSummaryDto {
+    id?: string;
+    name?: string;
+}
+
+export class TaskStateDto implements ITaskStateDto {
+    id?: string;
+    name?: string;
+
+    constructor(data?: ITaskStateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): TaskStateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TaskStateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ITaskStateDto {
     id?: string;
     name?: string;
 }

@@ -7,5 +7,5 @@ public interface ITaskFlowService
     Task<string> GetEditRoleId(string taskTypeId, string currentStateId);
     Task<TaskFlowSummaryDto> GetTaskFlowById(string taskId);
     Task<List<ChoiceSummaryDto>> GetChoices(List<string> ids);
-    Task<string> GetTaskStateNameById(string stateId);
+    Task<TaskStateDto> GetTaskStateNameById(string stateId);
 }
