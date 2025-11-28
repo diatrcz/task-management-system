@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { response } from 'express';
 import { ApiService, ChoiceSummaryDto, FormDocumentDto, FormFieldDto, MoveTaskRequest, TaskDocTypeDto, TaskFieldDto, TaskFlowSummaryDto, TaskStateDto, TaskSummaryDto } from '../../../services/api-service.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-task-details',
@@ -11,7 +12,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
     styleUrl: './task-details.component.css',
     standalone: false
 })
-export class TaskDetailsComponent implements OnInit{
+export class TaskDetailsComponent implements OnInit, OnDestroy {
   taskId!: string;
   task!: TaskSummaryDto;
   taskflow!: TaskFlowSummaryDto;
@@ -29,6 +30,9 @@ export class TaskDetailsComponent implements OnInit{
   documents: FormDocumentDto[] = [];
   dragOverDocType: string | null = null;
 
+  private formSubscription?: Subscription;
+  private readonly STORAGE_KEY_PREFIX = 'task_form_draft_';
+
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -37,6 +41,12 @@ export class TaskDetailsComponent implements OnInit{
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  ngOnDestroy(): void {
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
   }
 
   async loadData(): Promise<void> {
@@ -49,7 +59,7 @@ export class TaskDetailsComponent implements OnInit{
     if(!this.task.currentStateIsFinal) {
         await this.loadChoices();
     }
-}
+  }
 
   loadRoute(): Promise<void> {
     return new Promise((resolve) => {
@@ -111,6 +121,8 @@ export class TaskDetailsComponent implements OnInit{
 
     this.mergedFields = [];
 
+    const draftData = this.loadFormDraft();
+
     for (const section of this.taskflow.formFields) {
         const mergedSection: any = {
             layout: section.layout,
@@ -123,10 +135,14 @@ export class TaskDetailsComponent implements OnInit{
             const saved = savedFields.find(sf => sf.modelId === metadata?.id);
             console.log(saved);
 
+            const fieldValue = draftData && draftData[field.fieldId!] !== undefined 
+                ? draftData[field.fieldId!] 
+                : (saved?.value ?? '');
+
             const mergedField = {
                 ...field,
                 ...metadata,
-                value: saved?.value ?? '',
+                value: fieldValue,
             };
 
             mergedSection.fields.push(mergedField);
@@ -165,7 +181,59 @@ export class TaskDetailsComponent implements OnInit{
 
     this.dynamicForm = new FormGroup(group);
 
-}
+    this.setupAutoSave();
+  }
+
+  private setupAutoSave(): void {
+    if (!this.dynamicForm) return;
+
+    this.formSubscription = this.dynamicForm.valueChanges
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
+      )
+      .subscribe(formValues => {
+        this.saveFormDraft(formValues);
+      });
+  }
+
+  private getStorageKey(): string {
+    return `${this.STORAGE_KEY_PREFIX}${this.taskId}`;
+  }
+
+  private saveFormDraft(formValues: any): void {
+    try {
+      const storageKey = this.getStorageKey();
+      localStorage.setItem(storageKey, JSON.stringify(formValues));
+      console.log('Form draft saved to localStorage');
+    } catch (error) {
+      console.error('Error saving form draft:', error);
+    }
+  }
+
+  private loadFormDraft(): any | null {
+    try {
+      const storageKey = this.getStorageKey();
+      const draftJson = localStorage.getItem(storageKey);
+      if (draftJson) {
+        console.log('Form draft loaded from localStorage');
+        return JSON.parse(draftJson);
+      }
+    } catch (error) {
+      console.error('Error loading form draft:', error);
+    }
+    return null;
+  }
+
+  private clearFormDraft(): void {
+    try {
+      const storageKey = this.getStorageKey();
+      localStorage.removeItem(storageKey);
+      console.log('Form draft cleared from localStorage');
+    } catch (error) {
+      console.error('Error clearing form draft:', error);
+    }
+  }
 
   conditionalRequired(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -188,7 +256,6 @@ export class TaskDetailsComponent implements OnInit{
     const validation = validator(emptyControl);
     return validation !== null && validation['required'] === true;
   }
-
 
   loadChoices(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -279,7 +346,7 @@ export class TaskDetailsComponent implements OnInit{
       event.preventDefault();
       return;
     }
-
+    
     event.preventDefault();
     event.stopPropagation();
     this.dragOverDocType = null;
@@ -294,7 +361,7 @@ export class TaskDetailsComponent implements OnInit{
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.uploadFiles(input.files, docTypeId);
-      input.value = ''; // Reset input
+      input.value = '';
     }
   }
 
@@ -312,7 +379,7 @@ export class TaskDetailsComponent implements OnInit{
     this.apiService.document_UploadFiles(this.taskId, fileParameters, docTypeId).subscribe({
       next: (response) => {
         console.log('Files uploaded successfully:', response);
-        this.loadDocuments(); // Reload documents after upload
+        this.loadDocuments();
       },
       error: (err) => {
         console.error('Error uploading files:', err);
@@ -344,7 +411,7 @@ export class TaskDetailsComponent implements OnInit{
       this.apiService.document_DeleteFile(this.taskId, document.id).subscribe({
         next: (response) => {
           console.log('File deleted successfully:', response);
-          this.loadDocuments(); // Reload documents after deletion
+          this.loadDocuments();
         },
         error: (err) => {
           console.error('Error deleting file:', err);
@@ -414,7 +481,6 @@ export class TaskDetailsComponent implements OnInit{
         });
 
         if (errorMessages.length > 0) {
-          this.cancelConfirmation();
           alert('Please fix the following errors:\n\n' + errorMessages.join('\n'));
         }
         this.dynamicForm.markAllAsTouched();
@@ -436,6 +502,8 @@ export class TaskDetailsComponent implements OnInit{
     this.apiService.form_SaveFormFields(this.taskId, formFieldDtos).subscribe({
         next: () => {
             console.log('Form saved successfully');
+
+            this.clearFormDraft();
 
             const request = new MoveTaskRequest({
                 choiceId: this.selectedChoiceId!,
@@ -461,5 +529,4 @@ export class TaskDetailsComponent implements OnInit{
         }
     });
   }
-
 }
