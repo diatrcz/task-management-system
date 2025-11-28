@@ -279,7 +279,7 @@ export class TaskDetailsComponent implements OnInit{
       event.preventDefault();
       return;
     }
-    
+
     event.preventDefault();
     event.stopPropagation();
     this.dragOverDocType = null;
@@ -414,6 +414,7 @@ export class TaskDetailsComponent implements OnInit{
         });
 
         if (errorMessages.length > 0) {
+          this.cancelConfirmation();
           alert('Please fix the following errors:\n\n' + errorMessages.join('\n'));
         }
         this.dynamicForm.markAllAsTouched();
