@@ -23,7 +23,7 @@ namespace BOBA.Server.Controllers
         [HttpGet("task/fields")]
         public async Task<ActionResult<List<TaskFieldDto>>> GetTaskFieldsByName([FromQuery] List<string> fieldNames)
         {
-            var taskFields = await _formService.GetTaskTypesByName(fieldNames);
+            var taskFields = await _formService.GetFieldTypesById(fieldNames);
 
             return Ok(taskFields);
         }

@@ -236,7 +236,7 @@ export class TaskDetailsComponent implements OnInit{
     }
   }
 
-    async loadDocuments(): Promise<void> {
+  async loadDocuments(): Promise<void> {
     try {
       const [docTypes, documents] = await Promise.all([
         this.apiService.document_GetDocTypes(this.taskId).toPromise(),

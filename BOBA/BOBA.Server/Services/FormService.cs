@@ -3,6 +3,7 @@ using BOBA.Server.Data.implementation;
 using BOBA.Server.Data.model;
 using BOBA.Server.Models.Dto;
 using BOBA.Server.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
@@ -17,31 +18,31 @@ public class FormService : IFormService
         _context = context;
     }
 
-    public async Task<List<TaskFieldDto>> GetTaskTypesByName(List<string> fieldNames)
+    public async Task<List<TaskFieldDto>> GetFieldTypesById(List<string> fieldNames)
     {
-        var taskFields = new List<TaskField>();
+        var taskFieldDtos = new List<TaskFieldDto>();
 
         foreach (var name in fieldNames) 
         {
-            var taskfield = await _context.TaskFields.SingleAsync(t => t.Name == name);
+            var taskField = await _context.TaskFields.SingleAsync(t => t.Name == name);
 
-            if (taskfield != null)
+            if (taskField != null)
             {
-                taskFields.Add(taskfield);
+                var taskFieldDto = new TaskFieldDto
+                {
+                    Id = taskField.Id,
+                    Name = taskField.Name,
+                    Type = taskField.Type,
+                    Label = taskField.Label,
+                    Placeholder = taskField.Placeholder,
+                    Validation = taskField.Validation,
+                    ValidationErrorMessage = taskField.ValidationErrorMessage,
+                    Options = taskField.Options
+                };
+
+                taskFieldDtos.Add(taskFieldDto);
             }
         }
-
-        var taskFieldDtos = taskFields.Select(taskField => new TaskFieldDto
-        {
-            Id = taskField.Id,
-            Name = taskField.Name,
-            Type = taskField.Type,
-            Label = taskField.Label,
-            Placeholder = taskField.Placeholder,
-            Validation = taskField.Validation,
-            ValidationErrorMessage = taskField.ValidationErrorMessage,
-            Options = taskField.Options
-        }).ToList();
 
         return taskFieldDtos;
 
@@ -57,9 +58,6 @@ public class FormService : IFormService
                 .Where(tf => tf.Name == field.ModelId)
                 .FirstOrDefaultAsync();
 
-            if (taskField == null)
-                throw new Exception($"TaskField with Name '{field.ModelId}' not found.");
-
             if (!string.IsNullOrWhiteSpace(taskField.Validation))
             {
                 if (!Regex.IsMatch(field.Value, taskField.Validation))
@@ -72,7 +70,7 @@ public class FormService : IFormService
 
             var existingFields = await _context.FormFields
                 .Where(f => f.TaskId == field.TaskId && f.ModelId == taskField.Id)
-                .ToListAsync(); // get all duplicates if they exist
+                .ToListAsync();
 
             FormField existing = existingFields.FirstOrDefault();
 
@@ -115,27 +113,28 @@ public class FormService : IFormService
 
     public async Task<List<FormFieldDto>> GetSavedFieldsForTask(List<string> fieldIds, string taskId)
     {
-        var formFields = new Dictionary<string, FormField>();
+
+        var formFieldDtos = new List<FormFieldDto>();
 
         foreach (var fieldId in fieldIds)
         {
-            var field = await _context.FormFields
+            var formField = await _context.FormFields
                 .Where(f => f.TaskId == taskId && f.ModelId == fieldId)
                 .SingleOrDefaultAsync();
 
-            if (field != null)
+            if (formField != null)
             {
-                formFields.Add(fieldId, field);
+                var formFieldDto = new FormFieldDto
+                {
+                    Id = formField.Id,
+                    ModelId = formField.ModelId,
+                    TaskId = formField.TaskId,
+                    Value = formField.Value,
+                    ModifierId = formField.ModifierId
+                };
+                formFieldDtos.Add(formFieldDto);
             }
         }
-
-        var formFieldDtos = formFields.Select(formField => new FormFieldDto {
-            Id = formField.Value.Id,
-            ModelId = formField.Value.ModelId,
-            TaskId = formField.Value.TaskId,
-            Value = formField.Value.Value,
-            ModifierId = formField.Value.ModifierId
-        }).ToList();
 
         return formFieldDtos; 
     }
