@@ -126,7 +126,8 @@
               <button *ngIf="docType.id"
                 type="button"
                 (click)="triggerFileInput(docType.id)"
-                class="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition flex items-center">
+                [disabled]="task.currentStateIsFinal"
+                class="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition flex items-center disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:bg-gray-300">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -137,6 +138,7 @@
                 [id]="'file-input-' + docType.id"
                 (change)="onFileInputChange($event, docType.id)"
                 multiple
+                [disabled]="task.currentStateIsFinal"
                 class="hidden" />
             </div>
 
@@ -177,7 +179,8 @@
                     <button 
                       type="button"
                       (click)="deleteDocument(doc)"
-                      class="p-1 text-red-600 hover:bg-red-50 rounded transition ml-1"
+                      class="p-1 text-red-600 hover:bg-red-50 rounded transition ml-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                      [disabled]="task.currentStateIsFinal"
                       title="Delete">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

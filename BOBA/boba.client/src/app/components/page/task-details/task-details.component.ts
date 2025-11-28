@@ -258,6 +258,11 @@ export class TaskDetailsComponent implements OnInit{
   }
 
   onDragOver(event: DragEvent, docTypeId: string): void {
+    if (this.task.currentStateIsFinal) {
+      event.preventDefault();
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
     this.dragOverDocType = docTypeId;
@@ -270,6 +275,11 @@ export class TaskDetailsComponent implements OnInit{
   }
 
   onDrop(event: DragEvent, docTypeId: string): void {
+    if (this.task.currentStateIsFinal) {
+      event.preventDefault();
+      return;
+    }
+    
     event.preventDefault();
     event.stopPropagation();
     this.dragOverDocType = null;
