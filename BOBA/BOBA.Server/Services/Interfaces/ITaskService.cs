@@ -15,6 +15,7 @@ public interface ITaskService
     Task<List<TaskSummaryDto>> GetClosedTasks();
     Task<string> CreateTask(CreateTaskRequest request, string creatorId);
     Task<string> MoveTask(MoveTaskRequest request);
+    Task<string> AssignTask(string taskId, string userId);
     Task<List<TaskSummaryDto>> GetExternalTasksByTeamId(string team_id);
     Task<Dictionary<string, int>> GetTasksCount(string teamId, string userId);
 }

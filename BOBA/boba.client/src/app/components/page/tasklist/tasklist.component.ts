@@ -43,7 +43,9 @@ export class TasklistComponent implements OnInit {
     this.apiService.task_CreateTask(request).subscribe(
       (response) => {
         console.log('Task started successfully', response);
-        this.router.navigate(['/task-details', response]);
+        this.router.navigate(['/task-details', response], {
+          queryParams: { mode: 'edit' }
+        });
       },
       (error) => {
         console.error('Error starting task', error);

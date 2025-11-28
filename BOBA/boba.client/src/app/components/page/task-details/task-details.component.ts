@@ -33,6 +33,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   private formSubscription?: Subscription;
   private readonly STORAGE_KEY_PREFIX = 'task_form_draft_';
 
+  // View/Edit mode from route
+  isEditMode: boolean = false;
+
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -68,6 +71,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         if (id !== null) {
           this.taskId = id;
         }
+      });
+
+      // Get the mode from query params
+      this.route.queryParamMap.subscribe(queryParams => {
+        const mode = queryParams.get('mode');
+        this.isEditMode = mode === 'edit';
+        console.log('Mode:', this.isEditMode ? 'Edit' : 'View');
         resolve();
       });
     });
@@ -121,7 +131,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
     this.mergedFields = [];
 
-    const draftData = this.loadFormDraft();
+    // Load draft only in edit mode
+    const draftData = this.isEditMode ? this.loadFormDraft() : null;
 
     for (const section of this.taskflow.formFields) {
         const mergedSection: any = {
@@ -172,7 +183,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         group[f.fieldId] = new FormControl(
           {
             value: f.value === null || f.value === undefined ? '' : f.value,
-            disabled: f.disabled
+            disabled: f.disabled || !this.isEditMode // Disable if not in edit mode
           },
           validators
         );
@@ -181,7 +192,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
     this.dynamicForm = new FormGroup(group);
 
-    this.setupAutoSave();
+    if (this.isEditMode) {
+      this.setupAutoSave();
+    }
   }
 
   private setupAutoSave(): void {
@@ -325,7 +338,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDragOver(event: DragEvent, docTypeId: string): void {
-    if (this.task.currentStateIsFinal) {
+    if (this.task.currentStateIsFinal || !this.isEditMode) {
       event.preventDefault();
       return;
     }
@@ -342,7 +355,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDrop(event: DragEvent, docTypeId: string): void {
-    if (this.task.currentStateIsFinal) {
+    if (this.task.currentStateIsFinal || !this.isEditMode) {
       event.preventDefault();
       return;
     }

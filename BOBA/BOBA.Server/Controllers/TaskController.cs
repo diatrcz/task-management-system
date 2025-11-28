@@ -57,6 +57,16 @@ namespace BOBA.Server.Controllers
             return Ok();
         }
 
+        [HttpPatch("tasks/{task_id}/assign")]
+        public async Task<ActionResult<string>> AssignTask([FromRoute] string task_id)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var taskId = await _taskService.AssignTask(task_id, userId);
+            if (taskId == null) return NotFound(taskId);
+            return Ok(taskId);
+        }
+
         [HttpGet("tasks/teams/{team_id}/closed")]
         public async Task<ActionResult<List<TaskSummaryDto>>> GetClosedTasksByTeamId([FromRoute] string team_id)
         {

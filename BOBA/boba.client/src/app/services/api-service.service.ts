@@ -1275,6 +1275,58 @@ export class ApiService {
         return _observableOf(null as any);
     }
 
+    task_AssignTask(task_id: string): Observable<string> {
+        let url_ = this.baseUrl + "/api/tasks/{task_id}/assign";
+        if (task_id === undefined || task_id === null)
+            throw new globalThis.Error("The parameter 'task_id' must be defined.");
+        url_ = url_.replace("{task_id}", encodeURIComponent("" + task_id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTask_AssignTask(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTask_AssignTask(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processTask_AssignTask(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : null as any;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     task_GetClosedTasksByTeamId(team_id: string): Observable<TaskSummaryDto[]> {
         let url_ = this.baseUrl + "/api/tasks/teams/{team_id}/closed";
         if (team_id === undefined || team_id === null)
@@ -3091,11 +3143,11 @@ export class TaskSummaryDto implements ITaskSummaryDto {
     id?: string;
     taskTypeId?: string;
     taskTypeName?: string;
-    creatorId?: string;
+    creatorName?: string;
     currentStateId?: string;
     currentStateName?: string;
     currentStateIsFinal?: boolean;
-    assignee?: string;
+    assigneeName?: string;
     teamId?: string;
     team?: string;
     updatedAt?: string;
@@ -3115,11 +3167,11 @@ export class TaskSummaryDto implements ITaskSummaryDto {
             this.id = _data["id"];
             this.taskTypeId = _data["taskTypeId"];
             this.taskTypeName = _data["taskTypeName"];
-            this.creatorId = _data["creatorId"];
+            this.creatorName = _data["creatorName"];
             this.currentStateId = _data["currentStateId"];
             this.currentStateName = _data["currentStateName"];
             this.currentStateIsFinal = _data["currentStateIsFinal"];
-            this.assignee = _data["assignee"];
+            this.assigneeName = _data["assigneeName"];
             this.teamId = _data["teamId"];
             this.team = _data["team"];
             this.updatedAt = _data["updatedAt"];
@@ -3139,11 +3191,11 @@ export class TaskSummaryDto implements ITaskSummaryDto {
         data["id"] = this.id;
         data["taskTypeId"] = this.taskTypeId;
         data["taskTypeName"] = this.taskTypeName;
-        data["creatorId"] = this.creatorId;
+        data["creatorName"] = this.creatorName;
         data["currentStateId"] = this.currentStateId;
         data["currentStateName"] = this.currentStateName;
         data["currentStateIsFinal"] = this.currentStateIsFinal;
-        data["assignee"] = this.assignee;
+        data["assigneeName"] = this.assigneeName;
         data["teamId"] = this.teamId;
         data["team"] = this.team;
         data["updatedAt"] = this.updatedAt;
@@ -3156,11 +3208,11 @@ export interface ITaskSummaryDto {
     id?: string;
     taskTypeId?: string;
     taskTypeName?: string;
-    creatorId?: string;
+    creatorName?: string;
     currentStateId?: string;
     currentStateName?: string;
     currentStateIsFinal?: boolean;
-    assignee?: string;
+    assigneeName?: string;
     teamId?: string;
     team?: string;
     updatedAt?: string;
