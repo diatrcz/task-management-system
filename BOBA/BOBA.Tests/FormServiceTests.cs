@@ -26,7 +26,7 @@ public class FormServiceAdditionalTests
         using var context = CreateInMemoryDbContext();
         var service = new FormService(context);
 
-        var result = await service.GetTaskTypesByName(new List<string>());
+        var result = await service.GetFieldTypesById(new List<string>());
 
         Assert.Empty(result);
     }
@@ -45,7 +45,7 @@ public class FormServiceAdditionalTests
 
         var service = new FormService(context);
 
-        var result = await service.GetTaskTypesByName(new List<string> { "Gamma", "Alpha", "Beta" });
+        var result = await service.GetFieldTypesById(new List<string> { "Gamma", "Alpha", "Beta" });
 
         Assert.Equal(3, result.Count);
         Assert.Equal("Gamma", result[0].Name);
@@ -75,7 +75,7 @@ public class FormServiceAdditionalTests
 
         var service = new FormService(context);
 
-        var result = await service.GetTaskTypesByName(new List<string> { "Email" });
+        var result = await service.GetFieldTypesById(new List<string> { "Email" });
 
         Assert.Single(result);
         var dto = result[0];

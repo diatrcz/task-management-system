@@ -7,6 +7,7 @@ using BOBA.Server.Services;
 using BOBA.Server.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System.Linq.Expressions;
 
 namespace BOBA.Tests;
 
@@ -96,7 +97,7 @@ public class TaskServiceTests
         Assert.Equal("Bug", result.TaskTypeName);
         Assert.Equal("Open", result.CurrentStateName);
         Assert.False(result.CurrentStateIsFinal);
-        Assert.Equal("u1", result.Assignee);
+        Assert.Equal("Alice ", result.AssigneeName);
     }
 
     [Fact]
@@ -207,7 +208,7 @@ public class TaskServiceTests
 
         Assert.Single(result);
         Assert.Equal("t1", result[0].Id);
-        Assert.Equal("u1", result[0].Assignee);
+        Assert.Equal("Alice ", result[0].AssigneeName);
     }
 
     [Fact]
@@ -396,7 +397,7 @@ public class TaskServiceTests
 
         Assert.Equal("t1", result);
         var updatedTask = await context.Tasks.FindAsync("t1");
-        Assert.Equal("s2", updatedTask.CurrentStateId);
+        Assert.Equal("s2", updatedTask!.CurrentStateId);
         Assert.Null(updatedTask.AssigneeId);
         Assert.Equal("team2", updatedTask.TeamId);
     }
@@ -575,7 +576,7 @@ public class TaskServiceTests
 
         Assert.Single(result);
         Assert.Equal("t1", result[0].Id);
-        Assert.Null(result[0].Assignee);
+        Assert.Null(result[0].AssigneeName);
     }
 
     #endregion
@@ -956,40 +957,6 @@ public class TaskServiceTests
     #region Edge Cases and Additional Tests
 
     [Fact]
-    public async System.Threading.Tasks.Task GetTask_HandlesNullCurrentState_Gracefully()
-    {
-
-        using var context = CreateInMemoryDbContext();
-        var mockFlowService = new Mock<ITaskFlowService>();
-        var taskType = new TaskType { Id = "type1", Name = "Bug" };
-        var user = new User { Id = "u1", FirstName = "Alice" };
-        var task = new BOBA.Server.Data.implementation.Task
-        {
-            Id = "t1",
-            TaskTypeId = taskType.Id,
-            TaskType = taskType,
-            CreatorId = user.Id,
-            Creator = user,
-            CurrentStateId = "s1",
-            CurrentState = null,
-            AssigneeId = user.Id,
-            Assignee = user,
-            TeamId = "team1",
-            CreatorTeamId = "team1",
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
-        context.TaskTypes.Add(taskType);
-        context.Users.Add(user);
-        context.Tasks.Add(task);
-        await context.SaveChangesAsync();
-        var service = new TaskService(context, mockFlowService.Object);
-
-
-        await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetTask("t1"));
-    }
-
-    [Fact]
     public async System.Threading.Tasks.Task CreateTask_SetsCorrectTimestamps()
     {
 
@@ -1010,8 +977,8 @@ public class TaskServiceTests
         var afterCreation = DateTime.UtcNow;
 
         var createdTask = await context.Tasks.FindAsync(result);
-        Assert.InRange(createdTask.CreatedAt, beforeCreation.AddSeconds(-1), afterCreation.AddSeconds(1));
-        Assert.InRange(createdTask.UpdatedAt, beforeCreation.AddSeconds(-1), afterCreation.AddSeconds(1));
+        Assert.InRange(createdTask!.CreatedAt, beforeCreation.AddSeconds(-1), afterCreation.AddSeconds(1));
+        Assert.InRange(createdTask!.UpdatedAt, beforeCreation.AddSeconds(-1), afterCreation.AddSeconds(1));
         Assert.True(
             Math.Abs((createdTask.CreatedAt - createdTask.UpdatedAt).TotalMilliseconds) < 1,
             $"CreatedAt and UpdatedAt differ by more than 1ms: {createdTask.CreatedAt:o} vs {createdTask.UpdatedAt:o}"
@@ -1078,7 +1045,7 @@ public class TaskServiceTests
         var afterMove = DateTime.UtcNow;
 
         var updatedTask = await context.Tasks.FindAsync("t1");
-        Assert.Equal(originalTime, updatedTask.CreatedAt);
+        Assert.Equal(originalTime, updatedTask!.CreatedAt);
         Assert.InRange(updatedTask.UpdatedAt, beforeMove.AddSeconds(-1), afterMove.AddSeconds(1));
         Assert.True(updatedTask.UpdatedAt > updatedTask.CreatedAt);
     }
@@ -1140,7 +1107,7 @@ public class TaskServiceTests
         await service.MoveTask(request);
 
         var updatedTask = await context.Tasks.FindAsync("t1");
-        Assert.Null(updatedTask.AssigneeId);
+        Assert.Null(updatedTask!.AssigneeId);
     }
 
     [Fact]

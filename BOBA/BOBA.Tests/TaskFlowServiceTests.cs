@@ -584,7 +584,7 @@ namespace BOBA.Tests
 
             var result = await service.GetTaskStateNameById("s1");
 
-            Assert.Equal("Open", result);
+            Assert.Equal("Open", result.Name);
         }
 
         [Fact]
