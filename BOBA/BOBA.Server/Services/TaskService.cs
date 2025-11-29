@@ -55,7 +55,7 @@ public class TaskService : ITaskService
             CurrentStateId = task.CurrentStateId,
             CurrentStateName = task.CurrentState.Name,
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
-            AssigneeName = task.Assignee.FirstName + " " + task.Assignee.LastName,
+            AssigneeName = (task.Assignee != null ? $"{task.Assignee.FirstName} {task.Assignee.LastName}" : null),
             TeamId = task.TeamId,
             //Team = team.Name,
             CreatedAt = task.CreatedAt.ToString("o"),
