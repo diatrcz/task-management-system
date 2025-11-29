@@ -4,36 +4,55 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { TasklistComponent } from './tasklist.component';
 import { HeaderComponent } from '../../frame/header/header.component';
-import { ApiService, TaskTypeDto, CreateTaskRequest } from '../../../services/api-service.service';
+import {
+  ApiService,
+  TaskTypeDto,
+  CreateTaskRequest,
+} from '../../../services/api-service.service';
 import { AuthService } from '../../../services/authentication/auth.service';
 
-// Mock Services
 class MockApiService {
-  task_GetAllTaskTypes = jasmine.createSpy('task_GetAllTaskTypes').and.returnValue(
-    of([
-      { id: 'type-1', name: 'Purchase Request', description: 'Request for purchasing' },
-      { id: 'type-2', name: 'Leave Request', description: 'Request for leave' },
-      { id: 'type-3', name: 'Expense Report', description: 'Report expenses' }
-    ])
-  );
+  task_GetAllTaskTypes = jasmine
+    .createSpy('task_GetAllTaskTypes')
+    .and.returnValue(
+      of([
+        {
+          id: 'type-1',
+          name: 'Purchase Request',
+          description: 'Request for purchasing',
+        },
+        {
+          id: 'type-2',
+          name: 'Leave Request',
+          description: 'Request for leave',
+        },
+        {
+          id: 'type-3',
+          name: 'Expense Report',
+          description: 'Report expenses',
+        },
+      ])
+    );
 
-  task_CreateTask = jasmine.createSpy('task_CreateTask').and.returnValue(
-    of('new-task-id-123')
-  );
+  task_CreateTask = jasmine
+    .createSpy('task_CreateTask')
+    .and.returnValue(of('new-task-id-123'));
 }
 
 class MockAuthService {
   private currentTeam = { id: 'team-1', name: 'Team Alpha' };
 
   getTeam = jasmine.createSpy('getTeam').and.callFake(() => this.currentTeam);
-  
+
   setCurrentTeam(team: any) {
     this.currentTeam = team;
   }
 }
 
 class MockRouter {
-  navigate = jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true));
+  navigate = jasmine
+    .createSpy('navigate')
+    .and.returnValue(Promise.resolve(true));
 }
 
 describe('TasklistComponent', () => {
@@ -54,8 +73,8 @@ describe('TasklistComponent', () => {
       providers: [
         { provide: ApiService, useValue: mockApiService },
         { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter }
-      ]
+        { provide: Router, useValue: mockRouter },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TasklistComponent);
@@ -69,9 +88,9 @@ describe('TasklistComponent', () => {
   describe('ngOnInit', () => {
     it('should call loadTaskTypes on initialization', () => {
       spyOn(component, 'loadTaskTypes');
-      
+
       component.ngOnInit();
-      
+
       expect(component.loadTaskTypes).toHaveBeenCalled();
     });
   });
@@ -79,14 +98,14 @@ describe('TasklistComponent', () => {
   describe('loadTaskTypes', () => {
     it('should load task types successfully', () => {
       component.loadTaskTypes();
-      
+
       expect(mockApiService.task_GetAllTaskTypes).toHaveBeenCalled();
       expect(component.taskTypes.length).toBe(3);
     });
 
     it('should convert response data using TaskTypeDto.fromJS', () => {
       component.loadTaskTypes();
-      
+
       expect(component.taskTypes.length).toBe(3);
       expect(component.taskTypes[0].id).toBe('type-1');
       expect(component.taskTypes[0].name).toBe('Purchase Request');
@@ -102,7 +121,10 @@ describe('TasklistComponent', () => {
 
       component.loadTaskTypes();
 
-      expect(consoleSpy).toHaveBeenCalledWith('Error loading task types', jasmine.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Error loading task types',
+        jasmine.any(Error)
+      );
     });
 
     it('should handle empty task types response', () => {
@@ -117,25 +139,29 @@ describe('TasklistComponent', () => {
   describe('startTask', () => {
     it('should create task and navigate to task details', () => {
       const taskTypeId = 'type-1';
-      
+
       component.startTask(taskTypeId);
 
       expect(mockAuthService.getTeam).toHaveBeenCalled();
       expect(mockApiService.task_CreateTask).toHaveBeenCalledWith(
         jasmine.objectContaining({
           taskTypeId: 'type-1',
-          teamId: 'team-1'
+          teamId: 'team-1',
         })
       );
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/task-details', 'new-task-id-123']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/task-details', 'new-task-id-123'],
+        { queryParams: { mode: 'edit' } }
+      );
     });
 
     it('should use correct team ID from AuthService', () => {
       mockAuthService.setCurrentTeam({ id: 'team-999', name: 'Special Team' });
-      
+
       component.startTask('type-2');
 
-      const callArgs = mockApiService.task_CreateTask.calls.mostRecent().args[0];
+      const callArgs =
+        mockApiService.task_CreateTask.calls.mostRecent().args[0];
       expect(callArgs.teamId).toBe('team-999');
       expect(callArgs.taskTypeId).toBe('type-2');
     });
@@ -148,13 +174,16 @@ describe('TasklistComponent', () => {
 
       component.startTask('type-1');
 
-      expect(consoleSpy).toHaveBeenCalledWith('Error starting task', jasmine.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Error starting task',
+        jasmine.any(Error)
+      );
       expect(mockRouter.navigate).not.toHaveBeenCalled();
     });
 
     it('should log taskTypeId to console', () => {
       const consoleSpy = spyOn(console, 'log');
-      
+
       component.startTask('type-1');
 
       expect(consoleSpy).toHaveBeenCalledWith('type-1');
@@ -162,10 +191,13 @@ describe('TasklistComponent', () => {
 
     it('should log success message after task creation', () => {
       const consoleSpy = spyOn(console, 'log');
-      
+
       component.startTask('type-1');
 
-      expect(consoleSpy).toHaveBeenCalledWith('Task started successfully', 'new-task-id-123');
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Task started successfully',
+        'new-task-id-123'
+      );
     });
 
     it('should create proper CreateTaskRequest instance', () => {
@@ -190,7 +222,6 @@ describe('TasklistComponent', () => {
 
   describe('integration', () => {
     it('should load task types on component initialization', () => {
-      // Component is created in beforeEach, but we trigger change detection here
       fixture.detectChanges();
 
       expect(mockApiService.task_GetAllTaskTypes).toHaveBeenCalled();
@@ -198,21 +229,21 @@ describe('TasklistComponent', () => {
     });
 
     it('should handle full workflow: load types then start task', () => {
-      // Load task types
       component.loadTaskTypes();
       expect(component.taskTypes.length).toBe(3);
 
-      // Start a task
       const selectedTaskTypeId = component.taskTypes[0].id;
       component.startTask(selectedTaskTypeId);
 
       expect(mockApiService.task_CreateTask).toHaveBeenCalled();
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/task-details', 'new-task-id-123']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/task-details', 'new-task-id-123'],
+        { queryParams: { mode: 'edit' } }
+      );
     });
   });
 
   describe('edge cases', () => {
-
     it('should handle team with undefined id', () => {
       mockAuthService.getTeam.and.returnValue({ id: undefined, name: 'Test' });
 
@@ -228,19 +259,16 @@ describe('TasklistComponent', () => {
       expect(mockApiService.task_CreateTask).toHaveBeenCalledWith(
         jasmine.objectContaining({
           taskTypeId: '',
-          teamId: 'team-1'
+          teamId: 'team-1',
         })
       );
     });
   });
 
   describe('task type data structure', () => {
-
     it('should handle task types without descriptions', () => {
       mockApiService.task_GetAllTaskTypes.and.returnValue(
-        of([
-          { id: 'type-1', name: 'Simple Task' }
-        ])
+        of([{ id: 'type-1', name: 'Simple Task' }])
       );
 
       component.loadTaskTypes();
