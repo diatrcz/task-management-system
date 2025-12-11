@@ -24,44 +24,40 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<FormDocument> FormDocuments => Set<FormDocument>();
     public DbSet<FormField> FormFields => Set<FormField>();
     public DbSet<Message> Messages => Set<Message>();
-    public DbSet<TaskDocType> TaskDocTypes => Set<TaskDocType>(); 
+    public DbSet<TaskDocType> TaskDocTypes => Set<TaskDocType>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Task -> Assignee relationship
         modelBuilder.Entity<Task>()
             .HasOne(t => t.Assignee)
             .WithMany(u => u.AssignedTasks)
             .HasForeignKey(t => t.AssigneeId)
-            .OnDelete(DeleteBehavior.Restrict);  
+            .OnDelete(DeleteBehavior.Restrict);
 
-        // Task -> Creator relationship
         modelBuilder.Entity<Task>()
             .HasOne(t => t.Creator)
             .WithMany(u => u.CreatedTasks)
             .HasForeignKey(t => t.CreatorId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Task -> CurrentState relationship
         modelBuilder.Entity<Task>()
             .HasOne(t => t.CurrentState)
             .WithMany(ts => ts.CurrentStateTasks)
             .HasForeignKey(t => t.CurrentStateId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Workflow -> CurrentState relationship
+
         modelBuilder.Entity<TaskFlow>()
             .HasOne(w => w.CurrentState)
             .WithMany(ts => ts.CurrentStateTaskflows)
             .HasForeignKey(w => w.CurrentStateId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Store NextStateJson as nvarchar(max)
         modelBuilder.Entity<TaskFlow>()
-           .Property(w => w.NextStateJson)
-           .HasColumnType("nvarchar(max)");
+            .Property(w => w.NextStateJson)
+            .HasColumnType("nvarchar(max)");
 
         modelBuilder.ApplyConfiguration(new TaskStatusSeedConfig());
         modelBuilder.ApplyConfiguration(new TaskTypeSeedConfig());

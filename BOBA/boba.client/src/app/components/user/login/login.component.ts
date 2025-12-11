@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 import { ApiService, LoginRequest } from '../../../services/api-service.service';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.css',
-    standalone: false
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
+  standalone: false
 })
 export class LoginComponent {
   email: string = '';
@@ -16,7 +16,7 @@ export class LoginComponent {
   validationErrors: string[] = [];
   isLoading: boolean = false;
 
-  constructor(private apiService: ApiService, private authService: AuthService, private router: Router) {}
+  constructor(private apiService: ApiService, private authService: AuthService, private router: Router) { }
 
   validateForm(): boolean {
     this.validationErrors = [];
@@ -58,7 +58,7 @@ export class LoginComponent {
     this.apiService.postLogin(request, false, false).subscribe({
       next: (response) => {
         this.isLoading = false;
-        if(response.accessToken && response.refreshToken) {
+        if (response.accessToken && response.refreshToken) {
           this.authService.setLoggedInUser(response.accessToken, response.refreshToken);
           this.router.navigate(['/dashboard']);
         } else {

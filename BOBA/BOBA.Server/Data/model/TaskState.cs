@@ -19,11 +19,9 @@ namespace BOBA.Server.Data.model
 
         public bool IsFinal { get; set; }
 
-        //Task
         [InverseProperty("CurrentState")]
         public virtual ICollection<Task> CurrentStateTasks { get; set; } = new List<Task>();
 
-        //Taskflow
         [InverseProperty("CurrentState")]
         public virtual ICollection<TaskFlow> CurrentStateTaskflows { get; set; } = new List<TaskFlow>();
     }

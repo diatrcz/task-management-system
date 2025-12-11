@@ -9,13 +9,13 @@ public class TaskDocTypeSeedConfig : IEntityTypeConfiguration<TaskDocType>
     public void Configure(EntityTypeBuilder<TaskDocType> builder)
     {
         builder.HasData(
-             new TaskDocType
-             {
-                 Id = "1",
-                 Name = "Campaign Brief",
-                 Type = "pdf",
-                 Description = "A PDF document outlining the campaign overview and goals."
-             },
+            new TaskDocType
+            {
+                Id = "1",
+                Name = "Campaign Brief",
+                Type = "pdf",
+                Description = "A PDF document outlining the campaign overview and goals."
+            },
             new TaskDocType
             {
                 Id = "2",

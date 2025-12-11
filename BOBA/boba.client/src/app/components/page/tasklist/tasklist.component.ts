@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService, CreateTaskRequest, TaskTypeDto } from '../../../services/api-service.service';
+import {
+  ApiService,
+  CreateTaskRequest,
+  TaskTypeDto,
+} from '../../../services/api-service.service';
 import { AuthService } from '../../../services/authentication/auth.service';
 
 @Component({
-    selector: 'app-tasklist',
-    templateUrl: './tasklist.component.html',
-    styleUrl: './tasklist.component.css',
-    standalone: false
+  selector: 'app-tasklist',
+  templateUrl: './tasklist.component.html',
+  styleUrl: './tasklist.component.css',
+  standalone: false,
 })
 export class TasklistComponent implements OnInit {
   taskTypes: any[] = [];
@@ -23,16 +27,15 @@ export class TasklistComponent implements OnInit {
   }
 
   loadTaskTypes(): void {
-  this.apiService.task_GetAllTaskTypes().subscribe(
-    (data) => {
-      this.taskTypes = data.map(item => TaskTypeDto.fromJS(item));
-    },
-    (error) => {
-      console.error('Error loading task types', error);
-    }
-  );
-}
-
+    this.apiService.task_GetAllTaskTypes().subscribe(
+      (data) => {
+        this.taskTypes = data.map((item) => TaskTypeDto.fromJS(item));
+      },
+      (error) => {
+        console.error('Error loading task types', error);
+      }
+    );
+  }
 
   startTask(taskTypeId: string): void {
     console.log(taskTypeId);
@@ -44,7 +47,7 @@ export class TasklistComponent implements OnInit {
       (response) => {
         console.log('Task started successfully', response);
         this.router.navigate(['/task-details', response], {
-          queryParams: { mode: 'edit' }
+          queryParams: { mode: 'edit' },
         });
       },
       (error) => {

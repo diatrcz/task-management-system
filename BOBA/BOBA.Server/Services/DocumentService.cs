@@ -27,7 +27,7 @@ public class DocumentService : IDocumentService
             })
             .ToListAsync();
 
-        return doctypes; 
+        return doctypes;
     }
 
     public async Task<List<string>> SaveDocumentsForTask(List<FormDocumentDto> documentInfos, List<FormDocumentFileDto> files, string userId, string taskId)
@@ -48,9 +48,9 @@ public class DocumentService : IDocumentService
                 TaskId = taskId,
                 DocTypeId = info.DocTypeId,
                 FileName = file.FileName,
-                ContentType = file.ContentType, 
+                ContentType = file.ContentType,
                 Data = file.Data,
-                UploadeddAt = DateTime.UtcNow,    
+                UploadeddAt = DateTime.UtcNow,
                 UploaderId = userId
             };
 
@@ -71,7 +71,7 @@ public class DocumentService : IDocumentService
             {
                 Id = f.Id,
                 FileName = f.FileName,
-                ContentType = f.ContentType,  
+                ContentType = f.ContentType,
                 Data = f.Data
             })
             .SingleAsync();
@@ -103,7 +103,7 @@ public class DocumentService : IDocumentService
             .Where(u => userIds.Contains(u.Id))
             .ToDictionaryAsync(u => u.Id, u => u.FirstName + ' ' + u.LastName);
 
-        var documentDtos = documents.Select(document => new FormDocumentDto 
+        var documentDtos = documents.Select(document => new FormDocumentDto
         {
             Id = document.Id,
             DocTypeId = document.DocTypeId,

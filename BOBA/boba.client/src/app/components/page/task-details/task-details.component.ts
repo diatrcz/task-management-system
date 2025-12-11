@@ -7,10 +7,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'app-task-details',
-    templateUrl: './task-details.component.html',
-    styleUrl: './task-details.component.css',
-    standalone: false
+  selector: 'app-task-details',
+  templateUrl: './task-details.component.html',
+  styleUrl: './task-details.component.css',
+  standalone: false
 })
 export class TaskDetailsComponent implements OnInit, OnDestroy {
   taskId!: string;
@@ -40,7 +40,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -59,8 +59,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     await this.buildDynamicForm();
     await this.loadDocuments();
 
-    if(!this.task.currentStateIsFinal) {
-        await this.loadChoices();
+    if (!this.task.currentStateIsFinal) {
+      await this.loadChoices();
     }
   }
 
@@ -120,7 +120,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     if (!this.taskflow?.formFields) return;
 
     const fieldIds = this.taskflow.formFields.flatMap(section =>
-        section.fields?.map(f => f.fieldId!) ?? []
+      section.fields?.map(f => f.fieldId!) ?? []
     );
 
     if (!fieldIds.length) return;
@@ -135,31 +135,31 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     const draftData = this.isEditMode ? this.loadFormDraft() : null;
 
     for (const section of this.taskflow.formFields) {
-        const mergedSection: any = {
-            layout: section.layout,
-            fields: []
+      const mergedSection: any = {
+        layout: section.layout,
+        fields: []
+      };
+
+      for (const field of section.fields ?? []) {
+        const metadata = taskFields.find(tf => tf.name === field.fieldId);
+        console.log(metadata);
+        const saved = savedFields.find(sf => sf.modelId === metadata?.id);
+        console.log(saved);
+
+        const fieldValue = draftData && draftData[field.fieldId!] !== undefined
+          ? draftData[field.fieldId!]
+          : (saved?.value ?? '');
+
+        const mergedField = {
+          ...field,
+          ...metadata,
+          value: fieldValue,
         };
 
-        for (const field of section.fields ?? []) {
-            const metadata = taskFields.find(tf => tf.name === field.fieldId);
-            console.log(metadata);
-            const saved = savedFields.find(sf => sf.modelId === metadata?.id);
-            console.log(saved);
+        mergedSection.fields.push(mergedField);
+      }
 
-            const fieldValue = draftData && draftData[field.fieldId!] !== undefined 
-                ? draftData[field.fieldId!] 
-                : (saved?.value ?? '');
-
-            const mergedField = {
-                ...field,
-                ...metadata,
-                value: fieldValue,
-            };
-
-            mergedSection.fields.push(mergedField);
-        }
-
-        this.mergedFields.push(mergedSection);
+      this.mergedFields.push(mergedSection);
     }
 
     const group: { [key: string]: FormControl } = {};
@@ -272,7 +272,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   loadChoices(): Promise<void> {
     return new Promise((resolve, reject) => {
-      try{
+      try {
         this.choiceIds = [];
         if (this.taskflow?.nextState) {
           for (const item of this.taskflow.nextState) {
@@ -292,7 +292,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             reject(err);
           }
         });
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -325,7 +325,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
       this.docTypes = docTypes || [];
       this.documents = documents || [];
-      
+
       console.log('Loaded doc types:', this.docTypes);
       console.log('Loaded documents:', this.documents);
     } catch (error) {
@@ -359,7 +359,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       event.preventDefault();
       return;
     }
-    
+
     event.preventDefault();
     event.stopPropagation();
     this.dragOverDocType = null;
@@ -451,95 +451,95 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   submitTask(): void {
     if (this.dynamicForm && !this.dynamicForm.valid) {
-        console.log('Form is invalid');
+      console.log('Form is invalid');
 
-        const errorMessages: string[] = [];
+      const errorMessages: string[] = [];
 
-        Object.entries(this.dynamicForm.controls).forEach(([name, control]) => {
-          console.log(name, control.value, control.errors);
-          if (control.invalid && control.errors) {
-            const field = this.mergedFields
-              .flatMap(section => section.fields)
-              .find((f: any) => f.fieldId === name);
+      Object.entries(this.dynamicForm.controls).forEach(([name, control]) => {
+        console.log(name, control.value, control.errors);
+        if (control.invalid && control.errors) {
+          const field = this.mergedFields
+            .flatMap(section => section.fields)
+            .find((f: any) => f.fieldId === name);
 
-            const fieldName = field?.label || name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          const fieldName = field?.label || name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-            if (field?.validationErrorMessage) {
-              errorMessages.push(field.validationErrorMessage);
-            } else {
-              const errors = Object.keys(control.errors).map(errorKey => {
-                switch(errorKey) {
-                  case 'required':
-                    return `${fieldName} is required`;
-                  case 'email':
-                    return `${fieldName} must be a valid email`;
-                  case 'pattern':
-                    return `${fieldName} has an invalid format`;
-                  case 'minlength':
-                    return `${fieldName} must be at least ${control.errors![errorKey].requiredLength} characters`;
-                  case 'maxlength':
-                    return `${fieldName} must not exceed ${control.errors![errorKey].requiredLength} characters`;
-                  case 'min':
-                    return `${fieldName} must be at least ${control.errors![errorKey].min}`;
-                  case 'max':
-                    return `${fieldName} must not exceed ${control.errors![errorKey].max}`;
-                  default:
-                    return `${fieldName} is invalid`;
-                }
-              });
+          if (field?.validationErrorMessage) {
+            errorMessages.push(field.validationErrorMessage);
+          } else {
+            const errors = Object.keys(control.errors).map(errorKey => {
+              switch (errorKey) {
+                case 'required':
+                  return `${fieldName} is required`;
+                case 'email':
+                  return `${fieldName} must be a valid email`;
+                case 'pattern':
+                  return `${fieldName} has an invalid format`;
+                case 'minlength':
+                  return `${fieldName} must be at least ${control.errors![errorKey].requiredLength} characters`;
+                case 'maxlength':
+                  return `${fieldName} must not exceed ${control.errors![errorKey].requiredLength} characters`;
+                case 'min':
+                  return `${fieldName} must be at least ${control.errors![errorKey].min}`;
+                case 'max':
+                  return `${fieldName} must not exceed ${control.errors![errorKey].max}`;
+                default:
+                  return `${fieldName} is invalid`;
+              }
+            });
 
-              errorMessages.push(...errors);
-            }
+            errorMessages.push(...errors);
           }
-        });
-
-        if (errorMessages.length > 0) {
-          alert('Please fix the following errors:\n\n' + errorMessages.join('\n'));
         }
-        this.dynamicForm.markAllAsTouched();
-        return;
+      });
+
+      if (errorMessages.length > 0) {
+        alert('Please fix the following errors:\n\n' + errorMessages.join('\n'));
+      }
+      this.dynamicForm.markAllAsTouched();
+      return;
     }
 
     const formFieldDtos: FormFieldDto[] = [];
 
     this.mergedFields.forEach(section => {
-        section.fields.forEach((f: any) => {
-            const dto = new FormFieldDto();
-            dto.modelId = f.fieldId;
-            dto.taskId = this.taskId;
-            dto.value = this.dynamicForm.get(f.fieldId)?.value;
-            formFieldDtos.push(dto);
-        });
+      section.fields.forEach((f: any) => {
+        const dto = new FormFieldDto();
+        dto.modelId = f.fieldId;
+        dto.taskId = this.taskId;
+        dto.value = this.dynamicForm.get(f.fieldId)?.value;
+        formFieldDtos.push(dto);
+      });
     });
 
     this.apiService.form_SaveFormFields(this.taskId, formFieldDtos).subscribe({
-        next: () => {
-            console.log('Form saved successfully');
+      next: () => {
+        console.log('Form saved successfully');
 
-            this.clearFormDraft();
+        this.clearFormDraft();
 
-            const request = new MoveTaskRequest({
-                choiceId: this.selectedChoiceId!,
-                taskId: this.taskId!
+        const request = new MoveTaskRequest({
+          choiceId: this.selectedChoiceId!,
+          taskId: this.taskId!
+        });
+
+        this.apiService.task_UpdateTask(this.taskId!, request).subscribe(
+          (response) => {
+            console.log('Task moved to next state successfully', response);
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+              this.router.navigate(['/dashboard']);
             });
+          },
+          (error) => {
+            console.error('Error moving task', error);
+          }
+        );
 
-            this.apiService.task_UpdateTask(this.taskId!, request).subscribe(
-                (response) => {
-                    console.log('Task moved to next state successfully', response);
-                    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-                        this.router.navigate(['/dashboard']);
-                    });
-                },
-                (error) => {
-                    console.error('Error moving task', error);
-                }
-            );
-
-            this.showConfirmDialog = false;
-        },
-        error: err => {
-            console.error('Error saving form:', err);
-        }
+        this.showConfirmDialog = false;
+      },
+      error: err => {
+        console.error('Error saving form:', err);
+      }
     });
   }
 }

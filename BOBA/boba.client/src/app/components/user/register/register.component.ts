@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
     private apiService: ApiService,
     private router: Router,
     private formBuilder: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.initializeForm();

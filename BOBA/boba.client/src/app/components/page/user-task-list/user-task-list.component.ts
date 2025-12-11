@@ -31,7 +31,7 @@ export class UserTaskListComponent implements OnInit {
     private route: ActivatedRoute,
     private apiService: ApiService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadData();

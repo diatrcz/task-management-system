@@ -7,32 +7,30 @@
       <div>
         <h2 class="text-2xl font-bold text-gray-900">
           {{
-            listType === "closed-tasks"
-              ? "Closed Tasks"
-              : listType === "my-tasks"
-              ? "My Tasks"
-              : listType === "unassigned-tasks"
-              ? "Unassigned Tasks"
-              : "External Tasks"
+          listType === "closed-tasks"
+          ? "Closed Tasks"
+          : listType === "my-tasks"
+          ? "My Tasks"
+          : listType === "unassigned-tasks"
+          ? "Unassigned Tasks"
+          : "External Tasks"
           }}
         </h2>
         <p class="text-gray-500 mt-1">
           {{
-            listType === "closed-tasks"
-              ? "Tasks that have been completed or closed"
-              : listType === "my-tasks"
-              ? "Tasks assigned to you"
-              : listType === "unassigned-tasks"
-              ? "Tasks that are currently without an assignee"
-              : "Tasks currently outside of the team"
+          listType === "closed-tasks"
+          ? "Tasks that have been completed or closed"
+          : listType === "my-tasks"
+          ? "Tasks assigned to you"
+          : listType === "unassigned-tasks"
+          ? "Tasks that are currently without an assignee"
+          : "Tasks currently outside of the team"
           }}
         </p>
       </div>
       <div class="mt-4 md:mt-0">
         <a [routerLink]="['/tasklist']" class="w-full sm:w-auto">
-          <button
-            class="btn btn-primary flex items-center justify-center w-full sm:w-auto"
-          >
+          <button class="btn btn-primary flex items-center justify-center w-full sm:w-auto">
             Create New Task
           </button>
         </a>
@@ -44,344 +42,153 @@
   <div class="bg-white p-6 border-4 border-pink-100 rounded-lg shadow-sm">
     <!-- Header Row with Sortable Columns -->
     <div
-      class="grid grid-cols-12 gap-4 py-3 px-4 bg-gray-50 rounded-t-md font-medium text-gray-700 border-b border-gray-200 hidden md:grid"
-    >
+      class="grid grid-cols-12 gap-4 py-3 px-4 bg-gray-50 rounded-t-md font-medium text-gray-700 border-b border-gray-200 hidden md:grid">
       <div class="col-span-1"></div>
 
       <!-- Task Name - Sortable -->
-      <div
-        class="col-span-3 flex items-center cursor-pointer hover:text-gray-900 transition-colors"
-        (click)="sortBy('taskTypeName')"
-      >
+      <div class="col-span-3 flex items-center cursor-pointer hover:text-gray-900 transition-colors"
+        (click)="sortBy('taskTypeName')">
         <span>Task Name</span>
-        <svg
-          *ngIf="sortColumn !== 'taskTypeName'"
-          class="w-4 h-4 ml-1 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-          ></path>
+        <svg *ngIf="sortColumn !== 'taskTypeName'" class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
         </svg>
-        <svg
-          *ngIf="sortColumn === 'taskTypeName' && sortDirection === 'asc'"
-          class="w-4 h-4 ml-1 text-blue-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 15l7-7 7 7"
-          ></path>
+        <svg *ngIf="sortColumn === 'taskTypeName' && sortDirection === 'asc'" class="w-4 h-4 ml-1 text-blue-600"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
         </svg>
-        <svg
-          *ngIf="sortColumn === 'taskTypeName' && sortDirection === 'desc'"
-          class="w-4 h-4 ml-1 text-blue-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          ></path>
+        <svg *ngIf="sortColumn === 'taskTypeName' && sortDirection === 'desc'" class="w-4 h-4 ml-1 text-blue-600"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </div>
 
       <!-- Task ID - Sortable -->
-      <div
-        class="col-span-2 flex items-center cursor-pointer hover:text-gray-900 transition-colors"
-        (click)="sortBy('id')"
-      >
+      <div class="col-span-2 flex items-center cursor-pointer hover:text-gray-900 transition-colors"
+        (click)="sortBy('id')">
         <span>Task ID</span>
-        <svg
-          *ngIf="sortColumn !== 'id'"
-          class="w-4 h-4 ml-1 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-          ></path>
+        <svg *ngIf="sortColumn !== 'id'" class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
         </svg>
-        <svg
-          *ngIf="sortColumn === 'id' && sortDirection === 'asc'"
-          class="w-4 h-4 ml-1 text-blue-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 15l7-7 7 7"
-          ></path>
+        <svg *ngIf="sortColumn === 'id' && sortDirection === 'asc'" class="w-4 h-4 ml-1 text-blue-600" fill="none"
+          stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
         </svg>
-        <svg
-          *ngIf="sortColumn === 'id' && sortDirection === 'desc'"
-          class="w-4 h-4 ml-1 text-blue-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          ></path>
+        <svg *ngIf="sortColumn === 'id' && sortDirection === 'desc'" class="w-4 h-4 ml-1 text-blue-600" fill="none"
+          stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </div>
 
       <!-- Current State - Sortable -->
-      <div
-        class="col-span-2 flex items-center cursor-pointer hover:text-gray-900 transition-colors"
-        (click)="sortBy('currentStateName')"
-      >
+      <div class="col-span-2 flex items-center cursor-pointer hover:text-gray-900 transition-colors"
+        (click)="sortBy('currentStateName')">
         <span>Current State</span>
-        <svg
-          *ngIf="sortColumn !== 'currentStateName'"
-          class="w-4 h-4 ml-1 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-          ></path>
+        <svg *ngIf="sortColumn !== 'currentStateName'" class="w-4 h-4 ml-1 text-gray-400" fill="none"
+          stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
         </svg>
-        <svg
-          *ngIf="sortColumn === 'currentStateName' && sortDirection === 'asc'"
-          class="w-4 h-4 ml-1 text-blue-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 15l7-7 7 7"
-          ></path>
+        <svg *ngIf="sortColumn === 'currentStateName' && sortDirection === 'asc'" class="w-4 h-4 ml-1 text-blue-600"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
         </svg>
-        <svg
-          *ngIf="sortColumn === 'currentStateName' && sortDirection === 'desc'"
-          class="w-4 h-4 ml-1 text-blue-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          ></path>
+        <svg *ngIf="sortColumn === 'currentStateName' && sortDirection === 'desc'" class="w-4 h-4 ml-1 text-blue-600"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </div>
 
       <!-- Created Date - Sortable -->
-      <div
-        class="col-span-2 flex items-center cursor-pointer hover:text-gray-900 transition-colors"
-        (click)="sortBy('createdAt')"
-      >
+      <div class="col-span-2 flex items-center cursor-pointer hover:text-gray-900 transition-colors"
+        (click)="sortBy('createdAt')">
         <span>Created Date</span>
-        <svg
-          *ngIf="sortColumn !== 'createdAt'"
-          class="w-4 h-4 ml-1 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-          ></path>
+        <svg *ngIf="sortColumn !== 'createdAt'" class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
         </svg>
-        <svg
-          *ngIf="sortColumn === 'createdAt' && sortDirection === 'asc'"
-          class="w-4 h-4 ml-1 text-blue-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 15l7-7 7 7"
-          ></path>
+        <svg *ngIf="sortColumn === 'createdAt' && sortDirection === 'asc'" class="w-4 h-4 ml-1 text-blue-600"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
         </svg>
-        <svg
-          *ngIf="sortColumn === 'createdAt' && sortDirection === 'desc'"
-          class="w-4 h-4 ml-1 text-blue-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          ></path>
+        <svg *ngIf="sortColumn === 'createdAt' && sortDirection === 'desc'" class="w-4 h-4 ml-1 text-blue-600"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </div>
 
       <!-- Assignee - Sortable -->
-      <div
-        class="col-span-2 flex items-center cursor-pointer hover:text-gray-900 transition-colors"
-        (click)="sortBy('creator')"
-      >
+      <div class="col-span-2 flex items-center cursor-pointer hover:text-gray-900 transition-colors"
+        (click)="sortBy('creator')">
         <span>Assignee</span>
-        <svg
-          *ngIf="sortColumn !== 'creator'"
-          class="w-4 h-4 ml-1 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-          ></path>
+        <svg *ngIf="sortColumn !== 'creator'" class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
         </svg>
-        <svg
-          *ngIf="sortColumn === 'creator' && sortDirection === 'asc'"
-          class="w-4 h-4 ml-1 text-blue-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 15l7-7 7 7"
-          ></path>
+        <svg *ngIf="sortColumn === 'creator' && sortDirection === 'asc'" class="w-4 h-4 ml-1 text-blue-600" fill="none"
+          stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
         </svg>
-        <svg
-          *ngIf="sortColumn === 'creator' && sortDirection === 'desc'"
-          class="w-4 h-4 ml-1 text-blue-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          ></path>
+        <svg *ngIf="sortColumn === 'creator' && sortDirection === 'desc'" class="w-4 h-4 ml-1 text-blue-600" fill="none"
+          stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </div>
     </div>
 
     <!-- No Tasks Message -->
     <div *ngIf="!tasks || tasks.length === 0" class="py-10 text-center">
-      <svg
-        class="mx-auto h-12 w-12 text-gray-400"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        ></path>
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+        </path>
       </svg>
       <h3 class="mt-2 text-sm font-medium text-gray-900">No tasks found</h3>
       <p class="mt-1 text-sm text-gray-500">
         {{
-          listType === "closed-tasks"
-            ? "No closed tasks available"
-            : "No tasks are currently assigned to you"
+        listType === "closed-tasks"
+        ? "No closed tasks available"
+        : "No tasks are currently assigned to you"
         }}
       </p>
     </div>
 
     <!-- Task List Items -->
-    <div
-      *ngFor="let task of tasks; let i = index"
+    <div *ngFor="let task of tasks; let i = index"
       class="grid grid-cols-12 gap-4 py-4 px-4 border-b border-gray-100 hover:bg-purple-50 cursor-pointer transition-colors"
-      [class.rounded-b-md]="i === tasks.length - 1"
-      (click)="onTaskClick($event, task)"
-    >
+      [class.rounded-b-md]="i === tasks.length - 1" (click)="onTaskClick($event, task)">
       <!-- Icon - Eye for View, Pen for Edit -->
       <div class="col-span-1 flex items-center justify-center">
         <!-- View Mode (Eye Icon) -->
-        <svg
-          *ngIf="mode === 'view'"
-          class="w-5 h-5 text-gray-500"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-          ></path>
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-          ></path>
+        <svg *ngIf="mode === 'view'" class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+          </path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+          </path>
         </svg>
 
         <!-- Edit Mode (Pen Icon) -->
-        <svg
-          *ngIf="mode === 'edit'"
-          class="w-5 h-5 text-blue-500"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-          ></path>
+        <svg *ngIf="mode === 'edit'" class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+          </path>
         </svg>
       </div>
 
       <!-- Task Name -->
-      <div
-        class="col-span-11 md:col-span-3 font-medium text-gray-900 flex flex-col"
-      >
+      <div class="col-span-11 md:col-span-3 font-medium text-gray-900 flex flex-col">
         <span>{{ task.taskTypeName }}</span>
         <!-- Mobile-only ID -->
-        <span class="md:hidden text-xs text-gray-500 mt-1"
-          >ID: {{ task.id }}</span
-        >
+        <span class="md:hidden text-xs text-gray-500 mt-1">ID: {{ task.id }}</span>
       </div>
 
       <!-- Task ID -->
@@ -391,13 +198,10 @@
 
       <!-- Current State -->
       <div class="hidden md:flex md:col-span-2 items-center">
-        <span
-          class="px-2 py-1 text-xs font-medium rounded-full"
-          [ngClass]="{
+        <span class="px-2 py-1 text-xs font-medium rounded-full" [ngClass]="{
             'bg-green-100 text-green-800': task.currentStateIsFinal,
             'bg-blue-100 text-blue-800': !task.currentStateIsFinal
-          }"
-        >
+          }">
           {{ task.currentStateName }}
         </span>
       </div>
@@ -416,13 +220,10 @@
       <div class="col-span-11 mt-2 grid grid-cols-2 gap-2 md:hidden">
         <div>
           <span class="text-xs text-gray-500">State:</span>
-          <span
-            class="ml-1 px-2 py-1 text-xs font-medium rounded-full"
-            [ngClass]="{
+          <span class="ml-1 px-2 py-1 text-xs font-medium rounded-full" [ngClass]="{
               'bg-green-100 text-green-800': task.currentStateIsFinal,
               'bg-blue-100 text-blue-800': !task.currentStateIsFinal
-            }"
-          >
+            }">
             {{ task.currentStateName }}
           </span>
         </div>
@@ -431,14 +232,14 @@
           <span class="text-xs text-gray-500">Created:</span>
           <span class="ml-1 text-xs text-gray-700">{{
             task.createdAt | date : "MMM d, y"
-          }}</span>
+            }}</span>
         </div>
 
         <div class="col-span-2">
           <span class="text-xs text-gray-500">Assignee:</span>
           <span class="ml-1 text-xs text-gray-700">{{
             task.assigneeName ? task.assigneeName : "Unassigned"
-          }}</span>
+            }}</span>
         </div>
       </div>
     </div>

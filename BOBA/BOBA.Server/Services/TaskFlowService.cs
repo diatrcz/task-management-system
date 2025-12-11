@@ -29,13 +29,13 @@ namespace BOBA.Server.Services
         public async Task<TaskFlowSummaryDto> GetTaskFlowById(string taskId)
         {
             var task = await _context.Tasks
-                                     .Where(t => t.Id == taskId)
-                                     .Include(t => t.CurrentState)
-                                     .SingleAsync();
+                                    .Where(t => t.Id == taskId)
+                                    .Include(t => t.CurrentState)
+                                    .SingleAsync();
 
             var taskflow = await _context.TaskFlows
                 .SingleAsync(tf => tf.CurrentStateId == task.CurrentStateId &&
-                                   tf.TaskTypeId == task.TaskTypeId);
+                                tf.TaskTypeId == task.TaskTypeId);
 
             var taskFlowDto = new TaskFlowSummaryDto
             {

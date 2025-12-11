@@ -23,7 +23,7 @@ public class FormDocument
     public string FileName { get; set; }
 
     [Required]
-    public string ContentType { get; set; }   
+    public string ContentType { get; set; }
 
     [Required]
     public byte[] Data { get; set; } = null!;

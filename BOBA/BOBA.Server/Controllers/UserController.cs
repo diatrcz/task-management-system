@@ -114,7 +114,7 @@ public class UserController : ControllerBase
 
     [HttpGet("teams")]
     [AllowAnonymous]
-    public async Task<ActionResult<List<TeamSummaryDto>>> GetTeams() 
+    public async Task<ActionResult<List<TeamSummaryDto>>> GetTeams()
     {
         var teams = await _userService.GetTeams();
 

@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit {
     constructor(
         private apiService: ApiService,
         private authService: AuthService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.loadData();

@@ -43,9 +43,6 @@ public class TaskService : ITaskService
             .Include(t => t.Creator)
             .SingleAsync();
 
-       // problem is that in the end states team accidentally set to null which results i n the 500 server error
-       //var team = await _context.Teams.Where(t => t.Id == task.TeamId).SingleAsync();
-
         var taskdto = new TaskSummaryDto
         {
             Id = task.Id,
@@ -57,7 +54,6 @@ public class TaskService : ITaskService
             CurrentStateIsFinal = task.CurrentState?.IsFinal ?? false,
             AssigneeName = (task.Assignee != null ? $"{task.Assignee.FirstName} {task.Assignee.LastName}" : null),
             TeamId = task.TeamId,
-            //Team = team.Name,
             CreatedAt = task.CreatedAt.ToString("o"),
             UpdatedAt = task.UpdatedAt.ToString("o")
         };
@@ -188,11 +184,11 @@ public class TaskService : ITaskService
     public async Task<List<TaskSummaryDto>> GetClosedTasksByTeamId(string team_id)
     {
         var tasks = await _context.Tasks
-             .Where(t => (t.CreatorTeamId == team_id || t.TeamId == team_id) && t.CurrentState.IsFinal == true) 
-             .Include(t => t.CurrentState)
-             .Include(t => t.Creator)
-             .Include(t => t.TaskType)
-             .ToListAsync();
+            .Where(t => (t.CreatorTeamId == team_id || t.TeamId == team_id) && t.CurrentState.IsFinal == true) 
+            .Include(t => t.CurrentState)
+            .Include(t => t.Creator)
+            .Include(t => t.TaskType)
+            .ToListAsync();
 
         var taskDtos = tasks.Select(task => new TaskSummaryDto
         {
@@ -215,12 +211,12 @@ public class TaskService : ITaskService
     public async Task<List<TaskSummaryDto>> GetUnassignedTasksByTeamId(string team_id)
     {
         var tasks = await _context.Tasks
-             .Where(t => t.TeamId == team_id && t.CurrentState.IsFinal == false && t.AssigneeId == null)
-             .Include(t => t.CurrentState)
-             .Include(t => t.Creator)
-             .Include(t => t.Creator)
-             .Include(t => t.TaskType)
-             .ToListAsync();
+            .Where(t => t.TeamId == team_id && t.CurrentState.IsFinal == false && t.AssigneeId == null)
+            .Include(t => t.CurrentState)
+            .Include(t => t.Creator)
+            .Include(t => t.Creator)
+            .Include(t => t.TaskType)
+            .ToListAsync();
 
         var taskDtos = tasks.Select(task => new TaskSummaryDto
         {
@@ -243,12 +239,12 @@ public class TaskService : ITaskService
     public async Task<List<TaskSummaryDto>> GetAssignedTasksForUserByTeamId(string team_id, string user_id)
     {
         var tasks = await _context.Tasks
-             .Where(t => t.TeamId == team_id && t.CurrentState.IsFinal == false && t.AssigneeId == user_id)
-             .Include(t => t.CurrentState)
-             .Include(t => t.Assignee)
-             .Include(t => t.Creator)
-             .Include(t => t.TaskType)
-             .ToListAsync();
+            .Where(t => t.TeamId == team_id && t.CurrentState.IsFinal == false && t.AssigneeId == user_id)
+            .Include(t => t.CurrentState)
+            .Include(t => t.Assignee)
+            .Include(t => t.Creator)
+            .Include(t => t.TaskType)
+            .ToListAsync();
 
         var taskDtos = tasks.Select(task => new TaskSummaryDto
         {

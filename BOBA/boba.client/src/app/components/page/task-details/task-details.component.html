@@ -11,23 +11,30 @@
           <div *ngIf="task">
             <div class="flex justify-between items-start mb-3">
               <h2 class="text-2xl font-bold text-gray-900">{{ task.taskTypeName || 'Task Details' }}</h2>
-              
+
               <!-- Mode Indicator Badge -->
-              <span *ngIf="!isEditMode" class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full flex items-center">
+              <span *ngIf="!isEditMode"
+                class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full flex items-center">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                  </path>
                 </svg>
                 View Mode
               </span>
-              <span *ngIf="isEditMode" class="px-3 py-1 bg-green-100 text-green-700 text-sm font-medium rounded-full flex items-center">
+              <span *ngIf="isEditMode"
+                class="px-3 py-1 bg-green-100 text-green-700 text-sm font-medium rounded-full flex items-center">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                  </path>
                 </svg>
                 Edit Mode
               </span>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 mt-3">
               <div>
                 <span class="text-sm text-gray-500">Task ID:</span>
@@ -142,20 +149,16 @@
                 Upload
               </button>
               <input *ngIf="docType.id" type="file" [id]="'file-input-' + docType.id"
-                (change)="onFileInputChange($event, docType.id)" multiple [disabled]="task.currentStateIsFinal || !isEditMode"
-                class="hidden" />
+                (change)="onFileInputChange($event, docType.id)" multiple
+                [disabled]="task.currentStateIsFinal || !isEditMode" class="hidden" />
             </div>
 
             <!-- Drop Zone -->
-            <div *ngIf="docType.id" 
-              (dragover)="onDragOver($event, docType.id)" 
-              (dragleave)="onDragLeave($event)"
-              (drop)="onDrop($event, docType.id)" 
-              [ngClass]="{
+            <div *ngIf="docType.id" (dragover)="onDragOver($event, docType.id)" (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event, docType.id)" [ngClass]="{
                 'bg-green-50 border-green-400': dragOverDocType === docType.id && isEditMode,
                 'bg-gray-50': dragOverDocType !== docType.id || !isEditMode
-              }" 
-              class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center transition min-h-[100px]">
+              }" class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center transition min-h-[100px]">
 
               <!-- Documents List -->
               <div *ngIf="docType.id && getDocumentsForType(docType.id).length > 0" class="space-y-2">

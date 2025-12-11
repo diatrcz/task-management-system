@@ -1,19 +1,15 @@
-
 <header class="sticky top-0 z-[60] bg-gradient-to-r from-pink-50 to-blue-50 shadow-md py-3 px-4">
     <div class="max-w-6xl mx-auto flex flex-nowrap items-center justify-between gap-4">
         <div class="flex flex-row items-center justify-start gap-4">
             <a href="/dashboard" class="transform transition-transform hover:scale-105">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 100 100"
-                    class="w-[42px] transition-all duration-300 md:w-[52px] lg:w-[62px]"
-                    aria-label="Boba Tea Logo"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+                    class="w-[42px] transition-all duration-300 md:w-[52px] lg:w-[62px]" aria-label="Boba Tea Logo">
                     <!-- Cup -->
-                    <rect x="25" y="30" width="50" height="55" rx="8" ry="8" fill="url(#cup-gradient)" stroke="#e3a4c4" stroke-width="2"/>
+                    <rect x="25" y="30" width="50" height="55" rx="8" ry="8" fill="url(#cup-gradient)" stroke="#e3a4c4"
+                        stroke-width="2" />
 
                     <!-- Tea  -->
-                    <rect x="25" y="50" width="50" height="35" rx="7" ry="7" fill="url(#tea-gradient)"/>
+                    <rect x="25" y="50" width="50" height="35" rx="7" ry="7" fill="url(#tea-gradient)" />
 
                     <!-- Boba Pearls -->
                     <circle cx="35" cy="80" r="3.5" fill="#8b5e3b">
@@ -30,15 +26,16 @@
                     </circle>
 
                     <!-- Lid  -->
-                    <rect x="22.5" y="25" width="55" height="7.5" rx="4" ry="4" fill="url(#lid-gradient)"/>
+                    <rect x="22.5" y="25" width="55" height="7.5" rx="4" ry="4" fill="url(#lid-gradient)" />
 
                     <!-- Straw-->
-                    <rect x="45" y="5" width="10" height="25" rx="3" ry="3" fill="#a4e3a4"/>
+                    <rect x="45" y="5" width="10" height="25" rx="3" ry="3" fill="#a4e3a4" />
 
                     <!-- Face  -->
-                    <circle cx="37.5" cy="45" r="2.5" fill="#603813"/>
-                    <circle cx="62.5" cy="45" r="2.5" fill="#603813"/>
-                    <path d="M42.5 47.5 Q50 55, 57.5 47.5" stroke="#603813" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                    <circle cx="37.5" cy="45" r="2.5" fill="#603813" />
+                    <circle cx="62.5" cy="45" r="2.5" fill="#603813" />
+                    <path d="M42.5 47.5 Q50 55, 57.5 47.5" stroke="#603813" stroke-width="1.5" stroke-linecap="round"
+                        fill="none" />
 
                     <!-- gradients -->
                     <defs>
@@ -60,16 +57,13 @@
             <span class="text-lg font-medium text-pink-600 hidden md:block">BOBA</span>
         </div>
 
-            <span
-                class="text-base md:text-lg font-semibold text-pink-700"
-                *ngIf="team$ | async as team"
-            >
-                {{ team.name }}
-            </span>
-
+        <span class="text-base md:text-lg font-semibold text-pink-700" *ngIf="team$ | async as team">
+            {{ team.name }}
+        </span>
 
         <button class="md:hidden focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </button>
